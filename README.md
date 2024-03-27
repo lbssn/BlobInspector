@@ -39,7 +39,7 @@ This command will install all the necessary dependencies for running the program
 
 ## Running the software
 
-To launch, open a terminal or PowerShell in the root directory of the program and run the following command:
+To launch the software, open a terminal or PowerShell in the root directory of the program and run the following command:
 ```bash
 python appli.py
 ```
