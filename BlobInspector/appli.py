@@ -1,0 +1,192 @@
+# This file is distributed under the terms of the GNU General Public License v3.0
+
+import sys
+import os
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt, QEvent, Signal
+from PySide6.QtGui import QResizeEvent
+
+from gui.app_ui import Ui_MainWindow
+from gui.histogram_window import HistogramWindow
+from gui.save_analysis_window import SaveAnalysisWindow
+from gui.batch_analysis_window import BatchAnalysisWindow
+
+from logic.applicationlogic import *
+
+from resources import resources_rc
+
+from model.app_model import AppModel
+
+from datetime import datetime, timedelta
+
+
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.setupUi(self)
+
+        self.installEventFilter(self)
+        self.resizeEvent = lambda event : resize_main_window(self)
+
+        self.clear_temp_repertory("./temp/")
+
+        self.focus = None
+        self.batchAnalysis = {}
+
+        self.wi_OriginalText.hide()
+        self.wi_Image1Text.hide()
+        self.wi_Image2Text.hide()
+        self.tabWidget.hide()
+        self.gb_ResultsChoice.hide()
+        self.frame_4.hide()
+
+        self.appMod = AppModel()
+        self.histogram_window = HistogramWindow()
+        self.histogram_window.setVisible(False)
+        self.save_analysis_window = SaveAnalysisWindow(self)
+        self.save_analysis_window.setVisible(False)
+        self.batch_analysis_window = BatchAnalysisWindow(self)
+        self.batch_analysis_window.setVisible(False)
+
+        self.combob_BlobsDetection.addItems(return_blobs_algorithms())
+        self.combob_LabelingOption.addItems(return_labeling_algorithms())
+        self.combob_Contours.addItems(return_contouring_algorithms())
+        self.combob_cmap.addItems(return_colormaps())
+
+        # Menu bar
+        self.action_Load.triggered.connect(lambda : load_files(self))
+        self.action_RemoveAllImages.triggered.connect(lambda : remove_all_images(self))
+        self.action_RemoveCurrentImage.triggered.connect(lambda : remove_current_image(self))
+        self.action_SaveAnalysis.triggered.connect(lambda : open_save_analysis_window(self))
+        self.action_LoadAnalysis.triggered.connect(lambda : load_analysis(self))
+        self.action_Quit_2.triggered.connect(lambda : close_app(self))
+        self.action_BatchAnalysis.triggered.connect(lambda : open_batch_analysis_window(self))
+        self.action_Version.triggered.connect(lambda : show_version(self))
+        # Original image options
+        self.hs_SliceNumber.valueChanged.connect(lambda : slider_value_changed(self))
+        self.cb_IncludeImage.stateChanged.connect(lambda : checkbox_state_changed(self))
+        self.pb_Histogram.clicked.connect(lambda : call_histogram_window(self))
+        self.combob_FileName.activated.connect(lambda : combobox_changed(self))
+        # Illumination
+        self.le_RollingBallRadius.editingFinished.connect(lambda : input_rolling_ball_radius(self))
+        self.pb_RollingBallRadiusToImage.clicked.connect(lambda : rolling_ball_to_image(self))
+        self.pb_RollingBallRadiusToStack.clicked.connect(lambda : rolling_ball_to_stack(self))
+        self.pb_RollingBallRadiusView.clicked.connect(lambda : view_illumination(self))
+        # Segmentation
+        self.le_ThresholdOne.editingFinished.connect(lambda : input_threshold_one(self))
+        self.le_ThresholdTwo.editingFinished.connect(lambda : input_threshold_two(self))
+        self.le_ThresholdOne.installEventFilter(self)
+        self.le_ThresholdTwo.installEventFilter(self)
+        self.combob_Threshold.activated.connect(lambda : threshold_option_changed(self))
+        self.le_BlobsDetectionMinimumRadius.editingFinished.connect(lambda : set_blobs_minimum_radius(self))
+        self.le_BlobsDetectionMaximumRadius.editingFinished.connect(lambda : set_blobs_maximum_radius(self))
+        self.combob_BlobsDetection.activated.connect(lambda : combobox_blobs_changed(self))
+        self.pb_SegmentationToImage.clicked.connect(lambda : segmentation_to_image(self))
+        self.pb_SegmentationToStack.clicked.connect(lambda : segmentation_to_stack(self))
+        self.pb_SegmentationView.clicked.connect(lambda : view_segmentation(self))
+        # Labeling
+        self.le_SieveSize.editingFinished.connect(lambda : input_sieve_size(self))
+        self.pb_LabelingToImage.clicked.connect(lambda : apply_labeling_to_image(self))
+        self.pb_LabelingToStack.clicked.connect(lambda : apply_labeling_to_stack(self))
+        self.pb_LabelingView.clicked.connect(lambda : view_labeling(self))
+        # Contours
+        self.combob_Contours.activated.connect(lambda : combobox_contours_changed(self))
+        self.le_BackgroundThreshold.editingFinished.connect(lambda : input_background_threshold(self))
+        self.pb_ContoursToImage.clicked.connect(lambda : apply_contours_to_image(self))
+        self.pb_ContoursToStack.clicked.connect(lambda : apply_contours_to_stack(self))
+        self.pb_ContoursView.clicked.connect(lambda : view_contours(self))
+        self.le_CentroidX.editingFinished.connect(lambda : edit_centroid_x(self))
+        self.le_CentroidY.editingFinished.connect(lambda : edit_centroid_y(self))
+        self.pb_CentroidAuto.clicked.connect(lambda : set_centroid_auto(self))
+        self.cb_MainSlice.stateChanged.connect(lambda : change_main_slice(self))
+        # Density
+        self.le_DensityTargetLayers.editingFinished.connect(lambda : input_target_layers(self))
+        self.le_DensityMapKernelSize.editingFinished.connect(lambda : input_kernel_size(self))
+        self.pb_DensityToImage.clicked.connect(lambda : apply_density_to_image(self))
+        self.pb_DensityToStack.clicked.connect(lambda : apply_density_to_stack(self))
+        self.pb_DensityView.clicked.connect(lambda : view_density(self))
+        self.combob_DensityDisplay.activated.connect(lambda : combobox_density_changed(self))
+        self.combob_cmap.activated.connect(lambda : combobox_density_changed(self))
+        # Results
+        self.le_ZThickness.editingFinished.connect(lambda : input_z_thickness(self))
+        self.le_InterZ.editingFinished.connect(lambda : input_inter_z(self))
+        self.le_PixelSize.editingFinished.connect(lambda : input_pixel_size(self))
+        self.pb_ResultsApplyToStacks.clicked.connect(lambda : apply_infos_to_stacks(self))
+        self.pb_ResultsView.clicked.connect(lambda : view_results_page(self))
+        self.pb_ResultsAll.clicked.connect(lambda : select_all(self))
+        self.pb_ResultsNone.clicked.connect(lambda : select_none(self))
+        self.pb_ResultsDestinationFolder.clicked.connect(lambda : select_folder(self,self.lb_ResultsDestinationFolder))
+        self.pb_ResultsBack.clicked.connect(lambda : return_to_images_screen(self))
+        self.le_ResultsCSVFileName.editingFinished.connect(lambda: check_file_name(self,self.le_ResultsCSVFileName))
+        self.pb_ResultsSave.clicked.connect(lambda : save_results(self))
+
+    def eventFilter(self, obj, event):
+        if (obj == self.le_ThresholdOne or obj == self.le_ThresholdTwo)  and event.type() == QEvent.KeyPress:
+            if event.key() == Qt.Key_Up:
+                if obj.text() != "I" and obj.text() != "II":
+                    self.increment_value(obj)
+                    return True
+            elif event.key() == Qt.Key_Down:
+                if obj.text() != "I" and obj.text() != "II":
+                    self.decrement_value(obj)
+                    return True
+        if event.type() == QEvent.Wheel and (obj == self.le_ThresholdOne or obj == self.le_ThresholdTwo):
+            if obj.text() != "I" and obj.text() != "II":
+                value = float(obj.text())
+                new_value = None
+                if value >=1 and value <255 and event.angleDelta().y() > 0:
+                    new_value = int(value+1)
+                elif value >1 and value <=255 and event.angleDelta().y() <0:
+                    new_value = int(value-1)
+                elif value <1 and value >=0 and event.angleDelta().y() > 0:
+                    new_value = round(float(value + 0.01),2)
+                elif value <=1 and value >0 and event.angleDelta().y() <0:
+                    new_value = round(float(value - 0.01),2)
+                if new_value is not None:
+                    obj.setText(str(new_value))
+                    obj.editingFinished.emit()
+                    return True
+        return super().eventFilter(obj, event)
+    
+    def increment_value(self,obj):
+        current_value = float(obj.text())
+        if current_value >= 1 and current_value <255: 
+            obj.setText(str(int(current_value + 1)))
+            obj.editingFinished.emit()
+        elif current_value <1:
+            obj.setText(str(round(current_value + 0.01,2)))
+            obj.editingFinished.emit()
+        
+    def decrement_value(self,obj):
+        current_value = float(obj.text())
+        if current_value <= 1 and current_value > 0:
+            obj.setText(str(round(current_value - 0.01,2)))
+            obj.editingFinished.emit()
+        elif current_value > 1:
+            obj.setText(str(int(current_value - 1)))
+            obj.editingFinished.emit()
+  
+    def closeEvent(self,event):
+        self.histogram_window.close()
+        self.save_analysis_window.close()
+        self.batch_analysis_window.close()
+        super().closeEvent(event)
+
+    def clear_temp_repertory(self,temp_path):
+        now=datetime.now()
+        retention_period=timedelta(days=7)
+        for file in os.listdir(temp_path):
+            if file.endswith(".joblib"):
+                absolute_path=os.path.join(temp_path,file)
+                if os.path.isdir(absolute_path):
+                    continue
+                modification_time=os.path.getmtime(absolute_path)
+                modification_date=datetime.fromtimestamp(modification_time)
+                if now - modification_date > retention_period:
+                    os.remove(absolute_path)
+
+
+app = QtWidgets.QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec()
