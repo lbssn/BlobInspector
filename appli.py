@@ -28,6 +28,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.installEventFilter(self)
         self.resizeEvent = lambda event : resize_main_window(self)
 
+        directories = ["./temp/","./analysis/","./results/"]
+        for dir in directories:
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+
         self.clear_temp_repertory("./temp/")
 
         self.focus = None
