@@ -442,6 +442,8 @@ def start_batch_analysis(batchWindow : BatchAnalysisWindow, window : Ui_MainWind
         filename = now.strftime("%Y-%m-%d_%H-%M-%S")
         dump(window.appMod,"./temp/"+filename+"_analysis.joblib",compress= True)
         show_save_message("The batch analysis has been successfully performed.\nThe file has been saved in the /temp repertory with a time stamp and will be kept for 7 days.")
+        window.combob_FileName.findText(0)
+        window.hs_SliceNumber.setValue(0)
         set_current_image_options(window,filenames[0],0)
         display_original_image(window,filenames[0],0,focus=window.focus)
         batchWindow.close()
@@ -2500,6 +2502,7 @@ def load_analysis(window : Ui_MainWindow):
         "Analysis files (*.joblib)"
     )
     if filename:
+        remove_all_images(window)
         window.appMod = load(filename)
         if hasattr(window.appMod, "stacks"):
             if len(window.appMod.stacks) > 0:
