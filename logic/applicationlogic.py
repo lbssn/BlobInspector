@@ -239,14 +239,20 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
         cbar = plt.colorbar(heatmap)
         cbar.ax.set_visible(False)
     canvas_original.fig.set_frameon(False)
-    canvas_original.fig.subplots_adjust(0, 0, 1, 1, 0, 0)
     canvas_original.axes.set_axis_off()
-    canvas_original.fig.suptitle(title)
+    label = QLabel()
+    label.setText(title)
+    label.setAlignment(Qt.AlignCenter)
     canvas_original.fig.tight_layout()
     canvas_original.axes.imshow(image, cmap='gray')
     empty_layout(window.layout_Original)
+    window.layout_Original.addWidget(label)
     window.layout_Original.addWidget(canvas_original)
     window.layout_Original.addWidget(toolbar)
+    if focus == "density":
+        canvas_original.fig.subplots_adjust(0, 0.01, 1, 0.99, 0, 0)
+    else:
+        canvas_original.fig.subplots_adjust(0, 0, 1, 1, 0, 0)
     window.wi_OriginalText.setFixedWidth(int(window.size().width()/3))
     window.wi_OriginalText.show()
     window.wi_OriginalImage.setFixedWidth(int(window.size().width()/3))
@@ -790,7 +796,6 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
         toolbar = CustomToolbar(canvas, window)
         toolbar.font_size = 6
         canvas.fig.set_frameon(False)
-        canvas.fig.subplots_adjust(0, 0, 1, 1, 0, 0)
         canvas.axes.set_axis_off()
         if focus == "contours" and frame == 2:
             filename,slice_number = get_filename_slice_number(window)
@@ -824,16 +829,23 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
                 window.lb_TargetStats.setText(f"Target\nmean={mean_t:.1f}/median={median_t:.1f}\nmin={min_t:.1f}/max={max_t:.1f}")
         else:
             canvas.axes.imshow(image, cmap='gray')
+        label = QLabel()
         if title:
-            canvas.fig.suptitle(title)
+            label.setText(title)
+            label.setAlignment(Qt.AlignCenter)
         canvas.fig.tight_layout()
         if frame == 1:
             layout = window.layout_Image1
         else:
             layout = window.layout_Image2
         empty_layout(layout)
+        layout.addWidget(label)
         layout.addWidget(canvas)
         layout.addWidget(toolbar)
+        if focus == "density":
+            canvas.fig.subplots_adjust(0, 0.01, 1, 0.99, 0, 0)
+        else:
+            canvas.fig.subplots_adjust(0, 0, 1, 1, 0, 0)
         if frame == 1:
             window.wi_Image1Canvas.setFixedWidth(int(window.size().width()/3))
             window.wi_Image1Canvas.show()
@@ -877,10 +889,10 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
                 labels = appMod.labeling_labels[filename][slice_number]
                 if labels != []:
                     count = np.max(labels) + 1
-                    mean, SD = mean_SD_size(labels)
+                    mean, median = mean_median_size(labels)
                 else:
-                    count,mean,SD = 0,0,0
-                display_secondary_image(2,window,appMod.labeling_images_with_labels[filename][slice_number],title = f"Count:{count}, mean size:{mean}, SD:{SD}")
+                    count,mean,median = 0,0,0
+                display_secondary_image(2,window,appMod.labeling_images_with_labels[filename][slice_number],title = f"Count: {count}, mean size: {mean}, median: {median}")
         elif focus == "contours" and appMod.contours_mask[filename][slice_number] is not None:
             if frame == 1:
                 if appMod.labeling_coordinates[filename][slice_number] is not None:
