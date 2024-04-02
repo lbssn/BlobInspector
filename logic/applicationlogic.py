@@ -242,6 +242,7 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
     canvas_original.axes.set_axis_off()
     label = QLabel()
     label.setText(title)
+    label.setMaximumHeight(20)
     label.setAlignment(Qt.AlignCenter)
     canvas_original.fig.tight_layout()
     canvas_original.axes.imshow(image, cmap='gray')
@@ -448,7 +449,7 @@ def start_batch_analysis(batchWindow : BatchAnalysisWindow, window : Ui_MainWind
         filename = now.strftime("%Y-%m-%d_%H-%M-%S")
         dump(window.appMod,"./temp/"+filename+"_analysis.joblib",compress= True)
         show_save_message("The batch analysis has been successfully performed.\nThe file has been saved in the /temp repertory with a time stamp and will be kept for 7 days.")
-        window.combob_FileName.findText(0)
+        window.combob_FileName.setCurrentIndex(0)
         window.hs_SliceNumber.setValue(0)
         set_current_image_options(window,filenames[0],0)
         display_original_image(window,filenames[0],0,focus=window.focus)
@@ -832,6 +833,7 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
         label = QLabel()
         if title:
             label.setText(title)
+            label.setMaximumHeight(20)
             label.setAlignment(Qt.AlignCenter)
         canvas.fig.tight_layout()
         if frame == 1:

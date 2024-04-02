@@ -117,7 +117,7 @@ class CustomToolbar(NavigationToolbar):
 
     def custom_home_function(self):
         self.canvas.axes.set_xlim(self.canvas.original_xlim[0]-0.5,self.canvas.original_xlim[1]-0.5)
-        self.canvas.axes.set_ylim(self.canvas.original_ylim[0]-0.5,self.canvas.original_ylim[1]-0.5)
+        self.canvas.axes.set_ylim(self.canvas.original_ylim[1]-0.5,self.canvas.original_ylim[0]-0.5)
         self.canvas.draw_idle()
 
     def save_figure(self, *args):
