@@ -103,8 +103,8 @@ def watershed_custom(binary_image, dots):
     new_dots: list of the coordinates of the pixels labeled by the watershed
     ws_list: list of the corresponding labels to the coordinates (0 is the value of the first label)'''
     distance = ndi.distance_transform_edt(binary_image)
-    # labeled_image = measure.label(binary_image,connectivity=2) # Ajouté
-    max_coords = peak_local_max(distance, labels=binary_image, min_distance=3) # , labels = binary_image , footprint=np.ones((3, 3)) , min_distance=4
+    # labeled_image = measure.label(binary_image,connectivity=2)
+    max_coords = peak_local_max(distance, labels=binary_image, min_distance=4) # , labels = binary_image , footprint=np.ones((3, 3)) , min_distance=4
     local_maxima = np.zeros(distance.shape, dtype=bool)
     local_maxima[tuple(max_coords.T)] = True
     markers, _ = ndi.label(local_maxima)

@@ -1732,10 +1732,10 @@ def apply_density_to_image(window :Ui_MainWindow, slice_number=None):
                 if appMod.labeling_labels[filename][slice_number] is not None:
                     if appMod.contours_mask[filename][slice_number] is not None:
                         if window.le_DensityTargetLayers.text() != "" and window.le_DensityMapKernelSize.text() != "":
+                            window.setCursor(QCursor(Qt.WaitCursor))
                             thresholded_image = dots_to_binary(appMod.stacks[filename][slice_number],appMod.labeling_coordinates[filename][slice_number])
                             contoured_image = appMod.contours_mask[filename][slice_number]
                             centroids_image = dots_to_binary(appMod.stacks[filename][slice_number],calculate_centroids(appMod.labeling_coordinates[filename][slice_number],appMod.labeling_labels[filename][slice_number]))
-                            window.setCursor(QCursor(Qt.WaitCursor))
                             if appMod.density_target_layers[filename][slice_number] != int(window.le_DensityTargetLayers.text()) or appMod.density_target_heatmap[filename][slice_number] is None:
                                 appMod.density_target_layers[filename][slice_number] = int(window.le_DensityTargetLayers.text())
                                 layers = appMod.density_target_layers[filename][slice_number]
