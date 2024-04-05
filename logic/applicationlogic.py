@@ -49,7 +49,7 @@ def remove_current_image(window : Ui_MainWindow):
     appMod=window.appMod
     if len(appMod.stacks.keys()) == 1:
         remove_all_images(window)
-    else:
+    elif len(appMod.stacks.keys()) > 1:
         filename = window.combob_FileName.currentText()
         appMod.stack_names.remove(filename)
         del appMod.stacks[filename]
@@ -280,6 +280,18 @@ def update_image_slider_range(window : Ui_MainWindow, filename):
     window.hs_SliceNumber.setMaximum(len(window.appMod.stacks[filename])-1)
     window.lb_SliceNumber.setText(f"{int(window.hs_SliceNumber.value())+1} / {len(window.appMod.stacks[filename])}")
 
+def restore_images_original_size(window : Ui_MainWindow):
+    """ Restores the original size of the images
+    Parameters:
+    window : an instance of the app"""
+    all_canvases = window.findChildren(MplCanvas)
+    for canvas in all_canvases:
+        canvas.axes.set_xlim(canvas.original_xlim[0]-0.5,canvas.original_xlim[1]-0.5)
+        canvas.axes.set_ylim(canvas.original_ylim[1]-0.5,canvas.original_ylim[0]-0.5)
+        canvas.draw_idle()
+        canvas.previous_xlim = (canvas.original_xlim[0]-0.5,canvas.original_xlim[1]-0.5)
+        canvas.previous_ylim = (canvas.original_ylim[1]-0.5,canvas.original_ylim[0]-0.5)
+
 def load_files(window : Ui_MainWindow):
     """ Loads the image files
     Parameters:
@@ -338,6 +350,7 @@ def load_files(window : Ui_MainWindow):
             window.cb_IncludeImage.setCheckState(Qt.CheckState.Unchecked)
         set_current_image_options(window,window.appMod.stack_names[0],0)
         display_original_image(window,window.appMod.stack_names[0],0)
+        restore_images_original_size(window)
         update_image_slider_range(window,window.appMod.stack_names[0])
 
 def close_app(window : Ui_MainWindow):
@@ -654,6 +667,7 @@ def combobox_changed(window : Ui_MainWindow):
     else:
         window.cb_IncludeImage.setCheckState(Qt.CheckState.Unchecked)
     display_original_image(window,filename,0,focus=window.focus)
+    restore_images_original_size(window)
 
 def highlight_groupbox(window : Ui_MainWindow, option):
     """Highlight the tools being used
