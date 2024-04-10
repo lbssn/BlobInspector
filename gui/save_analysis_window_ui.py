@@ -19,7 +19,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QLineEdit,
     QPushButton, QSizePolicy, QSpacerItem, QWidget)
-from resources import resources_rc
+import resources.resources_rc
 
 class Ui_SaveAnalysisWindow(object):
     def setupUi(self, SaveAnalysisWindow):

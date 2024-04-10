@@ -2,3 +2,4 @@ temp/
 results/
 analysis/
 __pycache__/
+options.joblib

@@ -1,16 +1,17 @@
 # This file is distributed under the terms of the GNU General Public License v3.0
 
-from skimage import io
+from skimage import io, draw
 import numpy as np
-from PySide6.QtWidgets import QFileDialog, QGroupBox, QDialog, QPushButton, QLabel, QVBoxLayout, QCheckBox, QTableWidgetItem
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QCursor
+from PySide6.QtWidgets import QFileDialog, QGroupBox, QDialog, QPushButton, QLabel, QVBoxLayout, QCheckBox, QTableWidgetItem, QLineEdit
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QCursor, QIcon
 import matplotlib.pyplot as plt
 from gui.MplCanvas import MplCanvas
 from gui.MplCanvasHistogram import MplCanvasHistogram
 from gui.app_ui import Ui_MainWindow
 from gui.save_analysis_window import SaveAnalysisWindow
 from gui.batch_analysis_window import BatchAnalysisWindow
+from gui.options_window import Ui_OptionsWindow
 from gui.custom_toolbar import CustomToolbar
 from model.app_model import AppModel
 from logic.algorithms import *
@@ -19,6 +20,7 @@ import re
 import csv
 from datetime import datetime
 from joblib import dump, load
+import resources.resources_rc
 
 
 def resize_main_window(window : Ui_MainWindow):
@@ -93,6 +95,9 @@ def show_error_message(message):
     message : the message to display"""
     dialog = QDialog()
     dialog.setWindowTitle("Error")
+    icon = QIcon()
+    icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
+    dialog.setWindowIcon(icon)
     dialog.setModal(True)
     label = QLabel(message)
     label.setAlignment(Qt.AlignCenter)    
@@ -227,17 +232,42 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
             mask = appMod.blobs_thresholded_images[filename][slice_number]
         else:
             mask = appMod.thresholded_images[filename][slice_number]
+        coordinates = np.where(mask)
         image_rgb = np.empty((image.shape[0], image.shape[1], 3), dtype=np.uint8)
         for i in range (3):
             image_rgb[:,:,i] = image
-        coordinates = np.where(mask)
-        for y,x in zip(coordinates[0],coordinates[1]):
-            image_rgb[y,x] = [255,255,0]
+        if window.appOptions.default_profile is None:
+            color = [255,255,0]
+        else:
+            color = return_colors_dictionnary()[window.appOptions.profiles[window.appOptions.default_profile][0]]
+        image_rgb[coordinates[0], coordinates[1]] = color
         image = image_rgb
     if focus == "density":
         heatmap = canvas_original.axes.imshow(image, cmap=window.combob_cmap.currentText(), interpolation='nearest')
         cbar = plt.colorbar(heatmap)
         cbar.ax.set_visible(False)
+    if window.cb_Scale.isChecked() and window.cb_IncludeImage.isChecked():
+        if len(image.shape) == 2:
+            image = np.stack((image,image,image),axis = -1)
+        position = window.options_window.combob_ScalePosition.currentText()
+        scale_length = int(window.options_window.le_ScaleNumberPixels.text())
+        if window.le_PixelSize.text() != "":
+            pixel_size = float(window.le_PixelSize.text())
+        else:
+            pixel_size = float(window.options_window.le_StackInfoPixelSize.text())
+        unit = window.options_window.le_ScaleUnit.text()
+        scale_color=window.options_window.combob_ScaleColor.currentText()
+        if "East" in position:
+            x_begin = image.shape[1] - scale_length - 20
+        else:
+            x_begin = 20
+        if "South" in position:
+            y_begin = image.shape[0] - 20
+        else:
+            y_begin = 40
+        text = f"{int(scale_length*pixel_size)} {unit}"
+        canvas_original.axes.plot([x_begin, x_begin + scale_length], [y_begin,y_begin], linewidth=3, color=scale_color)
+        canvas_original.axes.text(x_begin+50, y_begin-20,text,color=scale_color,va='center', ha='center')
     canvas_original.fig.set_frameon(False)
     canvas_original.axes.set_axis_off()
     label = QLabel()
@@ -367,69 +397,91 @@ def open_batch_analysis_window(window : Ui_MainWindow):
     Parameters:
     window : an instance of the app'''
     window.batch_analysis_window = BatchAnalysisWindow(window)
-    window.batch_analysis_window.le_RollingBallRadius.editingFinished.connect(lambda : input_positive_integer(window.batch_analysis_window.le_RollingBallRadius))
-    window.batch_analysis_window.le_DensityTargetLayers.editingFinished.connect(lambda : input_positive_integer(window.batch_analysis_window.le_DensityTargetLayers))
-    window.batch_analysis_window.le_ZThickness.editingFinished.connect(lambda : input_float(window.batch_analysis_window.le_ZThickness))
-    window.batch_analysis_window.le_InterZ.editingFinished.connect(lambda : input_float(window.batch_analysis_window.le_InterZ))
-    window.batch_analysis_window.le_PixelSize.editingFinished.connect(lambda : input_float(window.batch_analysis_window.le_PixelSize))
-    window.batch_analysis_window.le_SieveSize.editingFinished.connect(lambda : input_integer_over_value(window.batch_analysis_window.le_SieveSize,0,False))
-    window.batch_analysis_window.le_BackgroundThreshold.editingFinished.connect(lambda : input_integer_over_value(window.batch_analysis_window.le_BackgroundThreshold,0,False))
-    window.batch_analysis_window.le_DensityMapKernelSize.editingFinished.connect(lambda : input_integer_over_value(window.batch_analysis_window.le_DensityMapKernelSize,3,True))
-    window.batch_analysis_window.combob_BlobsDetection.addItems(return_blobs_algorithms())
-    window.batch_analysis_window.combob_LabelingOption.addItems(return_labeling_algorithms())
-    window.batch_analysis_window.combob_Contours.addItems(return_contouring_algorithms())
-    window.batch_analysis_window.le_BlobsDetectionMinimumRadius.editingFinished.connect(lambda : input_blobs_radius(window.batch_analysis_window.le_BlobsDetectionMinimumRadius,window.batch_analysis_window.le_BlobsDetectionMaximumRadius,1))
-    window.batch_analysis_window.le_BlobsDetectionMaximumRadius.editingFinished.connect(lambda : input_blobs_radius(window.batch_analysis_window.le_BlobsDetectionMaximumRadius,window.batch_analysis_window.le_BlobsDetectionMinimumRadius,1))
-    window.batch_analysis_window.le_ThresholdOne.editingFinished.connect(lambda : input_thresholds(window.batch_analysis_window,\
-                                                window.batch_analysis_window.le_ThresholdOne,window.batch_analysis_window.le_ThresholdTwo,0,255,"I"))
-    window.batch_analysis_window.le_ThresholdTwo.editingFinished.connect(lambda : input_thresholds(window.batch_analysis_window,\
-                                                window.batch_analysis_window.le_ThresholdTwo,window.batch_analysis_window.le_ThresholdOne,0,255,"II"))
-    window.batch_analysis_window.combob_Threshold.activated.connect(lambda : change_threshold_combobox(window.batch_analysis_window.combob_Threshold,window.batch_analysis_window.le_ThresholdTwo))
-    window.batch_analysis_window.pb_StartAnalysis.clicked.connect(lambda : start_batch_analysis(window.batch_analysis_window,window))
-    window.batch_analysis_window.show()
+    bw = window.batch_analysis_window
+    bw.le_RollingBallRadius.editingFinished.connect(lambda : input_positive_integer(bw.le_RollingBallRadius))
+    bw.le_DensityTargetLayers.editingFinished.connect(lambda : input_positive_integer(bw.le_DensityTargetLayers))
+    bw.le_ZThickness.editingFinished.connect(lambda : input_float(bw.le_ZThickness))
+    bw.le_InterZ.editingFinished.connect(lambda : input_float(bw.le_InterZ))
+    bw.le_PixelSize.editingFinished.connect(lambda : input_float(bw.le_PixelSize))
+    bw.le_SieveSize.editingFinished.connect(lambda : input_integer_over_value(bw.le_SieveSize,0,False))
+    bw.le_BackgroundThreshold.editingFinished.connect(lambda : input_integer_over_value(bw.le_BackgroundThreshold,0,False))
+    bw.le_DensityMapKernelSize.editingFinished.connect(lambda : input_integer_over_value(bw.le_DensityMapKernelSize,3,True))
+    bw.combob_BlobsDetection.addItems(return_blobs_algorithms())
+    bw.combob_LabelingOption.addItems(return_labeling_algorithms())
+    bw.combob_Contours.addItems(return_contouring_algorithms())
+    bw.le_BlobsDetectionMinimumRadius.editingFinished.connect(lambda : input_blobs_radius(bw.le_BlobsDetectionMinimumRadius,bw.le_BlobsDetectionMaximumRadius,1))
+    bw.le_BlobsDetectionMaximumRadius.editingFinished.connect(lambda : input_blobs_radius(bw.le_BlobsDetectionMaximumRadius,bw.le_BlobsDetectionMinimumRadius,1))
+    bw.le_ThresholdOne.editingFinished.connect(lambda : input_thresholds(bw,bw.le_ThresholdOne,bw.le_ThresholdTwo,0,255,"I"))
+    bw.le_ThresholdTwo.editingFinished.connect(lambda : input_thresholds(bw,bw.le_ThresholdTwo,bw.le_ThresholdOne,0,255,"II"))
+    bw.combob_Threshold.currentTextChanged.connect(lambda : change_threshold_combobox(bw.combob_Threshold,bw.le_ThresholdTwo))
+    bw.pb_DefaultOptions.clicked.connect(lambda : input_default_options(window))
+    bw.pb_StartAnalysis.clicked.connect(lambda : start_batch_analysis(window))
+    bw.show()
 
-
-def start_batch_analysis(batchWindow : BatchAnalysisWindow, window : Ui_MainWindow):
+def input_default_options(window : Ui_MainWindow):
+    if window.options_window.combob_Profiles.currentText():
+        options = window.appOptions.profiles[window.options_window.combob_Profiles.currentText()]
+        bw = window.batch_analysis_window
+        bw.le_RollingBallRadius.setText(options[6])
+        bw.combob_Threshold.setCurrentIndex(bw.combob_Threshold.findText(options[7]))
+        bw.le_ThresholdOne.setText(options[8])
+        bw.le_ThresholdTwo.setText(options[9])
+        bw.combob_BlobsDetection.setCurrentIndex(bw.combob_BlobsDetection.findText(options[10]))
+        bw.le_BlobsDetectionMinimumRadius.setText(options[11])
+        bw.le_BlobsDetectionMaximumRadius.setText(options[12])
+        bw.combob_LabelingOption.setCurrentIndex(bw.combob_LabelingOption.findText(options[13]))
+        bw.le_SieveSize.setText(options[14])
+        bw.combob_Contours.setCurrentIndex(bw.combob_Contours.findText(options[15]))
+        bw.le_BackgroundThreshold.setText(options[16])
+        bw.le_DensityMapKernelSize.setText(options[17])
+        bw.le_DensityTargetLayers.setText(options[18])
+        bw.le_ZThickness.setText(options[19])
+        bw.le_InterZ.setText(options[20])
+        bw.le_PixelSize.setText(options[21])
+    else:
+        show_error_message("Please select a profile in the Options.")
+    
+def start_batch_analysis(window : Ui_MainWindow):
     '''Processes the batch analysis and saves the results in the /temp directory
     Parameters:
-    batchWindow : an instance of the class BatchAnalysisWindow
     window : an instance of the app'''
+    bw = window.batch_analysis_window
     filenames = list(window.appMod.stacks.keys())
     if not len(filenames) == 0:
-        batchWindow.setCursor(QCursor(Qt.WaitCursor))
-        if batchWindow.le_RollingBallRadius.text() != "":
+        bw.setCursor(QCursor(Qt.WaitCursor))
+        if bw.le_RollingBallRadius.text() != "":
             for filename in filenames:
                 index = window.combob_FileName.findText(filename)
                 window.combob_FileName.setCurrentIndex(index)
-                window.le_RollingBallRadius.setText(batchWindow.le_RollingBallRadius.text())
+                window.le_RollingBallRadius.setText(bw.le_RollingBallRadius.text())
                 rolling_ball_to_stack(window,False)
-        if batchWindow.le_ThresholdOne.text() != "I":
+        if bw.le_ThresholdOne.text() != "I":
             for filename in filenames:
                 index = window.combob_FileName.findText(filename)
                 window.combob_FileName.setCurrentIndex(index)
-                window.combob_Threshold.setCurrentIndex(batchWindow.combob_Threshold.currentIndex())
-                window.combob_BlobsDetection.setCurrentIndex(batchWindow.combob_BlobsDetection.currentIndex())
-                window.le_ThresholdOne.setText(batchWindow.le_ThresholdOne.text())
-                window.le_ThresholdTwo.setEnabled(batchWindow.le_ThresholdTwo.isEnabled())
-                window.le_ThresholdTwo.setText(batchWindow.le_ThresholdTwo.text())
-                window.le_BlobsDetectionMinimumRadius.setText(batchWindow.le_BlobsDetectionMinimumRadius.text())
-                window.le_BlobsDetectionMaximumRadius.setText(batchWindow.le_BlobsDetectionMaximumRadius.text())
+                window.combob_Threshold.setCurrentIndex(bw.combob_Threshold.currentIndex())
+                window.combob_BlobsDetection.setCurrentIndex(bw.combob_BlobsDetection.currentIndex())
+                window.le_ThresholdOne.setText(bw.le_ThresholdOne.text())
+                window.le_ThresholdTwo.setEnabled(bw.le_ThresholdTwo.isEnabled())
+                window.le_ThresholdTwo.setText(bw.le_ThresholdTwo.text())
+                window.le_BlobsDetectionMinimumRadius.setText(bw.le_BlobsDetectionMinimumRadius.text())
+                window.le_BlobsDetectionMaximumRadius.setText(bw.le_BlobsDetectionMaximumRadius.text())
                 segmentation_to_stack(window,False)
-        if batchWindow.le_SieveSize.text() != "":
+        if bw.le_SieveSize.text() != "":
             for filename in filenames:
                 index = window.combob_FileName.findText(filename)
                 window.combob_FileName.setCurrentIndex(index)
-                window.combob_LabelingOption.setCurrentIndex(batchWindow.combob_LabelingOption.currentIndex())
-                window.le_SieveSize.setText(batchWindow.le_SieveSize.text())
+                window.combob_LabelingOption.setCurrentIndex(bw.combob_LabelingOption.currentIndex())
+                window.le_SieveSize.setText(bw.le_SieveSize.text())
                 apply_labeling_to_stack(window,False)
                 compute_count_results(window,filename,len(window.appMod.stacks[filename]))
-        if batchWindow.le_BackgroundThreshold.text() != "":
+        if bw.le_BackgroundThreshold.text() != "":
             infos_applied = False
             for filename in filenames:
                 index = window.combob_FileName.findText(filename)
                 window.combob_FileName.setCurrentIndex(index)
-                window.combob_Contours.setCurrentIndex(batchWindow.combob_Contours.currentIndex())
-                window.le_BackgroundThreshold.setText(batchWindow.le_BackgroundThreshold.text())
+                window.combob_Contours.setCurrentIndex(bw.combob_Contours.currentIndex())
+                window.le_BackgroundThreshold.setText(bw.le_BackgroundThreshold.text())
                 apply_contours_to_stack(window,False)
                 compute_distance = False
                 for i in range(len(window.appMod.labeling_labels[filename])):
@@ -438,18 +490,18 @@ def start_batch_analysis(batchWindow : BatchAnalysisWindow, window : Ui_MainWind
                         break
                 if compute_distance == True:
                     if infos_applied == False:
-                        window.le_ZThickness.setText(batchWindow.le_ZThickness.text())
-                        window.le_InterZ.setText(batchWindow.le_InterZ.text())
-                        window.le_PixelSize.setText(batchWindow.le_PixelSize.text())
+                        window.le_ZThickness.setText(bw.le_ZThickness.text())
+                        window.le_InterZ.setText(bw.le_InterZ.text())
+                        window.le_PixelSize.setText(bw.le_PixelSize.text())
                         apply_infos_to_stacks(window)
                         infos_applied = True
                     compute_distance_results(window,filename,len(window.appMod.stacks[filename]))
-        if batchWindow.le_DensityMapKernelSize.text() != "" and batchWindow.le_DensityTargetLayers.text() != "":
+        if bw.le_DensityMapKernelSize.text() != "" and bw.le_DensityTargetLayers.text() != "":
             for filename in filenames:
                 index = window.combob_FileName.findText(filename)
                 window.combob_FileName.setCurrentIndex(index)
-                window.le_DensityTargetLayers.setText(batchWindow.le_DensityTargetLayers.text())
-                window.le_DensityMapKernelSize.setText(batchWindow.le_DensityMapKernelSize.text())
+                window.le_DensityTargetLayers.setText(bw.le_DensityTargetLayers.text())
+                window.le_DensityMapKernelSize.setText(bw.le_DensityMapKernelSize.text())
                 apply_density_to_stack(window,False)
                 compute_density = False
                 for i in range(len(window.appMod.contours_mask[filename])):
@@ -466,14 +518,181 @@ def start_batch_analysis(batchWindow : BatchAnalysisWindow, window : Ui_MainWind
         window.hs_SliceNumber.setValue(0)
         set_current_image_options(window,filenames[0],0)
         display_original_image(window,filenames[0],0,focus=window.focus)
-        batchWindow.close()
+        bw.close()
     else:
         show_error_message("Please choose some images to process.")
 
-def show_version(window : Ui_MainWindow):
+def initialise_options_window(window : Ui_MainWindow):
+    ow = window.options_window
+    ow.combob_Profiles.currentTextChanged.connect(lambda : profile_changed(window))
+    ow.combob_SegmentationColors.currentTextChanged.connect(lambda : segmentation_color_changed(window))
+    ow.combob_Colormap.currentTextChanged.connect(lambda : colormap_changed(window))
+    ow.le_ScaleNumberPixels.editingFinished.connect(lambda : input_positive_integer(ow.le_ScaleNumberPixels))
+    ow.le_ScaleNumberPixels.textChanged.connect(lambda : scale_checked(window,False))
+    ow.le_IlluminationRollingBallRadius.editingFinished.connect(lambda : input_positive_integer(ow.le_IlluminationRollingBallRadius))
+    ow.combob_Threshold.currentTextChanged.connect(lambda : change_threshold_combobox(ow.combob_Threshold,ow.le_SegmentationThresholdTwo))
+    ow.le_SegmentationThresholdOne.editingFinished.connect(lambda : input_thresholds(ow,ow.le_SegmentationThresholdOne,ow.le_SegmentationThresholdTwo,0,255,"I"))
+    ow.le_SegmentationThresholdTwo.editingFinished.connect(lambda : input_thresholds(ow,ow.le_SegmentationThresholdTwo,ow.le_SegmentationThresholdOne,0,255,"II"))
+    ow.le_SegmentationBlobsMinRadius.editingFinished.connect(lambda : input_blobs_radius(ow.le_SegmentationBlobsMinRadius,ow.le_SegmentationBlobsMaxRadius,1))
+    ow.le_SegmentationBlobsMaxRadius.editingFinished.connect(lambda : input_blobs_radius(ow.le_SegmentationBlobsMaxRadius,ow.le_SegmentationBlobsMinRadius,1))
+    ow.le_LabelingSieveSize.editingFinished.connect(lambda : input_integer_over_value(ow.le_LabelingSieveSize,0,False))
+    ow.le_ContoursBackground.editingFinished.connect(lambda : input_integer_over_value(ow.le_ContoursBackground,0,False))
+    ow.le_DensityKernelSize.editingFinished.connect(lambda : input_integer_over_value(ow.le_DensityKernelSize,3,True))
+    ow.le_StackInfoSliceThickness.editingFinished.connect(lambda : input_float(ow.le_StackInfoSliceThickness))
+    ow.le_StackInfoIntersliceSpace.editingFinished.connect(lambda : input_float(ow.le_StackInfoIntersliceSpace))
+    ow.le_StackInfoPixelSize.editingFinished.connect(lambda : input_float(ow.le_StackInfoPixelSize))
+    ow.le_StackInfoPixelSize.textChanged.connect(lambda : scale_checked(window,False))
+    ow.pb_UpdateProfile.clicked.connect(lambda : update_profile(window))
+    ow.pb_CreateNewProfile.clicked.connect(lambda : create_new_profile(window))
+    ow.pb_RemoveProfile.clicked.connect(lambda : remove_profile(window))
+
+def open_options_window(window : Ui_MainWindow):
+    window.options_window.show()
+
+def segmentation_color_changed(window : Ui_MainWindow):
+    if window.focus == "segmentation":
+        ow = window.options_window
+        filename, slice_number = get_filename_slice_number(window)
+        profilename = ow.combob_Profiles.currentText()
+        previous_color = window.appOptions.profiles[profilename][0]
+        window.appOptions.profiles[profilename][0] = ow.combob_SegmentationColors.currentText()
+        display_original_image(window,filename,slice_number,focus="segmentation")
+        window.appOptions.profiles[profilename][0] = previous_color
+
+def remove_profile(window : Ui_MainWindow):
+    ow = window.options_window
+    if ow.combob_Profiles.currentText():
+        profilename = ow.combob_Profiles.currentText()
+        del window.appOptions.profiles[profilename]
+        index = ow.combob_Profiles.findText(profilename)
+        ow.combob_Profiles.removeItem(index)
+        if ow.combob_Profiles.count() > 0:
+            ow.combob_Profiles.setCurrentIndex(0)
+            profile_changed(window)
+        else:
+            window.appOptions.default_profile = None
+            
+        dump(window.appOptions,"./options.joblib",compress= True)
+
+def profile_changed(window : Ui_MainWindow):
+    ow = window.options_window
+    if ow.combob_Profiles.currentText():
+        window.appOptions.default_profile = ow.combob_Profiles.currentText()
+        profilename = ow.combob_Profiles.currentText()
+        ow.combob_SegmentationColors.setCurrentIndex(ow.combob_SegmentationColors.findText(window.appOptions.profiles[profilename][0]))
+        ow.combob_Colormap.setCurrentIndex(ow.combob_Colormap.findText(window.appOptions.profiles[profilename][1]))
+        ow.le_ScaleNumberPixels.setText(window.appOptions.profiles[profilename][2])
+        ow.le_ScaleUnit.setText(window.appOptions.profiles[profilename][3])
+        ow.combob_ScalePosition.setCurrentIndex(ow.combob_ScalePosition.findText(window.appOptions.profiles[profilename][4]))
+        ow.combob_ScaleColor.setCurrentIndex(ow.combob_ScaleColor.findText(window.appOptions.profiles[profilename][5]))
+        ow.le_IlluminationRollingBallRadius.setText(window.appOptions.profiles[profilename][6])
+        ow.combob_Threshold.setCurrentIndex(ow.combob_Threshold.findText(window.appOptions.profiles[profilename][7]))
+        ow.le_SegmentationThresholdOne.setText(window.appOptions.profiles[profilename][8])
+        ow.le_SegmentationThresholdTwo.setText(window.appOptions.profiles[profilename][9])
+        ow.combob_SegmentationBlobs.setCurrentIndex(ow.combob_SegmentationBlobs.findText(window.appOptions.profiles[profilename][10]))
+        ow.le_SegmentationBlobsMinRadius.setText(window.appOptions.profiles[profilename][11])
+        ow.le_SegmentationBlobsMaxRadius.setText(window.appOptions.profiles[profilename][12])
+        ow.combob_Labeling.setCurrentIndex(ow.combob_Labeling.findText(window.appOptions.profiles[profilename][13]))
+        ow.le_LabelingSieveSize.setText(window.appOptions.profiles[profilename][14])
+        ow.combob_Contours.setCurrentIndex(ow.combob_Contours.findText(window.appOptions.profiles[profilename][15]))
+        ow.le_ContoursBackground.setText(window.appOptions.profiles[profilename][16])
+        ow.le_DensityKernelSize.setText(window.appOptions.profiles[profilename][17])
+        ow.le_DensityLayers.setText(window.appOptions.profiles[profilename][18])
+        ow.le_StackInfoSliceThickness.setText(window.appOptions.profiles[profilename][19])
+        ow.le_StackInfoIntersliceSpace.setText(window.appOptions.profiles[profilename][20])
+        ow.le_StackInfoPixelSize.setText(window.appOptions.profiles[profilename][21])
+        dump(window.appOptions,"./options.joblib",compress= True)
+
+
+def update_profile(window : Ui_MainWindow):
+    ow = window.options_window
+    if ow.combob_Profiles.currentText():
+        profilename = ow.combob_Profiles.currentText()
+        save_profile(window,profilename)
+    else:
+        show_error_message("Please choose a profile to update.")
+
+def save_profile(window : Ui_MainWindow, profilename):
+    ow = window.options_window
+    window.appOptions.profiles[profilename] = [ow.combob_SegmentationColors.currentText(),\
+                                            ow.combob_Colormap.currentText(),\
+                                            ow.le_ScaleNumberPixels.text(),\
+                                            ow.le_ScaleUnit.text(),\
+                                            ow.combob_ScalePosition.currentText(),\
+                                            ow.combob_ScaleColor.currentText(),\
+                                            ow.le_IlluminationRollingBallRadius.text(),\
+                                            ow.combob_Threshold.currentText(),\
+                                            ow.le_SegmentationThresholdOne.text(),\
+                                            ow.le_SegmentationThresholdTwo.text(),\
+                                            ow.combob_SegmentationBlobs.currentText(),\
+                                            ow.le_SegmentationBlobsMinRadius.text(),\
+                                            ow.le_SegmentationBlobsMaxRadius.text(),\
+                                            ow.combob_Labeling.currentText(),\
+                                            ow.le_LabelingSieveSize.text(),\
+                                            ow.combob_Contours.currentText(),\
+                                            ow.le_ContoursBackground.text(),\
+                                            ow.le_DensityKernelSize.text(),\
+                                            ow.le_DensityLayers.text(),\
+                                            ow.le_StackInfoSliceThickness.text(),\
+                                            ow.le_StackInfoIntersliceSpace.text(),\
+                                            ow.le_StackInfoPixelSize.text()]
+    dump(window.appOptions,"./options.joblib",compress= True)
+
+def create_new_profile(window : Ui_MainWindow):
+    ow = window.options_window
+    profilename = choose_profile_name()
+    if profilename != "":
+        if profilename in window.appOptions.profiles.keys():
+            show_error_message("This profile already exists. Choose the profile and select the update profile option.")
+        else:
+            save_profile(window,profilename)
+            ow.combob_Profiles.addItem(profilename)
+            ow.combob_Profiles.setCurrentIndex(ow.combob_Profiles.findText(profilename))
+            window.appOptions.default_profile = profilename
+
+def choose_profile_name():
+    dialog = QDialog()
+    dialog.setWindowTitle("Choose profile name")
+    icon = QIcon()
+    icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
+    dialog.setWindowIcon(icon)
+    layout = QVBoxLayout()
+    label = QLabel()
+    label.setText("Please choose a profile name")
+    line_edit = QLineEdit()
+    layout.addWidget(label)
+    layout.addWidget(line_edit)
+    button_OK = QPushButton("OK")
+    button_OK.clicked.connect(dialog.accept)
+    layout.addWidget(button_OK)
+    button_cancel = QPushButton("Cancel")
+    button_cancel.clicked.connect(dialog.reject)
+    layout.addWidget(button_cancel)
+    dialog.setLayout(layout)
+    if dialog.exec() == QDialog.Accepted:
+        return line_edit.text()
+    else:
+        return ""
+
+def colormap_changed(window : Ui_MainWindow):
+    index = window.options_window.combob_Colormap.currentIndex()
+    window.combob_cmap.setCurrentIndex(index)
+    if window.focus == "density":
+        filename,slice_number=get_filename_slice_number(window)
+        if window.combob_DensityDisplay.currentText() == "Percentage":
+            display_secondary_image(1,window,window.appMod.density_map_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (percentage)")
+            display_secondary_image(2,window,window.appMod.density_target_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (percentage)")
+        if window.combob_DensityDisplay.currentText() == "Count":
+            display_secondary_image(1,window,window.appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
+            display_secondary_image(2,window,window.appMod.density_taget_centroid_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
+
+def show_version():
     """Displays a QDialog window with information about the software version"""
     dialog = QDialog()
     dialog.setWindowTitle("Version information")
+    icon = QIcon()
+    icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
+    dialog.setWindowIcon(icon)
     dialog.setModal(True)
     label = QLabel("Blob inspector v0.9 (March 2024)\n\
                    Blob Inspector was developped by Laurent Busson as a final project for a Master's degree in Bioinformatics at the University of Bordeaux\n\
@@ -559,10 +778,10 @@ def check_value_range(value,min_value,max_value):
         return True
     return False
 
-def input_thresholds(window : SaveAnalysisWindow, widget1, widget2, min_value, max_value, original_text):
+def input_thresholds(window, widget1, widget2, min_value, max_value, original_text):
     '''Controls the input values in two widgets
     Parameters:
-    window: an instance of the class SaveAnalysisWindow
+    window: an instance of the class BatchAnalysisWindow or OptionsWindow
     widget1: the first widget in which a value is input
     widget2: the second widget in which a value is input
     min_value: the minimum range value (included)
@@ -571,13 +790,13 @@ def input_thresholds(window : SaveAnalysisWindow, widget1, widget2, min_value, m
     if widget1.text() !="I" and widget1.text() !="II":
         if check_value_range(widget1.text(),min_value,max_value):
             if window.combob_Threshold.currentText() == "One threshold":
-                if widget1.objectName() == "le_ThresholdOne":
+                if widget1.objectName() == "le_ThresholdOne" or widget1.objectName() == "le_SegmentationThresholdOne":
                     if float(widget1.text()) >=1:
                         widget1.setText(str(int(widget1.text())))
                     else:
                         widget1.setText(str(float(widget1.text())))
             else:
-                if widget1.objectName() == "le_ThresholdOne":
+                if widget1.objectName() == "le_ThresholdOne" or widget1.objectName() == "le_SegmentationThresholdOne":
                     if float(widget1.text()) >=1:
                         widget1.setText(str(int(widget1.text())))
                         if widget2.text() != "II" and float(widget2.text()) < 1:
@@ -654,6 +873,26 @@ def call_histogram_window(window : Ui_MainWindow):
     else:
         show_error_message("Please choose an image to show its histogram.")
 
+def scale_checked(window : Ui_MainWindow,message=True):
+    if window.cb_Scale.isChecked():
+        if (window.le_PixelSize.text() == "" and window.options_window.le_StackInfoPixelSize.text() == "") or window.options_window.le_ScaleNumberPixels.text() == "":
+            if message == True:
+                show_error_message("Please choose a pixel size and a length in pixels for the scale.")
+            window.cb_Scale.setChecked(False)
+            window.cb_Scale.setCheckState(Qt.Unchecked)
+        else:
+            filename, slice_number = get_filename_slice_number(window)
+            if int(window.options_window.le_ScaleNumberPixels.text()) > window.appMod.stacks[filename][slice_number].shape[1]:
+                if message == True:
+                    show_error_message("The length of the scale is greater than the image width. Please choose a smaller pixels number in the options.")
+                window.cb_Scale.setChecked(False)
+                window.cb_Scale.setCheckState(Qt.Unchecked)
+            else:
+                display_original_image(window,filename,slice_number,focus=window.focus)
+    else:
+        if window.combob_FileName.currentText():
+            filename, slice_number = get_filename_slice_number(window)
+            display_original_image(window,filename,slice_number,focus=window.focus)
 
 def combobox_changed(window : Ui_MainWindow):
     """Updates the image display on the first image of the new stack when the image file changes
@@ -849,6 +1088,28 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
             label.setText(title)
             label.setMaximumHeight(20)
             label.setAlignment(Qt.AlignCenter)
+        if window.cb_Scale.isChecked() and window.cb_IncludeImage.isChecked():
+            if len(image.shape) == 2:
+                image = np.stack((image,image,image),axis = -1)
+            position = window.options_window.combob_ScalePosition.currentText()
+            if window.le_PixelSize.text() != "":
+                pixel_size = float(window.le_PixelSize.text())
+            else:
+                pixel_size = float(window.options_window.le_StackInfoPixelSize.text())
+            scale_length = float(window.options_window.le_ScaleNumberPixels.text())
+            unit = window.options_window.le_ScaleUnit.text()
+            color=window.options_window.combob_ScaleColor.currentText()
+            if "East" in position:
+                x_begin = image.shape[1] - scale_length - 20
+            else:
+                x_begin = 20
+            if "South" in position:
+                y_begin = image.shape[0] - 20
+            else:
+                y_begin = 40
+            text = f"{int(scale_length*pixel_size)} {unit}"
+            canvas.axes.plot([x_begin, x_begin + scale_length], [y_begin,y_begin], linewidth=3, color=color)
+            canvas.axes.text(x_begin+50, y_begin-20,text,color=color,va='center', ha='center')
         canvas.fig.tight_layout()
         if frame == 1:
             layout = window.layout_Image1
@@ -1849,6 +2110,7 @@ def input_z_thickness(window :Ui_MainWindow):
             window.appMod.results_distance[filename] = None
         else:
             show_error_message("Please input a floating number.")
+            window.le_ZThickness.clear()
     else:
         show_error_message("Please choose a stack of images to process.")
         window.le_ZThickness.clear()
@@ -1868,6 +2130,7 @@ def input_inter_z(window :Ui_MainWindow):
             window.appMod.results_distance[filename] = None
         else:
             show_error_message("Please input a floating number.")
+            window.le_InterZ.clear()
     else:
         show_error_message("Please choose a stack of images to process.")
         window.le_InterZ.clear()
@@ -1887,6 +2150,7 @@ def input_pixel_size(window :Ui_MainWindow):
             window.appMod.results_distance[filename] = None
         else:
             show_error_message("Please input a floating number.")
+            window.le_PixelSize.clear()
     else:
         show_error_message("Please choose a stack of images to process.")
         window.le_PixelSize.clear()
@@ -2353,6 +2617,9 @@ def show_save_message(message):
     message : the message to display"""
     dialog = QDialog()
     dialog.setWindowTitle("Save successful")
+    icon = QIcon()
+    icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
+    dialog.setWindowIcon(icon)
     dialog.setModal(True)
     label = QLabel(message)
     label.setAlignment(Qt.AlignCenter)

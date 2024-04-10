@@ -13,8 +13,6 @@ class BatchAnalysisWindow(QtWidgets.QWidget, Ui_BatchAnalysisWindow):
         self.main_window = main_window
         self.pb_Cancel.clicked.connect(self.close)
 
-        self.timer = QTimer(self)
-
 
 if __name__ == "__main":
     app = QtWidgets.QApplication(sys.argv)

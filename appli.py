@@ -5,16 +5,20 @@ import os
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt, QEvent, Signal
 from PySide6.QtGui import QResizeEvent
+from joblib import load
 
 from gui.app_ui import Ui_MainWindow
 from gui.histogram_window import HistogramWindow
 from gui.save_analysis_window import SaveAnalysisWindow
 from gui.batch_analysis_window import BatchAnalysisWindow
+from gui.options_window import OptionsWindow
 
 from logic.applicationlogic import *
 
 from resources import resources_rc
 
+
+from model.app_options import AppOptions
 from model.app_model import AppModel
 
 from datetime import datetime, timedelta
@@ -23,41 +27,58 @@ from datetime import datetime, timedelta
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setupUi(self)
-
-        self.installEventFilter(self)
-        self.resizeEvent = lambda event : resize_main_window(self)
-
-        directories = ["./temp/","./analysis/","./results/"]
-        for dir in directories:
-            if not os.path.exists(dir):
-                os.makedirs(dir)
-
-        self.clear_temp_repertory("./temp/")
-
+        self.setupUi(self)      
+        # Attributes
         self.focus = None
         self.batchAnalysis = {}
-
+        self.appMod = AppModel()
+        profiles_list = []
+        if os.path.exists("./options.joblib"):
+            self.appOptions = load("./options.joblib")
+            profiles_list = list(self.appOptions.profiles.keys())
+        else:
+            self.appOptions = AppOptions()
+        self.histogram_window = HistogramWindow()
+        self.save_analysis_window = SaveAnalysisWindow(self)
+        self.batch_analysis_window = BatchAnalysisWindow(self)
+        self.options_window = OptionsWindow(self)
+        initialise_options_window(self)
+        # Display at setup
+        self.histogram_window.setVisible(False)
+        self.save_analysis_window.setVisible(False)
+        self.batch_analysis_window.setVisible(False)
+        self.options_window.setVisible(False)
         self.wi_OriginalText.hide()
         self.wi_Image1Text.hide()
         self.wi_Image2Text.hide()
         self.tabWidget.hide()
         self.gb_ResultsChoice.hide()
         self.frame_4.hide()
-
-        self.appMod = AppModel()
-        self.histogram_window = HistogramWindow()
-        self.histogram_window.setVisible(False)
-        self.save_analysis_window = SaveAnalysisWindow(self)
-        self.save_analysis_window.setVisible(False)
-        self.batch_analysis_window = BatchAnalysisWindow(self)
-        self.batch_analysis_window.setVisible(False)
-
+        self.cb_Scale.setChecked(False)
+        # Comboboxes initialisation
+        if len(profiles_list) > 0:
+            self.options_window.combob_Profiles.addItems(profiles_list)
+        if self.appOptions.default_profile is not None:
+            index = self.options_window.combob_SegmentationColors.findText(self.appOptions.profiles[self.appOptions.default_profile][0])
+            self.options_window.combob_SegmentationColors.setCurrentIndex(index)
+            index2 = self.options_window.combob_Colormap.findText(self.appOptions.profiles[self.appOptions.default_profile][1])
+            self.options_window.combob_Colormap.setCurrentIndex(index2)
+            self.options_window.combob_Profiles.setCurrentIndex(self.options_window.combob_Profiles.findText(self.appOptions.default_profile))
+        else:
+            index = self.options_window.combob_SegmentationColors.findText("yellow")
+            self.options_window.combob_SegmentationColors.setCurrentIndex(index)
         self.combob_BlobsDetection.addItems(return_blobs_algorithms())
         self.combob_LabelingOption.addItems(return_labeling_algorithms())
         self.combob_Contours.addItems(return_contouring_algorithms())
         self.combob_cmap.addItems(return_colormaps())
-
+        # Methods
+        self.installEventFilter(self)
+        self.resizeEvent = lambda event : resize_main_window(self)
+        directories = ["./temp/","./analysis/","./results/"]
+        for dir in directories:
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+        self.clear_temp_repertory("./temp/")
         # Menu bar
         self.action_Load.triggered.connect(lambda : load_files(self))
         self.action_RemoveAllImages.triggered.connect(lambda : remove_all_images(self))
@@ -66,11 +87,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.action_LoadAnalysis.triggered.connect(lambda : load_analysis(self))
         self.action_Quit_2.triggered.connect(lambda : close_app(self))
         self.action_BatchAnalysis.triggered.connect(lambda : open_batch_analysis_window(self))
-        self.action_Version.triggered.connect(lambda : show_version(self))
+        self.action_SeeOptions.triggered.connect(lambda : open_options_window(self))
+        self.action_Version.triggered.connect(lambda : show_version())
         # Original image options
         self.hs_SliceNumber.valueChanged.connect(lambda : slider_value_changed(self))
         self.cb_IncludeImage.stateChanged.connect(lambda : checkbox_state_changed(self))
         self.pb_Histogram.clicked.connect(lambda : call_histogram_window(self))
+        self.cb_Scale.stateChanged.connect(lambda : scale_checked(self))
         self.combob_FileName.activated.connect(lambda : combobox_changed(self))
         # Illumination
         self.le_RollingBallRadius.editingFinished.connect(lambda : input_rolling_ball_radius(self))
@@ -116,6 +139,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.le_ZThickness.editingFinished.connect(lambda : input_z_thickness(self))
         self.le_InterZ.editingFinished.connect(lambda : input_inter_z(self))
         self.le_PixelSize.editingFinished.connect(lambda : input_pixel_size(self))
+        self.le_PixelSize.textChanged.connect(lambda : scale_checked(self,False))
         self.pb_ResultsApplyToStacks.clicked.connect(lambda : apply_infos_to_stacks(self))
         self.pb_ResultsView.clicked.connect(lambda : view_results_page(self))
         self.pb_ResultsAll.clicked.connect(lambda : select_all(self))
@@ -175,6 +199,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.histogram_window.close()
         self.save_analysis_window.close()
         self.batch_analysis_window.close()
+        self.options_window.close()
         super().closeEvent(event)
 
     def clear_temp_repertory(self,temp_path):

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# This file is distributed under the terms of the GNU General Public License v3.0
-
 ################################################################################
 ## Form generated from reading UI file 'batch_analysis_window.ui'
 ##
@@ -20,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QGroupBox,
     QLabel, QLineEdit, QPushButton, QSizePolicy,
     QSpacerItem, QWidget)
-from resources import resources_rc
+import resources.resources_rc
 
 class Ui_BatchAnalysisWindow(object):
     def setupUi(self, BatchAnalysisWindow):
@@ -33,50 +31,12 @@ class Ui_BatchAnalysisWindow(object):
         BatchAnalysisWindow.setWindowIcon(icon)
         self.gridLayout_6 = QGridLayout(BatchAnalysisWindow)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.gb_Illumination = QGroupBox(BatchAnalysisWindow)
-        self.gb_Illumination.setObjectName(u"gb_Illumination")
-        self.gb_Illumination.setMinimumSize(QSize(340, 0))
-        font = QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        self.gb_Illumination.setFont(font)
-        self.gb_Illumination.setAlignment(Qt.AlignCenter)
-        self.gridLayout = QGridLayout(self.gb_Illumination)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.le_RollingBallRadius = QLineEdit(self.gb_Illumination)
-        self.le_RollingBallRadius.setObjectName(u"le_RollingBallRadius")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.le_RollingBallRadius.sizePolicy().hasHeightForWidth())
-        self.le_RollingBallRadius.setSizePolicy(sizePolicy)
-        self.le_RollingBallRadius.setMinimumSize(QSize(40, 0))
-        self.le_RollingBallRadius.setMaximumSize(QSize(40, 16777215))
-        font1 = QFont()
-        font1.setPointSize(12)
-        font1.setBold(False)
-        self.le_RollingBallRadius.setFont(font1)
-
-        self.gridLayout.addWidget(self.le_RollingBallRadius, 0, 1, 1, 1)
-
-        self.lb_RollingBallRadius = QLabel(self.gb_Illumination)
-        self.lb_RollingBallRadius.setObjectName(u"lb_RollingBallRadius")
-        self.lb_RollingBallRadius.setFont(font1)
-        self.lb_RollingBallRadius.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
-        self.lb_RollingBallRadius.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout.addWidget(self.lb_RollingBallRadius, 0, 0, 1, 1)
-
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer_4, 0, 2, 1, 1)
-
-
-        self.gridLayout_6.addWidget(self.gb_Illumination, 0, 0, 1, 2)
-
         self.gb_Segmentation = QGroupBox(BatchAnalysisWindow)
         self.gb_Segmentation.setObjectName(u"gb_Segmentation")
         self.gb_Segmentation.setMinimumSize(QSize(340, 0))
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
         self.gb_Segmentation.setFont(font)
         self.gb_Segmentation.setAlignment(Qt.AlignCenter)
         self.gridLayout_2 = QGridLayout(self.gb_Segmentation)
@@ -85,118 +45,69 @@ class Ui_BatchAnalysisWindow(object):
         self.combob_Threshold.addItem("")
         self.combob_Threshold.addItem("")
         self.combob_Threshold.setObjectName(u"combob_Threshold")
-        font2 = QFont()
-        font2.setPointSize(12)
-        font2.setBold(False)
-        font2.setUnderline(False)
-        self.combob_Threshold.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(12)
+        font1.setBold(False)
+        font1.setUnderline(False)
+        self.combob_Threshold.setFont(font1)
 
         self.gridLayout_2.addWidget(self.combob_Threshold, 0, 0, 1, 1)
 
         self.le_ThresholdOne = QLineEdit(self.gb_Segmentation)
         self.le_ThresholdOne.setObjectName(u"le_ThresholdOne")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.le_ThresholdOne.sizePolicy().hasHeightForWidth())
-        self.le_ThresholdOne.setSizePolicy(sizePolicy1)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.le_ThresholdOne.sizePolicy().hasHeightForWidth())
+        self.le_ThresholdOne.setSizePolicy(sizePolicy)
         self.le_ThresholdOne.setMinimumSize(QSize(40, 0))
         self.le_ThresholdOne.setMaximumSize(QSize(40, 16777215))
-        self.le_ThresholdOne.setFont(font2)
+        self.le_ThresholdOne.setFont(font1)
 
         self.gridLayout_2.addWidget(self.le_ThresholdOne, 0, 1, 1, 1)
 
         self.le_ThresholdTwo = QLineEdit(self.gb_Segmentation)
         self.le_ThresholdTwo.setObjectName(u"le_ThresholdTwo")
         self.le_ThresholdTwo.setEnabled(False)
-        sizePolicy1.setHeightForWidth(self.le_ThresholdTwo.sizePolicy().hasHeightForWidth())
-        self.le_ThresholdTwo.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.le_ThresholdTwo.sizePolicy().hasHeightForWidth())
+        self.le_ThresholdTwo.setSizePolicy(sizePolicy)
         self.le_ThresholdTwo.setMinimumSize(QSize(40, 0))
         self.le_ThresholdTwo.setMaximumSize(QSize(40, 16777215))
-        self.le_ThresholdTwo.setFont(font2)
+        self.le_ThresholdTwo.setFont(font1)
 
         self.gridLayout_2.addWidget(self.le_ThresholdTwo, 0, 2, 1, 1)
 
         self.combob_BlobsDetection = QComboBox(self.gb_Segmentation)
         self.combob_BlobsDetection.setObjectName(u"combob_BlobsDetection")
-        self.combob_BlobsDetection.setFont(font2)
+        self.combob_BlobsDetection.setFont(font1)
 
         self.gridLayout_2.addWidget(self.combob_BlobsDetection, 1, 0, 1, 1)
 
         self.le_BlobsDetectionMinimumRadius = QLineEdit(self.gb_Segmentation)
         self.le_BlobsDetectionMinimumRadius.setObjectName(u"le_BlobsDetectionMinimumRadius")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Ignored)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.le_BlobsDetectionMinimumRadius.sizePolicy().hasHeightForWidth())
-        self.le_BlobsDetectionMinimumRadius.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Ignored)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.le_BlobsDetectionMinimumRadius.sizePolicy().hasHeightForWidth())
+        self.le_BlobsDetectionMinimumRadius.setSizePolicy(sizePolicy1)
         self.le_BlobsDetectionMinimumRadius.setMinimumSize(QSize(40, 0))
         self.le_BlobsDetectionMinimumRadius.setMaximumSize(QSize(40, 16777215))
-        self.le_BlobsDetectionMinimumRadius.setFont(font2)
+        self.le_BlobsDetectionMinimumRadius.setFont(font1)
 
         self.gridLayout_2.addWidget(self.le_BlobsDetectionMinimumRadius, 1, 1, 1, 1)
 
         self.le_BlobsDetectionMaximumRadius = QLineEdit(self.gb_Segmentation)
         self.le_BlobsDetectionMaximumRadius.setObjectName(u"le_BlobsDetectionMaximumRadius")
-        sizePolicy1.setHeightForWidth(self.le_BlobsDetectionMaximumRadius.sizePolicy().hasHeightForWidth())
-        self.le_BlobsDetectionMaximumRadius.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.le_BlobsDetectionMaximumRadius.sizePolicy().hasHeightForWidth())
+        self.le_BlobsDetectionMaximumRadius.setSizePolicy(sizePolicy)
         self.le_BlobsDetectionMaximumRadius.setMinimumSize(QSize(40, 0))
         self.le_BlobsDetectionMaximumRadius.setMaximumSize(QSize(40, 16777215))
-        self.le_BlobsDetectionMaximumRadius.setFont(font2)
+        self.le_BlobsDetectionMaximumRadius.setFont(font1)
 
         self.gridLayout_2.addWidget(self.le_BlobsDetectionMaximumRadius, 1, 2, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.gb_Segmentation, 0, 2, 1, 3)
-
-        self.gb_Contours = QGroupBox(BatchAnalysisWindow)
-        self.gb_Contours.setObjectName(u"gb_Contours")
-        self.gb_Contours.setMinimumSize(QSize(340, 0))
-        self.gb_Contours.setFont(font)
-        self.gb_Contours.setFocusPolicy(Qt.NoFocus)
-        self.gb_Contours.setAlignment(Qt.AlignCenter)
-        self.gridLayout_4 = QGridLayout(self.gb_Contours)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.le_DensityMapKernelSize = QLineEdit(self.gb_Contours)
-        self.le_DensityMapKernelSize.setObjectName(u"le_DensityMapKernelSize")
-        sizePolicy.setHeightForWidth(self.le_DensityMapKernelSize.sizePolicy().hasHeightForWidth())
-        self.le_DensityMapKernelSize.setSizePolicy(sizePolicy)
-        self.le_DensityMapKernelSize.setMinimumSize(QSize(40, 0))
-        self.le_DensityMapKernelSize.setMaximumSize(QSize(40, 16777215))
-        self.le_DensityMapKernelSize.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.le_DensityMapKernelSize, 0, 5, 1, 1)
-
-        self.lb_Layers = QLabel(self.gb_Contours)
-        self.lb_Layers.setObjectName(u"lb_Layers")
-        self.lb_Layers.setFont(font1)
-        self.lb_Layers.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_4.addWidget(self.lb_Layers, 1, 3, 1, 1)
-
-        self.le_DensityTargetLayers = QLineEdit(self.gb_Contours)
-        self.le_DensityTargetLayers.setObjectName(u"le_DensityTargetLayers")
-        sizePolicy.setHeightForWidth(self.le_DensityTargetLayers.sizePolicy().hasHeightForWidth())
-        self.le_DensityTargetLayers.setSizePolicy(sizePolicy)
-        self.le_DensityTargetLayers.setMinimumSize(QSize(40, 0))
-        self.le_DensityTargetLayers.setMaximumSize(QSize(40, 16777215))
-        self.le_DensityTargetLayers.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.le_DensityTargetLayers, 1, 5, 1, 1)
-
-        self.lb_Kernel = QLabel(self.gb_Contours)
-        self.lb_Kernel.setObjectName(u"lb_Kernel")
-        self.lb_Kernel.setFont(font1)
-        self.lb_Kernel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_4.addWidget(self.lb_Kernel, 0, 3, 1, 1)
-
-        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer_7, 0, 6, 1, 1)
-
-
-        self.gridLayout_6.addWidget(self.gb_Contours, 2, 0, 1, 2)
+        self.gridLayout_6.addWidget(self.gb_Segmentation, 0, 3, 1, 3)
 
         self.gb_StackInfo = QGroupBox(BatchAnalysisWindow)
         self.gb_StackInfo.setObjectName(u"gb_StackInfo")
@@ -223,12 +134,15 @@ class Ui_BatchAnalysisWindow(object):
 
         self.le_PixelSize = QLineEdit(self.gb_StackInfo)
         self.le_PixelSize.setObjectName(u"le_PixelSize")
-        sizePolicy1.setHeightForWidth(self.le_PixelSize.sizePolicy().hasHeightForWidth())
-        self.le_PixelSize.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.le_PixelSize.sizePolicy().hasHeightForWidth())
+        self.le_PixelSize.setSizePolicy(sizePolicy)
         self.le_PixelSize.setMinimumSize(QSize(40, 26))
         self.le_PixelSize.setMaximumSize(QSize(40, 26))
         self.le_PixelSize.setBaseSize(QSize(40, 26))
-        self.le_PixelSize.setFont(font1)
+        font2 = QFont()
+        font2.setPointSize(12)
+        font2.setBold(False)
+        self.le_PixelSize.setFont(font2)
         self.le_PixelSize.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.le_PixelSize, 1, 7, 1, 1)
@@ -239,24 +153,24 @@ class Ui_BatchAnalysisWindow(object):
 
         self.le_ZThickness = QLineEdit(self.gb_StackInfo)
         self.le_ZThickness.setObjectName(u"le_ZThickness")
-        sizePolicy1.setHeightForWidth(self.le_ZThickness.sizePolicy().hasHeightForWidth())
-        self.le_ZThickness.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.le_ZThickness.sizePolicy().hasHeightForWidth())
+        self.le_ZThickness.setSizePolicy(sizePolicy)
         self.le_ZThickness.setMinimumSize(QSize(40, 26))
         self.le_ZThickness.setMaximumSize(QSize(40, 26))
         self.le_ZThickness.setBaseSize(QSize(40, 26))
-        self.le_ZThickness.setFont(font1)
+        self.le_ZThickness.setFont(font2)
         self.le_ZThickness.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.le_ZThickness, 1, 1, 1, 1)
 
         self.le_InterZ = QLineEdit(self.gb_StackInfo)
         self.le_InterZ.setObjectName(u"le_InterZ")
-        sizePolicy1.setHeightForWidth(self.le_InterZ.sizePolicy().hasHeightForWidth())
-        self.le_InterZ.setSizePolicy(sizePolicy1)
+        sizePolicy.setHeightForWidth(self.le_InterZ.sizePolicy().hasHeightForWidth())
+        self.le_InterZ.setSizePolicy(sizePolicy)
         self.le_InterZ.setMinimumSize(QSize(40, 26))
         self.le_InterZ.setMaximumSize(QSize(40, 26))
         self.le_InterZ.setBaseSize(QSize(40, 26))
-        self.le_InterZ.setFont(font1)
+        self.le_InterZ.setFont(font2)
         self.le_InterZ.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.le_InterZ, 1, 4, 1, 1)
@@ -268,7 +182,7 @@ class Ui_BatchAnalysisWindow(object):
         self.label_3 = QLabel(self.gb_StackInfo)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setMinimumSize(QSize(100, 0))
-        self.label_3.setFont(font1)
+        self.label_3.setFont(font2)
         self.label_3.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.label_3, 0, 6, 1, 3)
@@ -276,7 +190,7 @@ class Ui_BatchAnalysisWindow(object):
         self.label_2 = QLabel(self.gb_StackInfo)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setMinimumSize(QSize(100, 0))
-        self.label_2.setFont(font1)
+        self.label_2.setFont(font2)
         self.label_2.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.label_2, 0, 3, 1, 3)
@@ -284,23 +198,17 @@ class Ui_BatchAnalysisWindow(object):
         self.label = QLabel(self.gb_StackInfo)
         self.label.setObjectName(u"label")
         self.label.setMinimumSize(QSize(100, 0))
-        self.label.setFont(font1)
+        self.label.setFont(font2)
         self.label.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_7.addWidget(self.label, 0, 0, 1, 3)
 
 
-        self.gridLayout_6.addWidget(self.gb_StackInfo, 2, 2, 1, 3)
+        self.gridLayout_6.addWidget(self.gb_StackInfo, 2, 3, 1, 3)
 
-        self.pb_Cancel = QPushButton(BatchAnalysisWindow)
-        self.pb_Cancel.setObjectName(u"pb_Cancel")
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_6.addWidget(self.pb_Cancel, 3, 3, 1, 1)
-
-        self.pb_StartAnalysis = QPushButton(BatchAnalysisWindow)
-        self.pb_StartAnalysis.setObjectName(u"pb_StartAnalysis")
-
-        self.gridLayout_6.addWidget(self.pb_StartAnalysis, 3, 4, 1, 1)
+        self.gridLayout_6.addItem(self.horizontalSpacer_2, 3, 1, 1, 1)
 
         self.gb_Density = QGroupBox(BatchAnalysisWindow)
         self.gb_Density.setObjectName(u"gb_Density")
@@ -311,18 +219,21 @@ class Ui_BatchAnalysisWindow(object):
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.lb_BackgroundThreshold = QLabel(self.gb_Density)
         self.lb_BackgroundThreshold.setObjectName(u"lb_BackgroundThreshold")
-        self.lb_BackgroundThreshold.setFont(font1)
+        self.lb_BackgroundThreshold.setFont(font2)
         self.lb_BackgroundThreshold.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_5.addWidget(self.lb_BackgroundThreshold, 1, 0, 1, 1)
 
         self.le_BackgroundThreshold = QLineEdit(self.gb_Density)
         self.le_BackgroundThreshold.setObjectName(u"le_BackgroundThreshold")
-        sizePolicy.setHeightForWidth(self.le_BackgroundThreshold.sizePolicy().hasHeightForWidth())
-        self.le_BackgroundThreshold.setSizePolicy(sizePolicy)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.le_BackgroundThreshold.sizePolicy().hasHeightForWidth())
+        self.le_BackgroundThreshold.setSizePolicy(sizePolicy2)
         self.le_BackgroundThreshold.setMinimumSize(QSize(40, 0))
         self.le_BackgroundThreshold.setMaximumSize(QSize(35, 16777215))
-        self.le_BackgroundThreshold.setFont(font1)
+        self.le_BackgroundThreshold.setFont(font2)
 
         self.gridLayout_5.addWidget(self.le_BackgroundThreshold, 1, 1, 1, 1)
 
@@ -332,12 +243,75 @@ class Ui_BatchAnalysisWindow(object):
 
         self.combob_Contours = QComboBox(self.gb_Density)
         self.combob_Contours.setObjectName(u"combob_Contours")
-        self.combob_Contours.setFont(font1)
+        self.combob_Contours.setFont(font2)
 
         self.gridLayout_5.addWidget(self.combob_Contours, 0, 0, 1, 3)
 
 
-        self.gridLayout_6.addWidget(self.gb_Density, 1, 2, 1, 3)
+        self.gridLayout_6.addWidget(self.gb_Density, 1, 3, 1, 3)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_6.addItem(self.horizontalSpacer, 3, 3, 1, 1)
+
+        self.pb_StartAnalysis = QPushButton(BatchAnalysisWindow)
+        self.pb_StartAnalysis.setObjectName(u"pb_StartAnalysis")
+
+        self.gridLayout_6.addWidget(self.pb_StartAnalysis, 3, 5, 1, 1)
+
+        self.pb_Cancel = QPushButton(BatchAnalysisWindow)
+        self.pb_Cancel.setObjectName(u"pb_Cancel")
+
+        self.gridLayout_6.addWidget(self.pb_Cancel, 3, 0, 1, 1)
+
+        self.gb_Contours = QGroupBox(BatchAnalysisWindow)
+        self.gb_Contours.setObjectName(u"gb_Contours")
+        self.gb_Contours.setMinimumSize(QSize(340, 0))
+        self.gb_Contours.setFont(font)
+        self.gb_Contours.setFocusPolicy(Qt.NoFocus)
+        self.gb_Contours.setAlignment(Qt.AlignCenter)
+        self.gridLayout_4 = QGridLayout(self.gb_Contours)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.le_DensityMapKernelSize = QLineEdit(self.gb_Contours)
+        self.le_DensityMapKernelSize.setObjectName(u"le_DensityMapKernelSize")
+        sizePolicy2.setHeightForWidth(self.le_DensityMapKernelSize.sizePolicy().hasHeightForWidth())
+        self.le_DensityMapKernelSize.setSizePolicy(sizePolicy2)
+        self.le_DensityMapKernelSize.setMinimumSize(QSize(40, 0))
+        self.le_DensityMapKernelSize.setMaximumSize(QSize(40, 16777215))
+        self.le_DensityMapKernelSize.setFont(font2)
+
+        self.gridLayout_4.addWidget(self.le_DensityMapKernelSize, 0, 5, 1, 1)
+
+        self.lb_Layers = QLabel(self.gb_Contours)
+        self.lb_Layers.setObjectName(u"lb_Layers")
+        self.lb_Layers.setFont(font2)
+        self.lb_Layers.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_4.addWidget(self.lb_Layers, 1, 3, 1, 1)
+
+        self.le_DensityTargetLayers = QLineEdit(self.gb_Contours)
+        self.le_DensityTargetLayers.setObjectName(u"le_DensityTargetLayers")
+        sizePolicy2.setHeightForWidth(self.le_DensityTargetLayers.sizePolicy().hasHeightForWidth())
+        self.le_DensityTargetLayers.setSizePolicy(sizePolicy2)
+        self.le_DensityTargetLayers.setMinimumSize(QSize(40, 0))
+        self.le_DensityTargetLayers.setMaximumSize(QSize(40, 16777215))
+        self.le_DensityTargetLayers.setFont(font2)
+
+        self.gridLayout_4.addWidget(self.le_DensityTargetLayers, 1, 5, 1, 1)
+
+        self.lb_Kernel = QLabel(self.gb_Contours)
+        self.lb_Kernel.setObjectName(u"lb_Kernel")
+        self.lb_Kernel.setFont(font2)
+        self.lb_Kernel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_4.addWidget(self.lb_Kernel, 0, 3, 1, 1)
+
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer_7, 0, 6, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.gb_Contours, 2, 0, 1, 3)
 
         self.gb_Labeling = QGroupBox(BatchAnalysisWindow)
         self.gb_Labeling.setObjectName(u"gb_Labeling")
@@ -348,18 +322,18 @@ class Ui_BatchAnalysisWindow(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.lb_SieveSize = QLabel(self.gb_Labeling)
         self.lb_SieveSize.setObjectName(u"lb_SieveSize")
-        self.lb_SieveSize.setFont(font1)
+        self.lb_SieveSize.setFont(font2)
         self.lb_SieveSize.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_3.addWidget(self.lb_SieveSize, 1, 0, 1, 1)
 
         self.le_SieveSize = QLineEdit(self.gb_Labeling)
         self.le_SieveSize.setObjectName(u"le_SieveSize")
-        sizePolicy.setHeightForWidth(self.le_SieveSize.sizePolicy().hasHeightForWidth())
-        self.le_SieveSize.setSizePolicy(sizePolicy)
+        sizePolicy2.setHeightForWidth(self.le_SieveSize.sizePolicy().hasHeightForWidth())
+        self.le_SieveSize.setSizePolicy(sizePolicy2)
         self.le_SieveSize.setMinimumSize(QSize(40, 0))
         self.le_SieveSize.setMaximumSize(QSize(40, 16777215))
-        self.le_SieveSize.setFont(font1)
+        self.le_SieveSize.setFont(font2)
 
         self.gridLayout_3.addWidget(self.le_SieveSize, 1, 1, 1, 1)
 
@@ -369,20 +343,49 @@ class Ui_BatchAnalysisWindow(object):
 
         self.combob_LabelingOption = QComboBox(self.gb_Labeling)
         self.combob_LabelingOption.setObjectName(u"combob_LabelingOption")
-        self.combob_LabelingOption.setFont(font1)
+        self.combob_LabelingOption.setFont(font2)
 
         self.gridLayout_3.addWidget(self.combob_LabelingOption, 0, 0, 1, 3)
 
 
-        self.gridLayout_6.addWidget(self.gb_Labeling, 1, 0, 1, 2)
+        self.gridLayout_6.addWidget(self.gb_Labeling, 1, 0, 1, 3)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.gb_Illumination = QGroupBox(BatchAnalysisWindow)
+        self.gb_Illumination.setObjectName(u"gb_Illumination")
+        self.gb_Illumination.setMinimumSize(QSize(340, 0))
+        self.gb_Illumination.setFont(font)
+        self.gb_Illumination.setAlignment(Qt.AlignCenter)
+        self.gridLayout = QGridLayout(self.gb_Illumination)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.le_RollingBallRadius = QLineEdit(self.gb_Illumination)
+        self.le_RollingBallRadius.setObjectName(u"le_RollingBallRadius")
+        sizePolicy2.setHeightForWidth(self.le_RollingBallRadius.sizePolicy().hasHeightForWidth())
+        self.le_RollingBallRadius.setSizePolicy(sizePolicy2)
+        self.le_RollingBallRadius.setMinimumSize(QSize(40, 0))
+        self.le_RollingBallRadius.setMaximumSize(QSize(40, 16777215))
+        self.le_RollingBallRadius.setFont(font2)
 
-        self.gridLayout_6.addItem(self.horizontalSpacer, 3, 2, 1, 1)
+        self.gridLayout.addWidget(self.le_RollingBallRadius, 0, 1, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.lb_RollingBallRadius = QLabel(self.gb_Illumination)
+        self.lb_RollingBallRadius.setObjectName(u"lb_RollingBallRadius")
+        self.lb_RollingBallRadius.setFont(font2)
+        self.lb_RollingBallRadius.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
+        self.lb_RollingBallRadius.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_6.addItem(self.horizontalSpacer_2, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.lb_RollingBallRadius, 0, 0, 1, 1)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer_4, 0, 2, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.gb_Illumination, 0, 0, 1, 3)
+
+        self.pb_DefaultOptions = QPushButton(BatchAnalysisWindow)
+        self.pb_DefaultOptions.setObjectName(u"pb_DefaultOptions")
+
+        self.gridLayout_6.addWidget(self.pb_DefaultOptions, 3, 4, 1, 1)
 
         QWidget.setTabOrder(self.le_RollingBallRadius, self.combob_Threshold)
         QWidget.setTabOrder(self.combob_Threshold, self.le_ThresholdOne)
@@ -400,7 +403,6 @@ class Ui_BatchAnalysisWindow(object):
         QWidget.setTabOrder(self.le_ZThickness, self.le_InterZ)
         QWidget.setTabOrder(self.le_InterZ, self.le_PixelSize)
         QWidget.setTabOrder(self.le_PixelSize, self.pb_StartAnalysis)
-        QWidget.setTabOrder(self.pb_StartAnalysis, self.pb_Cancel)
 
         self.retranslateUi(BatchAnalysisWindow)
 
@@ -409,20 +411,6 @@ class Ui_BatchAnalysisWindow(object):
 
     def retranslateUi(self, BatchAnalysisWindow):
         BatchAnalysisWindow.setWindowTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Batch analysis", None))
-        self.gb_Illumination.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Illumination", None))
-#if QT_CONFIG(tooltip)
-        self.le_RollingBallRadius.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the rolling ball radius in pixels", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.lb_RollingBallRadius.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the rolling ball radius in pixels", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        self.lb_RollingBallRadius.setStatusTip("")
-#endif // QT_CONFIG(statustip)
-#if QT_CONFIG(whatsthis)
-        self.lb_RollingBallRadius.setWhatsThis("")
-#endif // QT_CONFIG(whatsthis)
-        self.lb_RollingBallRadius.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Rolling ball radius", None))
         self.gb_Segmentation.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Segmentation", None))
         self.combob_Threshold.setItemText(0, QCoreApplication.translate("BatchAnalysisWindow", u"One threshold", None))
         self.combob_Threshold.setItemText(1, QCoreApplication.translate("BatchAnalysisWindow", u"Two thresholds", None))
@@ -450,23 +438,6 @@ class Ui_BatchAnalysisWindow(object):
         self.le_BlobsDetectionMaximumRadius.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the maximum value of the blobs radius in pixels. Bigger blobs won't be detected.", None))
 #endif // QT_CONFIG(tooltip)
         self.le_BlobsDetectionMaximumRadius.setText(QCoreApplication.translate("BatchAnalysisWindow", u"max", None))
-        self.gb_Contours.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Density", None))
-#if QT_CONFIG(tooltip)
-        self.le_DensityMapKernelSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
-#endif // QT_CONFIG(tooltip)
-        self.le_DensityMapKernelSize.setText("")
-#if QT_CONFIG(tooltip)
-        self.lb_Layers.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
-#endif // QT_CONFIG(tooltip)
-        self.lb_Layers.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Target layers", None))
-#if QT_CONFIG(tooltip)
-        self.le_DensityTargetLayers.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
-#endif // QT_CONFIG(tooltip)
-        self.le_DensityTargetLayers.setText("")
-#if QT_CONFIG(tooltip)
-        self.lb_Kernel.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
-#endif // QT_CONFIG(tooltip)
-        self.lb_Kernel.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Map kernel size", None))
         self.gb_StackInfo.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Stack informations", None))
 #if QT_CONFIG(tooltip)
         self.le_PixelSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the size of a pixel. Choose the same unit for the 3 parameters in the results section.", None))
@@ -492,8 +463,6 @@ class Ui_BatchAnalysisWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Slice\n"
 "thickness", None))
-        self.pb_Cancel.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Cancel", None))
-        self.pb_StartAnalysis.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Start analysis", None))
         self.gb_Density.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Contours", None))
 #if QT_CONFIG(tooltip)
         self.lb_BackgroundThreshold.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
@@ -502,6 +471,25 @@ class Ui_BatchAnalysisWindow(object):
 #if QT_CONFIG(tooltip)
         self.le_BackgroundThreshold.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
 #endif // QT_CONFIG(tooltip)
+        self.pb_StartAnalysis.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Start analysis", None))
+        self.pb_Cancel.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Cancel", None))
+        self.gb_Contours.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Density", None))
+#if QT_CONFIG(tooltip)
+        self.le_DensityMapKernelSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
+#endif // QT_CONFIG(tooltip)
+        self.le_DensityMapKernelSize.setText("")
+#if QT_CONFIG(tooltip)
+        self.lb_Layers.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
+#endif // QT_CONFIG(tooltip)
+        self.lb_Layers.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Target layers", None))
+#if QT_CONFIG(tooltip)
+        self.le_DensityTargetLayers.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
+#endif // QT_CONFIG(tooltip)
+        self.le_DensityTargetLayers.setText("")
+#if QT_CONFIG(tooltip)
+        self.lb_Kernel.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
+#endif // QT_CONFIG(tooltip)
+        self.lb_Kernel.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Map kernel size", None))
         self.gb_Labeling.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Labeling", None))
 #if QT_CONFIG(tooltip)
         self.lb_SieveSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the size of the sieve in pixels. Objects with a size strictly above the sieve size will be kept.", None))
@@ -513,5 +501,20 @@ class Ui_BatchAnalysisWindow(object):
 #if QT_CONFIG(tooltip)
         self.combob_LabelingOption.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Choose the labeling option.", None))
 #endif // QT_CONFIG(tooltip)
+        self.gb_Illumination.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Illumination", None))
+#if QT_CONFIG(tooltip)
+        self.le_RollingBallRadius.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the rolling ball radius in pixels", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.lb_RollingBallRadius.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the rolling ball radius in pixels", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(statustip)
+        self.lb_RollingBallRadius.setStatusTip("")
+#endif // QT_CONFIG(statustip)
+#if QT_CONFIG(whatsthis)
+        self.lb_RollingBallRadius.setWhatsThis("")
+#endif // QT_CONFIG(whatsthis)
+        self.lb_RollingBallRadius.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Rolling ball radius", None))
+        self.pb_DefaultOptions.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Default options", None))
     # retranslateUi
 

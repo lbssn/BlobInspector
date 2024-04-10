@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# This file is distributed under the terms of the GNU General Public License v3.0
-
 ################################################################################
 ## Form generated from reading UI file 'app.ui'
 ##
@@ -25,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QSlider, QSpacerItem, QStackedWidget, QStatusBar,
     QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
     QWidget)
-from resources import resources_rc
+import resources.resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -608,6 +606,14 @@ class Ui_MainWindow(object):
         self.wi_OriginalText.setBaseSize(QSize(0, 0))
         self.layout_Text_Original = QGridLayout(self.wi_OriginalText)
         self.layout_Text_Original.setObjectName(u"layout_Text_Original")
+        self.pb_Histogram = QPushButton(self.wi_OriginalText)
+        self.pb_Histogram.setObjectName(u"pb_Histogram")
+        font7 = QFont()
+        font7.setPointSize(10)
+        self.pb_Histogram.setFont(font7)
+
+        self.layout_Text_Original.addWidget(self.pb_Histogram, 2, 6, 1, 1)
+
         self.lb_SliceNumber = QLabel(self.wi_OriginalText)
         self.lb_SliceNumber.setObjectName(u"lb_SliceNumber")
         sizePolicy5.setHeightForWidth(self.lb_SliceNumber.sizePolicy().hasHeightForWidth())
@@ -635,18 +641,16 @@ class Ui_MainWindow(object):
 
         self.layout_Text_Original.addWidget(self.hs_SliceNumber, 2, 0, 1, 4)
 
-        self.pb_Histogram = QPushButton(self.wi_OriginalText)
-        self.pb_Histogram.setObjectName(u"pb_Histogram")
-        font7 = QFont()
-        font7.setPointSize(10)
-        self.pb_Histogram.setFont(font7)
+        self.cb_Scale = QCheckBox(self.wi_OriginalText)
+        self.cb_Scale.setObjectName(u"cb_Scale")
+        self.cb_Scale.setLayoutDirection(Qt.RightToLeft)
 
-        self.layout_Text_Original.addWidget(self.pb_Histogram, 2, 6, 1, 1)
+        self.layout_Text_Original.addWidget(self.cb_Scale, 2, 7, 1, 1)
 
         self.combob_FileName = QComboBox(self.wi_OriginalText)
         self.combob_FileName.setObjectName(u"combob_FileName")
 
-        self.layout_Text_Original.addWidget(self.combob_FileName, 0, 0, 1, 7)
+        self.layout_Text_Original.addWidget(self.combob_FileName, 0, 0, 1, 8)
 
 
         self.gridLayout_6.addWidget(self.wi_OriginalText, 0, 0, 1, 1)
@@ -841,7 +845,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1218, 262))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 88, 88))
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.tw_Count = QTableWidget(self.scrollAreaWidgetContents)
@@ -863,7 +867,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 1218, 262))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 88, 88))
         self.verticalLayout_5 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.tw_Density = QTableWidget(self.scrollAreaWidgetContents_2)
@@ -885,7 +889,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 1218, 262))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 1220, 267))
         self.verticalLayout_6 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.tw_Distance = QTableWidget(self.scrollAreaWidgetContents_3)
@@ -1027,7 +1031,7 @@ class Ui_MainWindow(object):
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setEnabled(True)
-        self.menubar.setGeometry(QRect(0, 0, 1280, 27))
+        self.menubar.setGeometry(QRect(0, 0, 1280, 23))
         self.menu_File = QMenu(self.menubar)
         self.menu_File.setObjectName(u"menu_File")
         self.menu_Options = QMenu(self.menubar)
@@ -1118,7 +1122,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.sw_Data.setCurrentIndex(1)
+        self.sw_Data.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(2)
 
 
@@ -1175,7 +1179,7 @@ class Ui_MainWindow(object):
         self.lb_RollingBallRadius.setText(QCoreApplication.translate("MainWindow", u"Rolling ball radius", None))
         self.pb_RollingBallRadiusToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
 #if QT_CONFIG(tooltip)
-        self.gb_Segmentation.setToolTip(QCoreApplication.translate("MainWindow", u"Segment objects based on threshold(s) value(s) (compulsory) and blobs detection algorithms (optional).", None))
+        self.gb_Segmentation.setToolTip(QCoreApplication.translate("MainWindow", u"Segment objects (blobs) based on threshold(s) value(s) (compulsory) and blobs detection algorithms (optional).", None))
 #endif // QT_CONFIG(tooltip)
         self.gb_Segmentation.setTitle(QCoreApplication.translate("MainWindow", u"SEGMENTATION", None))
         self.pb_SegmentationToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
@@ -1208,7 +1212,7 @@ class Ui_MainWindow(object):
         self.combob_BlobsDetection.setToolTip(QCoreApplication.translate("MainWindow", u"Laplacian of Gaussian (LoG), Difference of Gaussian (DoG), Determinant of Hessian (DoH)", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
-        self.gb_Labeling.setToolTip(QCoreApplication.translate("MainWindow", u"Separate connected objects using the watershed algorithm.", None))
+        self.gb_Labeling.setToolTip(QCoreApplication.translate("MainWindow", u"Identifies individual objects (blobs) with or without watershed algorithm.", None))
 #endif // QT_CONFIG(tooltip)
         self.gb_Labeling.setTitle(QCoreApplication.translate("MainWindow", u"LABELING", None))
 #if QT_CONFIG(tooltip)
@@ -1231,9 +1235,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.pb_LabelingView.setText(QCoreApplication.translate("MainWindow", u"View", None))
 #if QT_CONFIG(tooltip)
-        self.gb_Contours.setToolTip(QCoreApplication.translate("MainWindow", u"Determine the contour of an object. ", None))
+        self.gb_Contours.setToolTip(QCoreApplication.translate("MainWindow", u"Determine the contour of the object containing the blobs. ", None))
 #endif // QT_CONFIG(tooltip)
-        self.gb_Contours.setTitle(QCoreApplication.translate("MainWindow", u"CELLS CONTOURS", None))
+        self.gb_Contours.setTitle(QCoreApplication.translate("MainWindow", u"SHAPE CONTOURS", None))
         self.pb_ContoursToStack.setText(QCoreApplication.translate("MainWindow", u"Apply to stack", None))
         self.pb_ContoursToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
 #if QT_CONFIG(tooltip)
@@ -1241,6 +1245,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.lb_BackgroundThreshold.setText(QCoreApplication.translate("MainWindow", u"Background threshold", None))
         self.pb_ContoursView.setText(QCoreApplication.translate("MainWindow", u"View", None))
+#if QT_CONFIG(tooltip)
+        self.combob_Contours.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the algorithm to contour the object containing the blobs.", None))
+#endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.le_BackgroundThreshold.setToolTip(QCoreApplication.translate("MainWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
 #endif // QT_CONFIG(tooltip)
@@ -1304,6 +1311,10 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(statustip)
         self.pb_ResultsApplyToStacks.setText(QCoreApplication.translate("MainWindow", u"Apply to stacks", None))
 #if QT_CONFIG(tooltip)
+        self.pb_Histogram.setToolTip(QCoreApplication.translate("MainWindow", u"Call a window with the histogram of the image(s).", None))
+#endif // QT_CONFIG(tooltip)
+        self.pb_Histogram.setText(QCoreApplication.translate("MainWindow", u"Histogram", None))
+#if QT_CONFIG(tooltip)
         self.lb_SliceNumber.setToolTip(QCoreApplication.translate("MainWindow", u"Slice in the stack.", None))
 #endif // QT_CONFIG(tooltip)
         self.lb_SliceNumber.setText("")
@@ -1315,9 +1326,9 @@ class Ui_MainWindow(object):
         self.hs_SliceNumber.setToolTip(QCoreApplication.translate("MainWindow", u"Slice in the stack.", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
-        self.pb_Histogram.setToolTip(QCoreApplication.translate("MainWindow", u"Call a window with the histogram of the image(s).", None))
+        self.cb_Scale.setToolTip(QCoreApplication.translate("MainWindow", u"Will display a scale on images provided scale options and pixel size are input.", None))
 #endif // QT_CONFIG(tooltip)
-        self.pb_Histogram.setText(QCoreApplication.translate("MainWindow", u"Histogram", None))
+        self.cb_Scale.setText(QCoreApplication.translate("MainWindow", u"Scale", None))
 #if QT_CONFIG(tooltip)
         self.combob_FileName.setToolTip(QCoreApplication.translate("MainWindow", u"Filename.", None))
 #endif // QT_CONFIG(tooltip)
@@ -1362,7 +1373,7 @@ class Ui_MainWindow(object):
         self.combob_DensityDisplay.setItemText(1, QCoreApplication.translate("MainWindow", u"Count", None))
 
 #if QT_CONFIG(tooltip)
-        self.combob_DensityDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Choose between the percentage of pixel with blobs or the count of blob centroids.", None))
+        self.combob_DensityDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Choose between the percentage of pixels with blobs or the count of blob centroids.", None))
 #endif // QT_CONFIG(tooltip)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), QCoreApplication.translate("MainWindow", u"Count", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Density", None))

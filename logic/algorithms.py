@@ -302,7 +302,11 @@ def calculate_contours_centroid(image):
 
 def return_colormaps():
     '''Returns the list of the colormaps so that they can be added in the proper combobox'''
-    return ["afmhot","autumn","bone","cividis","cool","copper","gist_gray","gist_heat","gray","hot","inferno","magma","plasma","spring","summer","viridis","winter","Wistia"]
+    return ["afmhot","autumn","bone","cividis","cool","coolwarm","copper","gist_gray","gist_heat","gray","hot","inferno","magma","plasma","rainbow","seismic","spring","summer","viridis","winter","Wistia"]
+
+def return_colors_dictionnary():
+    '''Returns a dictionnary with colors as keys and their corresponding rgb values'''
+    return {"blue":[0,0,255],"cyan":[0,255,255],"green":[0,255,0],"magenta":[255,0,255],"orange":[255,165,0],"pink":[255,192,203],"red":[255,0,0],"royalblue":[65,105,225],"yellow":[255,255,0],"white":[255,255,255]}
 
 def get_target(mask_thresh, mask_contour, nb_layers, centroid_y, centroid_x):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour in concentric regions
