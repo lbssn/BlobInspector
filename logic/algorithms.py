@@ -173,10 +173,17 @@ def mean_median_size(labels):
     if len(labels) == 0:
         return 0,0
     nb_labels = max(labels)+1
-    sizes = []
     sizes = [labels.count(i) for i in range(nb_labels)]
     return round(np.mean(sizes),2),round(np.median(sizes),2)
 
+def mean_median_min_max_size(labels):
+    '''Calculates the mean, the median, the minimum and the maximum size of a list of labels
+    labels: the list of labels for the calculation'''
+    if len(labels) == 0:
+        return 0,0
+    nb_labels = max(labels)+1
+    sizes = [labels.count(i) for i in range(nb_labels)]
+    return round(np.mean(sizes),2),round(np.median(sizes),2),round(np.min(sizes),2),round(np.max(sizes),2)
 
 def return_contouring_algorithms():
     '''Returns the list of the contouring algorithms so that they can be added in the proper combobox'''
@@ -333,35 +340,41 @@ def get_target(mask_thresh, mask_contour, nb_layers, centroid_y, centroid_x):
         image[coordinates[0][mask], coordinates[1][mask]] = density
     return image
 
-def get_targets(mask_thresh, mask_contour,mask_centroids,nb_layers, centroid_y, centroid_x):
+def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroid_y, centroid_x):
     '''Calculates the percentage of pixels and their count in mask_thresh compared to mask_contour in concentric regions
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
-    mask_centroid: a binary image with the centroids of the blobs
+    centroid_size_image: an image with the size of the blobs as value at the centroid coordinates'
     nb_layers: number of concentric regions
     centroid_y: y coordinates of the contoured object in mask_contour
     centroid_x: x coordinates of the contoured object in mask_contour
     Return:
     image_percentage: a heatmap with the percentage as pixel value
-    image_count: a heatmap with the count of blobs as pixel value'''
+    image_count: a heatmap with the count of blobs as pixel value
+    image_size: a heatmap with the mean size of blobs as pixel value'''
     coordinates = np.where(mask_contour)
     distances_to_centroid = np.sqrt((coordinates[1] - centroid_x)**2 + (coordinates[0] - centroid_y)**2)
     max_distance = np.max(distances_to_centroid)
     layer_thickness_list = np.linspace (0,max_distance,num=nb_layers+1)
     image_percentage=np.zeros_like(mask_thresh, dtype=np.float32)
     image_count=np.zeros_like(mask_thresh, dtype=np.float32)
+    image_size=np.zeros_like(mask_thresh, dtype=np.float32)
+    mask_centroids = centroid_size_image > 0
     for i in range(nb_layers):
         mask = (layer_thickness_list[i] < distances_to_centroid) & (distances_to_centroid <= layer_thickness_list[i+1])
         th = np.sum(mask_thresh[coordinates[0][mask], coordinates[1][mask]])
         cont = np.sum(mask_contour[coordinates[0][mask], coordinates[1][mask]])
         centroids_sum = np.sum(mask_centroids[coordinates[0][mask], coordinates[1][mask]])
+        size_sum = np.sum(centroid_size_image[coordinates[0][mask], coordinates[1][mask]])
         if cont != 0:
             density = th / cont * 100
         else:
             density = 0
         image_percentage[coordinates[0][mask], coordinates[1][mask]] = density
         image_count[coordinates[0][mask], coordinates[1][mask]] = centroids_sum
-    return image_percentage, image_count
+        if centroids_sum > 0:
+            image_size[coordinates[0][mask], coordinates[1][mask]] = size_sum / centroids_sum
+    return image_percentage, image_count, image_size
 
 def density_map(mask_thresh, mask_contour, kernel_size):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour with a convolution
@@ -386,19 +399,22 @@ def density_map(mask_thresh, mask_contour, kernel_size):
                     density_map[y][x]=th/cont*100
     return density_map
 
-def density_maps(mask_thresh, mask_contour, mask_centroids, kernel_size):
+def density_maps(mask_thresh, mask_contour, centroid_size_image, kernel_size):
     '''Calculates the percentage of pixels and the count of blobs in mask_thresh compared to mask_contour with a convolution
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
-    mask_centroid: a binary image with the centroids of the blobs
+    centroid_size_image: an image with the size of the blobs as value at the centroid coordinates'
     kernel_size: the size of the kernel in pixels (preferably an odd number)
     Return:
     density_map_percentage: a heatmap with the percentage as pixel value
-    density_map_count: a heatmap with the count of blobs as pixel value'''
+    density_map_count: a heatmap with the count of blobs as pixel value
+    density_map_size: a heatmap with the mean size of blobs as pixel value'''
     half_kernel = int((kernel_size-1)/2)
     height,width = mask_thresh.shape
     density_map_percentage = np.zeros_like(mask_thresh,dtype=np.float32)
     density_map_count = np.zeros_like(mask_thresh,dtype=np.float32)
+    density_map_size = np.zeros_like(mask_thresh,dtype=np.float32)
+    mask_centroids = centroid_size_image > 0
     for y in range(height):
         for x in range(width):
             if mask_contour[y,x]:
@@ -409,10 +425,13 @@ def density_maps(mask_thresh, mask_contour, mask_centroids, kernel_size):
                 th=np.sum(mask_thresh[ymin:ymax,xmin:xmax])
                 cont=np.sum(mask_contour[ymin:ymax,xmin:xmax])
                 centroids_count=np.sum(mask_centroids[ymin:ymax,xmin:xmax])
+                size_count=np.sum(centroid_size_image[ymin:ymax,xmin:xmax])
                 if cont>0:
                     density_map_percentage[y,x]=th/cont*100
                 density_map_count[y,x] = centroids_count
-    return density_map_percentage, density_map_count
+                if centroids_count > 0:
+                    density_map_size[y,x] = size_count / centroids_count
+    return density_map_percentage, density_map_count, density_map_size
 
 def min_max_mean_SD_density(d_map,mask_contour):
     '''Returns the minimal, maximal, mean and the standard deviation of the density in a heatmap
@@ -449,6 +468,23 @@ def calculate_centroids_sizes(dots,labels):
         size = len(label_coordinates)
         centroidsAndSizes.append([centroid[0],centroid[1],size])
     return np.array(centroidsAndSizes)
+
+def calculate_centroids_sizes_image(dots,labels,image):
+    '''Calculates the y and x coordinates of labeled objects as well as their size in pixels
+    Parameters:
+    dots: list of the coordinates of the True pixels in the binary image
+    labels: list of the labels for each coordinate in dots (the first label has the value 0)
+    image: an image of the same size as the desired returned image 
+    Return:
+    An image with the size of the blobs as value at the centroid coordinates'''
+    unique_labels = np.unique(labels)
+    centroid_size_image = np.zeros_like(image, dtype=float)
+    for label in unique_labels:
+        label_coordinates = [dots[i] for i in range(len(labels)) if labels[i] == label]
+        centroid = np.mean(label_coordinates, axis=0)
+        size = len(label_coordinates)
+        centroid_size_image[int(centroid[0]),int(centroid[1])] = size
+    return centroid_size_image
 
 def calculate_centroids(dots,labels):
     '''Calculates the y and x coordinates of labeled objects

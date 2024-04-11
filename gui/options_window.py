@@ -1,3 +1,5 @@
+# This file is distributed under the terms of the GNU General Public License v3.0
+
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor

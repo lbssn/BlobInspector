@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# This file is distributed under the terms of the GNU General Public License v3.0
+
 ################################################################################
 ## Form generated from reading UI file 'app.ui'
 ##
@@ -781,6 +783,7 @@ class Ui_MainWindow(object):
         self.combob_DensityDisplay = QComboBox(self.wi_Image1Text)
         self.combob_DensityDisplay.addItem("")
         self.combob_DensityDisplay.addItem("")
+        self.combob_DensityDisplay.addItem("")
         self.combob_DensityDisplay.setObjectName(u"combob_DensityDisplay")
         self.combob_DensityDisplay.setMinimumSize(QSize(100, 0))
         self.combob_DensityDisplay.setMaximumSize(QSize(200, 16777215))
@@ -845,7 +848,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 88, 88))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 1220, 267))
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.tw_Count = QTableWidget(self.scrollAreaWidgetContents)
@@ -867,7 +870,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 88, 88))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 1220, 267))
         self.verticalLayout_5 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.tw_Density = QTableWidget(self.scrollAreaWidgetContents_2)
@@ -911,11 +914,11 @@ class Ui_MainWindow(object):
         self.gb_ResultsChoice.setAlignment(Qt.AlignCenter)
         self.gridLayout_8 = QGridLayout(self.gb_ResultsChoice)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
-        self.cb_ResultsCount = QCheckBox(self.gb_ResultsChoice)
-        self.cb_ResultsCount.setObjectName(u"cb_ResultsCount")
-        self.cb_ResultsCount.setFont(font3)
+        self.cb_ResultsDistanceSpecificCentroid = QCheckBox(self.gb_ResultsChoice)
+        self.cb_ResultsDistanceSpecificCentroid.setObjectName(u"cb_ResultsDistanceSpecificCentroid")
+        self.cb_ResultsDistanceSpecificCentroid.setFont(font3)
 
-        self.gridLayout_8.addWidget(self.cb_ResultsCount, 0, 2, 1, 1)
+        self.gridLayout_8.addWidget(self.cb_ResultsDistanceSpecificCentroid, 0, 6, 1, 1)
 
         self.cb_ResultsDensityCount = QCheckBox(self.gb_ResultsChoice)
         self.cb_ResultsDensityCount.setObjectName(u"cb_ResultsDensityCount")
@@ -932,18 +935,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_8.addWidget(self.pb_ResultsNone, 0, 1, 1, 1)
 
-        self.cb_ResultsDistanceSpecificCentroid = QCheckBox(self.gb_ResultsChoice)
-        self.cb_ResultsDistanceSpecificCentroid.setObjectName(u"cb_ResultsDistanceSpecificCentroid")
-        self.cb_ResultsDistanceSpecificCentroid.setFont(font3)
-
-        self.gridLayout_8.addWidget(self.cb_ResultsDistanceSpecificCentroid, 0, 5, 1, 1)
-
-        self.cb_ResultsDistanceOwnCentroid = QCheckBox(self.gb_ResultsChoice)
-        self.cb_ResultsDistanceOwnCentroid.setObjectName(u"cb_ResultsDistanceOwnCentroid")
-        self.cb_ResultsDistanceOwnCentroid.setFont(font3)
-
-        self.gridLayout_8.addWidget(self.cb_ResultsDistanceOwnCentroid, 0, 7, 1, 1)
-
         self.pb_ResultsAll = QPushButton(self.gb_ResultsChoice)
         self.pb_ResultsAll.setObjectName(u"pb_ResultsAll")
         self.pb_ResultsAll.setMinimumSize(QSize(50, 0))
@@ -953,11 +944,29 @@ class Ui_MainWindow(object):
 
         self.gridLayout_8.addWidget(self.pb_ResultsAll, 0, 0, 1, 1)
 
+        self.cb_ResultsCount = QCheckBox(self.gb_ResultsChoice)
+        self.cb_ResultsCount.setObjectName(u"cb_ResultsCount")
+        self.cb_ResultsCount.setFont(font3)
+
+        self.gridLayout_8.addWidget(self.cb_ResultsCount, 0, 2, 1, 1)
+
+        self.cb_ResultsDistanceOwnCentroid = QCheckBox(self.gb_ResultsChoice)
+        self.cb_ResultsDistanceOwnCentroid.setObjectName(u"cb_ResultsDistanceOwnCentroid")
+        self.cb_ResultsDistanceOwnCentroid.setFont(font3)
+
+        self.gridLayout_8.addWidget(self.cb_ResultsDistanceOwnCentroid, 0, 8, 1, 1)
+
         self.cb_ResultsDensityPercentage = QCheckBox(self.gb_ResultsChoice)
         self.cb_ResultsDensityPercentage.setObjectName(u"cb_ResultsDensityPercentage")
         self.cb_ResultsDensityPercentage.setFont(font3)
 
         self.gridLayout_8.addWidget(self.cb_ResultsDensityPercentage, 0, 3, 1, 1)
+
+        self.cb_ResultsDensitySize = QCheckBox(self.gb_ResultsChoice)
+        self.cb_ResultsDensitySize.setObjectName(u"cb_ResultsDensitySize")
+        self.cb_ResultsDensitySize.setFont(font3)
+
+        self.gridLayout_8.addWidget(self.cb_ResultsDensitySize, 0, 5, 1, 1)
 
 
         self.verticalLayout_4.addWidget(self.gb_ResultsChoice)
@@ -1122,7 +1131,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.sw_Data.setCurrentIndex(0)
+        self.sw_Data.setCurrentIndex(1)
         self.tabWidget.setCurrentIndex(2)
 
 
@@ -1371,9 +1380,10 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.combob_DensityDisplay.setItemText(0, QCoreApplication.translate("MainWindow", u"Percentage", None))
         self.combob_DensityDisplay.setItemText(1, QCoreApplication.translate("MainWindow", u"Count", None))
+        self.combob_DensityDisplay.setItemText(2, QCoreApplication.translate("MainWindow", u"Mean size", None))
 
 #if QT_CONFIG(tooltip)
-        self.combob_DensityDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Choose between the percentage of pixels with blobs or the count of blob centroids.", None))
+        self.combob_DensityDisplay.setToolTip(QCoreApplication.translate("MainWindow", u"Choose between the percentage of pixels with blobs , the count or the mean size of blobs.", None))
 #endif // QT_CONFIG(tooltip)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), QCoreApplication.translate("MainWindow", u"Count", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Density", None))
@@ -1382,13 +1392,14 @@ class Ui_MainWindow(object):
         self.gb_ResultsChoice.setToolTip(QCoreApplication.translate("MainWindow", u"Select the results to save.", None))
 #endif // QT_CONFIG(tooltip)
         self.gb_ResultsChoice.setTitle(QCoreApplication.translate("MainWindow", u"RESULT TYPES", None))
-        self.cb_ResultsCount.setText(QCoreApplication.translate("MainWindow", u"Count and size", None))
+        self.cb_ResultsDistanceSpecificCentroid.setText(QCoreApplication.translate("MainWindow", u"Distance to centroid of main slice", None))
         self.cb_ResultsDensityCount.setText(QCoreApplication.translate("MainWindow", u"Density (count)", None))
         self.pb_ResultsNone.setText(QCoreApplication.translate("MainWindow", u"None", None))
-        self.cb_ResultsDistanceSpecificCentroid.setText(QCoreApplication.translate("MainWindow", u"Distance to centroid of main slice", None))
-        self.cb_ResultsDistanceOwnCentroid.setText(QCoreApplication.translate("MainWindow", u"Distance to own centroid", None))
         self.pb_ResultsAll.setText(QCoreApplication.translate("MainWindow", u"All", None))
+        self.cb_ResultsCount.setText(QCoreApplication.translate("MainWindow", u"Count and size", None))
+        self.cb_ResultsDistanceOwnCentroid.setText(QCoreApplication.translate("MainWindow", u"Distance to own centroid", None))
         self.cb_ResultsDensityPercentage.setText(QCoreApplication.translate("MainWindow", u"Density (percentage)", None))
+        self.cb_ResultsDensitySize.setText(QCoreApplication.translate("MainWindow", u"Density (Size)", None))
 #if QT_CONFIG(tooltip)
         self.pb_ResultsDestinationFolder.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the destination folder to save the results.", None))
 #endif // QT_CONFIG(tooltip)

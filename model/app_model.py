@@ -33,10 +33,14 @@ class AppModel(object):
 
         self.density_target_layers = {}
         self.density_map_kernel_size = {}
+        self.density_centroid_size = {}
         self.density_target_heatmap = {}
         self.density_map_heatmap = {}
-        self.density_taget_centroid_heatmap = {}
+        self.density_target_centroid_heatmap = {}
         self.density_map_centroid_heatmap = {}
+        self.density_target_size = {}
+        self.density_map_size = {}
+        
 
         self.results_count = {}
         self.results_density = {}

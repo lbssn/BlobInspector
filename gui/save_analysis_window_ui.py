@@ -2,6 +2,8 @@
 
 # This file is distributed under the terms of the GNU General Public License v3.0
 
+# This file is distributed under the terms of the GNU General Public License v3.0
+
 ################################################################################
 ## Form generated from reading UI file 'save_analysis_window.ui'
 ##

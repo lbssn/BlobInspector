@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# This file is distributed under the terms of the GNU General Public License v3.0
+
 ################################################################################
 ## Form generated from reading UI file 'batch_analysis_window.ui'
 ##

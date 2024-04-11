@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# This file is distributed under the terms of the GNU General Public License v3.0
+
 ################################################################################
 ## Form generated from reading UI file 'options_window.ui'
 ##
@@ -24,7 +26,7 @@ class Ui_OptionsWindow(object):
     def setupUi(self, OptionsWindow):
         if not OptionsWindow.objectName():
             OptionsWindow.setObjectName(u"OptionsWindow")
-        OptionsWindow.resize(508, 557)
+        OptionsWindow.resize(514, 539)
         icon = QIcon()
         icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
         OptionsWindow.setWindowIcon(icon)

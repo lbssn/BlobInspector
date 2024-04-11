@@ -79,8 +79,11 @@ def remove_current_image(window : Ui_MainWindow):
         del appMod.contours_main_slice[filename]
         del appMod.density_target_layers[filename]
         del appMod.density_map_kernel_size[filename]
+        del appMod.density_centroid_size[filename]
         del appMod.density_target_heatmap[filename]
         del appMod.density_map_heatmap[filename]
+        del appMod.density_target_size[filename]
+        del appMod.density_map_size[filename]
         del appMod.results_count[filename]
         del appMod.results_density[filename]
         del appMod.results_distance[filename]
@@ -359,10 +362,13 @@ def load_files(window : Ui_MainWindow):
         window.appMod.contours_main_slice[filename] = [False]*length
         window.appMod.density_target_layers[filename] = [None]*length
         window.appMod.density_map_kernel_size[filename] = [None]*length
+        window.appMod.density_centroid_size[filename] = [None]*length
         window.appMod.density_target_heatmap[filename] = [None]*length
         window.appMod.density_map_heatmap[filename] = [None]*length
-        window.appMod.density_taget_centroid_heatmap[filename] = [None]*length
+        window.appMod.density_target_centroid_heatmap [filename] = [None]*length
         window.appMod.density_map_centroid_heatmap[filename] = [None]*length
+        window.appMod.density_target_size[filename] = [None]*length
+        window.appMod.density_map_size[filename] = [None]*length
         window.appMod.results_count[filename] = None
         window.appMod.results_density[filename] = None
         window.appMod.results_distance[filename] = None
@@ -390,6 +396,7 @@ def close_app(window : Ui_MainWindow):
     window.histogram_window.close()
     window.save_analysis_window.close()
     window.batch_analysis_window.close()
+    window.options_window.close()
     window.close()
 
 def open_batch_analysis_window(window : Ui_MainWindow):
@@ -534,7 +541,7 @@ def initialise_options_window(window : Ui_MainWindow):
     ow.combob_SegmentationColors.currentTextChanged.connect(lambda : segmentation_color_changed(window))
     ow.combob_Colormap.currentTextChanged.connect(lambda : colormap_changed(window))
     ow.le_ScaleNumberPixels.editingFinished.connect(lambda : input_positive_integer(ow.le_ScaleNumberPixels))
-    ow.le_ScaleNumberPixels.textChanged.connect(lambda : scale_checked(window,False))
+    ow.le_ScaleNumberPixels.editingFinished.connect(lambda : scale_checked(window,False))
     ow.le_IlluminationRollingBallRadius.editingFinished.connect(lambda : input_positive_integer(ow.le_IlluminationRollingBallRadius))
     ow.combob_Threshold.currentTextChanged.connect(lambda : change_threshold_combobox(ow.combob_Threshold,ow.le_SegmentationThresholdTwo))
     ow.le_SegmentationThresholdOne.editingFinished.connect(lambda : input_thresholds(ow,ow.le_SegmentationThresholdOne,ow.le_SegmentationThresholdTwo,0,255,"I"))
@@ -547,7 +554,7 @@ def initialise_options_window(window : Ui_MainWindow):
     ow.le_StackInfoSliceThickness.editingFinished.connect(lambda : input_float(ow.le_StackInfoSliceThickness))
     ow.le_StackInfoIntersliceSpace.editingFinished.connect(lambda : input_float(ow.le_StackInfoIntersliceSpace))
     ow.le_StackInfoPixelSize.editingFinished.connect(lambda : input_float(ow.le_StackInfoPixelSize))
-    ow.le_StackInfoPixelSize.textChanged.connect(lambda : scale_checked(window,False))
+    ow.le_StackInfoPixelSize.editingFinished.connect(lambda : scale_checked(window,False))
     ow.pb_UpdateProfile.clicked.connect(lambda : update_profile(window))
     ow.pb_CreateNewProfile.clicked.connect(lambda : create_new_profile(window))
     ow.pb_RemoveProfile.clicked.connect(lambda : remove_profile(window))
@@ -620,6 +627,7 @@ def profile_changed(window : Ui_MainWindow):
         ow.le_StackInfoIntersliceSpace.setText(window.appOptions.profiles[profilename][20])
         ow.le_StackInfoPixelSize.setText(window.appOptions.profiles[profilename][21])
         dump(window.appOptions,"./options.joblib",compress= True)
+        scale_checked(window,False)
 
 
 def update_profile(window : Ui_MainWindow):
@@ -715,7 +723,7 @@ def colormap_changed(window : Ui_MainWindow):
             display_secondary_image(2,window,window.appMod.density_target_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (percentage)")
         if window.combob_DensityDisplay.currentText() == "Count":
             display_secondary_image(1,window,window.appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
-            display_secondary_image(2,window,window.appMod.density_taget_centroid_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
+            display_secondary_image(2,window,window.appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
 
 def show_version():
     '''Displays a QDialog window with information about the software version'''
@@ -1233,7 +1241,12 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
                 if frame == 1:
                     display_secondary_image(1,window,appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
                 if frame == 2:
-                    display_secondary_image(2,window,appMod.density_taget_centroid_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
+                    display_secondary_image(2,window,appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
+            if window.combob_DensityDisplay.currentText() == "Mean size":
+                if frame == 1:
+                    display_secondary_image(1,window,appMod.density_map_size[filename][slice_number],focus="density",title="Convoluted density heatmap (Size)")
+                if frame == 2:
+                    display_secondary_image(2,window,appMod.density_target_size[filename][slice_number],focus = "density", title = "Target density heatmap (Size)")        
         else:
             if frame == 1:
                 window.wi_Image1Text.setFixedWidth(int(window.size().width()/3))
@@ -1301,10 +1314,13 @@ def clear_results(window : Ui_MainWindow,filename,slice_number,results):
     if "d" in results:
         appMod.density_target_layers[filename][slice_number] = None
         appMod.density_map_kernel_size[filename][slice_number] = None
+        appMod.density_centroid_size[filename][slice_number] = None
         appMod.density_target_heatmap[filename][slice_number] = None
         appMod.density_map_heatmap[filename][slice_number] = None
-        appMod.density_taget_centroid_heatmap[filename][slice_number] = None
+        appMod.density_target_centroid_heatmap [filename][slice_number] = None
         appMod.density_map_centroid_heatmap[filename][slice_number] = None
+        appMod.density_target_size[filename][slice_number] = None
+        appMod.density_map_size[filename][slice_number] = None
         appMod.results_density[filename] = None
 
 def input_rolling_ball_radius(window :Ui_MainWindow):
@@ -2048,21 +2064,28 @@ def apply_density_to_image(window :Ui_MainWindow, slice_number=None):
                             window.setCursor(QCursor(Qt.WaitCursor))
                             thresholded_image = dots_to_binary(appMod.stacks[filename][slice_number],appMod.labeling_coordinates[filename][slice_number])
                             contoured_image = appMod.contours_mask[filename][slice_number]
-                            centroids_image = dots_to_binary(appMod.stacks[filename][slice_number],calculate_centroids(appMod.labeling_coordinates[filename][slice_number],appMod.labeling_labels[filename][slice_number]))
+                            # centroids_image = dots_to_binary(appMod.stacks[filename][slice_number],calculate_centroids(appMod.labeling_coordinates[filename][slice_number],appMod.labeling_labels[filename][slice_number]))
+                            if appMod.density_centroid_size[filename][slice_number] is None:
+                                centroid_size_image = calculate_centroids_sizes_image(appMod.labeling_coordinates[filename][slice_number],appMod.labeling_labels[filename][slice_number],contoured_image)
+                                appMod.density_centroid_size[filename][slice_number] = centroid_size_image
+                            else:
+                                centroid_size_image = appMod.density_centroid_size[filename][slice_number]
                             if appMod.density_target_layers[filename][slice_number] != int(window.le_DensityTargetLayers.text()) or appMod.density_target_heatmap[filename][slice_number] is None:
                                 appMod.density_target_layers[filename][slice_number] = int(window.le_DensityTargetLayers.text())
                                 layers = appMod.density_target_layers[filename][slice_number]
                                 centroid_y = appMod.contours_centroids[filename][slice_number][0]
                                 centroid_x = appMod.contours_centroids[filename][slice_number][1]
-                                target_map, target_count = get_targets(thresholded_image,contoured_image,centroids_image,layers,centroid_y,centroid_x)
+                                target_map, target_count, target_size = get_targets(thresholded_image,contoured_image,centroid_size_image,layers,centroid_y,centroid_x)
                                 appMod.density_target_heatmap[filename][slice_number] = target_map
-                                appMod.density_taget_centroid_heatmap[filename][slice_number] = target_count
+                                appMod.density_target_centroid_heatmap [filename][slice_number] = target_count
+                                appMod.density_target_size[filename][slice_number] = target_size
                                 appMod.results_density[filename] = None  
                             if appMod.density_map_kernel_size[filename][slice_number] != int(window.le_DensityMapKernelSize.text()) or appMod.density_map_heatmap[filename][slice_number] is None:
                                 appMod.density_map_kernel_size[filename][slice_number] = int(window.le_DensityMapKernelSize.text())
-                                d_map_percentage, d_map_count = density_maps(thresholded_image,contoured_image,centroids_image,appMod.density_map_kernel_size[filename][slice_number])
+                                d_map_percentage, d_map_count, d_map_size = density_maps(thresholded_image,contoured_image,centroid_size_image,appMod.density_map_kernel_size[filename][slice_number])
                                 appMod.density_map_heatmap[filename][slice_number] = d_map_percentage
                                 appMod.density_map_centroid_heatmap[filename][slice_number] = d_map_count
+                                appMod.density_map_size[filename][slice_number] = d_map_size
                                 appMod.results_density[filename] = None
                             if single_image == True:
                                 display_original_image(window,filename,slice_number,focus = "density")
@@ -2131,8 +2154,10 @@ def combobox_density_changed(window :Ui_MainWindow):
         display_secondary_image(2,window,window.appMod.density_target_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (percentage)")
     if window.combob_DensityDisplay.currentText() == "Count":
         display_secondary_image(1,window,window.appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
-        display_secondary_image(2,window,window.appMod.density_taget_centroid_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
-
+        display_secondary_image(2,window,window.appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
+    if window.combob_DensityDisplay.currentText() == "Mean size":
+        display_secondary_image(1,window,window.appMod.density_map_size[filename][slice_number],focus="density",title="Convoluted density heatmap (Mean size)")
+        display_secondary_image(2,window,window.appMod.density_target_size[filename][slice_number],focus = "density", title = "Target density heatmap (Mean size)")
 def input_z_thickness(window :Ui_MainWindow):
     '''Controls the input of the thickness of the slices
     Parameters:
@@ -2239,8 +2264,10 @@ def enable_density_results(window :Ui_MainWindow):
     window : an instance of the app'''
     window.cb_ResultsDensityCount.setEnabled(True)
     window.cb_ResultsDensityPercentage.setEnabled(True)
+    window.cb_ResultsDensitySize.setEnabled(True)
     window.cb_ResultsDensityCount.setChecked(True)
     window.cb_ResultsDensityPercentage.setChecked(True)
+    window.cb_ResultsDensitySize.setChecked(True)
 
 def enable_distance_results(window :Ui_MainWindow,filename):
     '''Enables the checkboxes for distance results
@@ -2259,7 +2286,7 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
     filename: the name of the file
     nb_slices: the number of slices in the stack'''
     relative_path = get_filename(filename)
-    count_results = [[relative_path,"Blobs count","Mean size"," Median size","Segmentation threshold(s)",\
+    count_results = [[relative_path,"Blobs count","Mean size"," Median size","Min size","Max size","Segmentation threshold(s)",\
                       "Blobs detection","Blobs min/max radius","Rolling ball radius","Watershed","Sieve size"]]
     total = 0
     all_labels = []
@@ -2279,9 +2306,9 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
                     all_labels.extend([x + value for x in appMod.labeling_labels[filename][i]])
                 total += count
                 if count == 0:
-                    median, SD = 0,0
+                    median, SD, min_size, max_size = 0,0,0,0
                 else:
-                    median, SD = mean_median_size(appMod.labeling_labels[filename][i])
+                    median, SD, min_size, max_size = mean_median_min_max_size(appMod.labeling_labels[filename][i])
                 if appMod.threshold_algo[filename][i] == window.combob_Threshold.itemText(0):
                     thresholds = str(appMod.first_threshold[filename][i])
                 else:
@@ -2302,10 +2329,10 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
                     ws = "no"
                 sieve_size = appMod.labeling_sieve_size[filename][i]
             else:
-                count,median,SD,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-"
-            count_results.append([slice,count,median,SD,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size])
-    tot_median, tot_SD = mean_median_size(all_labels)
-    count_results.append(["Total",total,tot_median,tot_SD,"-","-","-","-","-","-"])    
+                count,median,SD,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-"
+            count_results.append([slice,count,median,SD,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size])
+    tot_median, tot_SD, tot_min, tot_max = mean_median_min_max_size(all_labels)
+    count_results.append(["Total",total,tot_median,tot_SD,tot_min,tot_max,"-","-","-","-","-","-"])    
     appMod.results_count[filename] = count_results
 
 def input_count_results(window : Ui_MainWindow, filename):
@@ -2336,11 +2363,15 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                         "Heatmap % median","Heatmap % min","Heatmap % max",\
                         "Target count mean","Target count median","Target count min","Target count max",\
                         "Heatmap count mean","Heatmap count median","Heatmap count min","Heatmap count max",\
+                        "Target size mean","Target size median","Target size min","Target size max",\
+                        "Heatmap size mean","Heatmap size median","Heatmap size min","Heatmap size max",\
                             "Contours algorithm","Contours threshold","Target layers","Kernel size"]]
     all_densities_targets_percentage = []
     all_densities_maps_percentage = []
     all_densities_targets_count = []
     all_densities_maps_count = []
+    all_densities_targets_size = []
+    all_densities_maps_size = []
     total_blobs_area = 0
     total_area = 0
     for i in range(nb_slices):
@@ -2349,19 +2380,25 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
             if appMod.density_target_heatmap[filename][i] is not None:
                 d_target = appMod.density_target_heatmap[filename][i]
                 d_map = appMod.density_map_heatmap[filename][i]
-                d_target_count = appMod.density_taget_centroid_heatmap[filename][i]
+                d_target_count = appMod.density_target_centroid_heatmap [filename][i]
                 d_map_count = appMod.density_map_centroid_heatmap[filename][i]
+                d_target_size = appMod.density_target_size[filename][i]
+                d_map_size = appMod.density_map_size[filename][i]
                 mask_contour = appMod.contours_mask[filename][i]
                 if all_densities_targets_percentage == []:
                     all_densities_targets_percentage = d_target[mask_contour].tolist()
                     all_densities_maps_percentage = d_map[mask_contour].tolist()
                     all_densities_targets_count = d_target_count[mask_contour].tolist()
                     all_densities_maps_count = d_map_count[mask_contour].tolist()
+                    all_densities_targets_size = d_target_size[mask_contour].tolist()
+                    all_densities_maps_size = d_map_size[mask_contour].tolist()
                 else:
                     all_densities_targets_percentage.extend(d_target[mask_contour].tolist())
                     all_densities_maps_percentage.extend(d_map[mask_contour].tolist())
                     all_densities_targets_count.extend(d_target_count[mask_contour].tolist())
                     all_densities_maps_count.extend(d_map_count[mask_contour].tolist())
+                    all_densities_targets_size.extend(d_target_size[mask_contour].tolist())
+                    all_densities_maps_size.extend(d_map_size[mask_contour].tolist())
                 area = np.sum(mask_contour)
                 blobs_area = len(appMod.labeling_coordinates[filename][i])
                 total_area +=area
@@ -2370,6 +2407,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 min_m,max_m,_,median_m = min_max_mean_median_density(d_map,mask_contour)
                 min_t_count,max_t_count,mean_t_count,median_t_count= min_max_mean_median_density(d_target_count,mask_contour)
                 min_m_count,max_m_count,mean_m_count,median_m_count = min_max_mean_median_density(d_map_count,mask_contour)
+                min_t_size,max_t_size,mean_t_size,median_t_size= min_max_mean_median_density(d_target_size,mask_contour)
+                min_m_size,max_m_size,mean_m_size,median_m_size = min_max_mean_median_density(d_map_size,mask_contour)
                 contours_algo = appMod.contours_algo[filename][i]
                 contours_threshold = appMod.contours_background[filename][i]
                 layers = appMod.density_target_layers[filename][i]
@@ -2377,9 +2416,12 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 density_results.append([slice,mean_t,blobs_area,area,median_t,min_t,max_t,median_m,min_m,max_m,\
                                         mean_t_count,round(median_t_count),round(min_t_count),round(max_t_count),\
                                         mean_m_count,round(median_m_count),round(min_m_count),round(max_m_count),\
+                                        mean_t_size,round(median_t_size),round(min_t_size),round(max_t_size),\
+                                        mean_m_size,round(median_m_size),round(min_m_size),round(max_m_size),\
                                         contours_algo,contours_threshold,layers,kernel_size])
             else:
-                density_results.append([slice,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"])
+                density_results.append([slice,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-",\
+                                        "-","-","-","-","-","-","-","-"])
     if len(all_densities_targets_percentage) >0:
         min_tot_t,max_tot_t,mean_tot_t,median_tot_t = round(min(all_densities_targets_percentage),3),round(max(all_densities_targets_percentage),3),\
             round(np.mean(all_densities_targets_percentage),3),round(np.median(all_densities_targets_percentage),3)
@@ -2399,8 +2441,20 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
             round(np.mean(all_densities_maps_count),3),round(np.median(all_densities_maps_count))
     else:
         min_tot_m_count,max_tot_m_count,mean_tot_m_count,median_tot_m_count = "-","-","-","-"
+    if len(all_densities_targets_size) >0:
+        min_tot_t_size,max_tot_t_size,mean_tot_t_size,median_tot_t_size = round(min(all_densities_targets_size)),round(max(all_densities_targets_size)),\
+            round(np.mean(all_densities_targets_size),3),round(np.median(all_densities_targets_size))
+    else:
+        min_tot_t_size,max_tot_t_size,mean_tot_t_size,median_tot_t_size = "-","-","-","-"
+    if len(all_densities_maps_size) >0:
+        min_tot_m_size,max_tot_m_size,mean_tot_m_size,median_tot_m_size = round(min(all_densities_maps_size)),round(max(all_densities_maps_size)),\
+            round(np.mean(all_densities_maps_size),3),round(np.median(all_densities_maps_size))
+    else:
+        min_tot_m_size,max_tot_m_size,mean_tot_m_size,median_tot_m_size = "-","-","-","-"
+
     density_results.append(["Total",mean_tot_t,total_blobs_area,total_area,median_tot_t,min_tot_t,max_tot_t,median_tot_m,min_tot_m,max_tot_m,\
-                            mean_tot_t_count,median_tot_t_count,min_tot_t_count,max_tot_t_count,mean_tot_m_count,median_tot_m_count,min_tot_m_count,max_tot_m_count,"-","-","-","-"])    
+                            mean_tot_t_count,median_tot_t_count,min_tot_t_count,max_tot_t_count,mean_tot_m_count,median_tot_m_count,min_tot_m_count,max_tot_m_count,\
+                                mean_tot_t_size,median_tot_t_size,min_tot_t_size,max_tot_t_size,mean_tot_m_size,median_tot_m_size,min_tot_m_size,max_tot_m_size,"-","-","-","-"])    
     appMod.results_density[filename] = density_results
 
 def input_density_results(window : Ui_MainWindow, filename):
@@ -2689,13 +2743,15 @@ def save_results(window :Ui_MainWindow):
             if window.cb_ResultsCount.isChecked():
                 results = np.array(appMod.results_count[filename],dtype=str)
                 table_first_row = True
-            if window.cb_ResultsDensityPercentage.isChecked() or window.cb_ResultsDensityCount.isChecked():
+            if window.cb_ResultsDensityPercentage.isChecked() or window.cb_ResultsDensityCount.isChecked() or window.cb_ResultsDensitySize.isChecked():
                 density_results = np.array(appMod.results_density[filename], dtype=str)
                 columns_to_add = set()
                 if window.cb_ResultsDensityPercentage.isChecked():
-                    columns_to_add.update([1,2,3,4,5,6,7,8,9,18,19,20,21])
+                    columns_to_add.update([1,2,3,4,5,6,7,8,9,26,27,28,29])
                 if window.cb_ResultsDensityCount.isChecked():
-                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,18,19,20,21])
+                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,26,27,28,29])
+                if window.cb_ResultsDensitySize.isChecked():
+                    columns_to_add.update([1,2,3,18,19,20,21,22,23,24,25,26,27,28,29])
                 columns_to_add = list(columns_to_add)
                 if table_first_row == True:
                     results = np.concatenate((results,density_results[:,columns_to_add]),axis=1)
@@ -2785,7 +2841,7 @@ def save_results(window :Ui_MainWindow):
                     writer = csv.writer(file,delimiter=";")
                     for line in results:
                         writer.writerow(line)
-                show_save_message(f"The file has been successfully saved in {folder} .")                  
+                show_save_message(f"The file has been successfully saved in {folder}")                  
         except (ValueError, TypeError, PermissionError, IndexError) as e:
             show_error_message(f"An error occured while saving the results:\n{e}")
     else:
@@ -2850,6 +2906,7 @@ def load_analysis(window : Ui_MainWindow):
                         window.cb_IncludeImage.setCheckState(Qt.CheckState.Checked)
                     else:
                         window.cb_IncludeImage.setCheckState(Qt.CheckState.Unchecked)
+                    window.cb_Scale.setCheckState(Qt.CheckState.Unchecked)
                     set_current_image_options(window,window.appMod.stack_names[0],0)
                     display_original_image(window,window.appMod.stack_names[0],0)
                     update_image_slider_range(window,window.appMod.stack_names[0])
@@ -2863,6 +2920,7 @@ def load_analysis(window : Ui_MainWindow):
                 window.wi_Image2Canvas.hide()
                 window.wi_OriginalImage.hide()
                 window.frame_4.hide()
+                window.cb_Scale.setCheckState(Qt.CheckState.Unchecked)
         else:
             show_error_message("Incorrect file format.")
             window.appMod = AppModel()
@@ -2875,4 +2933,5 @@ def load_analysis(window : Ui_MainWindow):
             window.wi_Image2Canvas.hide()
             window.wi_OriginalImage.hide()
             window.frame_4.hide()
+            window.cb_Scale.setCheckState(Qt.CheckState.Unchecked)
         window.setCursor(QCursor(Qt.ArrowCursor))

@@ -31,7 +31,7 @@ Before installing Blob Inspector, make sure Python is installed on your operatin
 sudo apt-get install python
 ```
 
-Once Python is installed on your OS, open a terminal or PowerShell in the root directory of the program and run the following command to install all the required packages:
+2. Once Python is installed on your OS, open a terminal or PowerShell in the root directory of the program and run the following command to install all the required packages:
 ```bash
 python install_packages.py
 ```

@@ -139,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.le_ZThickness.editingFinished.connect(lambda : input_z_thickness(self))
         self.le_InterZ.editingFinished.connect(lambda : input_inter_z(self))
         self.le_PixelSize.editingFinished.connect(lambda : input_pixel_size(self))
-        self.le_PixelSize.textChanged.connect(lambda : scale_checked(self,False))
+        self.le_PixelSize.editingFinished.connect(lambda : scale_checked(self,False))
         self.pb_ResultsApplyToStacks.clicked.connect(lambda : apply_infos_to_stacks(self))
         self.pb_ResultsView.clicked.connect(lambda : view_results_page(self))
         self.pb_ResultsAll.clicked.connect(lambda : select_all(self))
