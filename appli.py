@@ -56,6 +56,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.frame_4.hide()
         self.cb_Scale.setChecked(False)
         # Comboboxes initialisation
+        self.combob_BlobsDetection.addItems(return_blobs_algorithms())
+        self.combob_LabelingOption.addItems(return_labeling_algorithms())
+        self.combob_Contours.addItems(return_contouring_algorithms())
+        self.combob_cmap.addItems(return_colormaps())
         if len(profiles_list) > 0:
             self.options_window.combob_Profiles.addItems(profiles_list)
         if self.appOptions.default_profile is not None:
@@ -67,10 +71,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             index = self.options_window.combob_SegmentationColors.findText("yellow")
             self.options_window.combob_SegmentationColors.setCurrentIndex(index)
-        self.combob_BlobsDetection.addItems(return_blobs_algorithms())
-        self.combob_LabelingOption.addItems(return_labeling_algorithms())
-        self.combob_Contours.addItems(return_contouring_algorithms())
-        self.combob_cmap.addItems(return_colormaps())
         # Methods
         self.installEventFilter(self)
         self.resizeEvent = lambda event : resize_main_window(self)

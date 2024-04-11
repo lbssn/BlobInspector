@@ -25,22 +25,22 @@ def convert_to_8_bits(image):
     return image
 
 def rolling_ball(image,rad):
-    """Determines the background and corrected image using rolling ball algorithm
+    '''Determines the background and corrected image using rolling ball algorithm
     Parameters:
     window : an instance of the app
     image : the image to process
-    rad : the rolling ball radius in pixels"""
+    rad : the rolling ball radius in pixels'''
     background = restoration.rolling_ball(image, radius = rad)
     return background, image - background
 
 def segmentation_two_thresholds(image, thresh1, thresh2):
-    """Segments the image based on two threshold values
+    '''Segments the image based on two threshold values
     Parameters:
     image : the image to threshold as a numpy array
     thresh1 : value of the highest threshold
     thresh2 : value of the secon threshold
     Returns:
-    mask : the thresholded image"""
+    mask : the thresholded image'''
     mask_thresh1 = image >= thresh1
     dilated_mask_thresh1 = binary_dilation(mask_thresh1, structure=np.ones((3, 3)))
     mask_thresh2 = image >= thresh2
@@ -48,11 +48,11 @@ def segmentation_two_thresholds(image, thresh1, thresh2):
     return mask
 
 def blobs_mask(image,blobs_list):
-    """Creates a binary image with the blobs
+    '''Creates a binary image with the blobs
     Parameters:
     blobs_list : list of the blobs with y and x coordinates and the radius in pixels
     Returns:
-    binary_image: the image with the blobs"""
+    binary_image: the image with the blobs'''
     binary_image = np.zeros_like(image, dtype=bool)
     for blob in blobs_list:
         y, x, r = blob
@@ -71,14 +71,14 @@ def return_blobs_algorithms():
     return ["None","LoG","DoG","DoH"]
 
 def blobs_detection(image,algo_index,min_radius,max_radius):
-    """Use a blob detection algorithm
+    '''Use a blob detection algorithm
     Parameters:
     image: the binary image to analyse
     algo: a string indicating the chosen algorithm
     min_radius: the minimum radius in pixels
     max_radius: the maximum radius in pixels
     Returns:
-    blobs_list: list of the blobs with y and x coordinates and the radius in pixels"""
+    blobs_list: list of the blobs with y and x coordinates and the radius in pixels'''
     blobs_list = None
     if algo_index == 1:
         blobs_list= blob_log(image, min_sigma=min_radius/sqrt(2),  max_sigma=max_radius/sqrt(2), num_sigma=max_radius-min_radius+1, threshold=.2)

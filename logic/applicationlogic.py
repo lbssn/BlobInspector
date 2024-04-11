@@ -90,9 +90,9 @@ def remove_current_image(window : Ui_MainWindow):
         display_original_image(window,window.combob_FileName.itemText(0),0)
 
 def show_error_message(message):
-    """Displays a QDialog window with a warning message
+    '''Displays a QDialog window with a warning message
     Parameters:
-    message : the message to display"""
+    message : the message to display'''
     dialog = QDialog()
     dialog.setWindowTitle("Error")
     icon = QIcon()
@@ -267,14 +267,14 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
             y_begin = 40
         text = f"{int(scale_length*pixel_size)} {unit}"
         canvas_original.axes.plot([x_begin, x_begin + scale_length], [y_begin,y_begin], linewidth=3, color=scale_color)
-        canvas_original.axes.text(x_begin+50, y_begin-20,text,color=scale_color,va='center', ha='center')
+        canvas_original.axes.text(int(x_begin+scale_length/2), y_begin-20,text,color=scale_color,va='center', ha='center')
     canvas_original.fig.set_frameon(False)
     canvas_original.axes.set_axis_off()
     label = QLabel()
     label.setText(title)
     label.setMaximumHeight(20)
     label.setAlignment(Qt.AlignCenter)
-    canvas_original.fig.tight_layout()
+    # canvas_original.fig.tight_layout()
     canvas_original.axes.imshow(image, cmap='gray')
     empty_layout(window.layout_Original)
     window.layout_Original.addWidget(label)
@@ -301,19 +301,19 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
     window.setCursor(QCursor(Qt.ArrowCursor))
 
 def update_image_slider_range(window : Ui_MainWindow, filename):
-    """ Update the range of the slider depending on the image file
+    ''' Update the range of the slider depending on the image file
     Parameters:
     window : an instance of the app
-    filename : a string with the name of the file"""
+    filename : a string with the name of the file'''
     window.hs_SliceNumber.setValue(0)
     window.hs_SliceNumber.setMinimum(0)
     window.hs_SliceNumber.setMaximum(len(window.appMod.stacks[filename])-1)
     window.lb_SliceNumber.setText(f"{int(window.hs_SliceNumber.value())+1} / {len(window.appMod.stacks[filename])}")
 
 def restore_images_original_size(window : Ui_MainWindow):
-    """ Restores the original size of the images
+    ''' Restores the original size of the images
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     all_canvases = window.findChildren(MplCanvas)
     for canvas in all_canvases:
         canvas.axes.set_xlim(canvas.original_xlim[0]-0.5,canvas.original_xlim[1]-0.5)
@@ -323,9 +323,9 @@ def restore_images_original_size(window : Ui_MainWindow):
         canvas.previous_ylim = (canvas.original_ylim[1]-0.5,canvas.original_ylim[0]-0.5)
 
 def load_files(window : Ui_MainWindow):
-    """ Loads the image files
+    ''' Loads the image files
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     filenames, _ = QFileDialog.getOpenFileNames(window,
         "Choose files",
         "/",
@@ -419,6 +419,9 @@ def open_batch_analysis_window(window : Ui_MainWindow):
     bw.show()
 
 def input_default_options(window : Ui_MainWindow):
+    '''Fills in the form for batch analysis with the default options
+    Parameters:
+    window : an instance of the app'''
     if window.options_window.combob_Profiles.currentText():
         options = window.appOptions.profiles[window.options_window.combob_Profiles.currentText()]
         bw = window.batch_analysis_window
@@ -523,6 +526,9 @@ def start_batch_analysis(window : Ui_MainWindow):
         show_error_message("Please choose some images to process.")
 
 def initialise_options_window(window : Ui_MainWindow):
+    '''Connects the widgets from the options window to the required functions
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     ow.combob_Profiles.currentTextChanged.connect(lambda : profile_changed(window))
     ow.combob_SegmentationColors.currentTextChanged.connect(lambda : segmentation_color_changed(window))
@@ -547,9 +553,15 @@ def initialise_options_window(window : Ui_MainWindow):
     ow.pb_RemoveProfile.clicked.connect(lambda : remove_profile(window))
 
 def open_options_window(window : Ui_MainWindow):
+    '''Shows the option window
+    Parameters:
+    window : an instance of the app'''
     window.options_window.show()
 
 def segmentation_color_changed(window : Ui_MainWindow):
+    '''Update the display of the original image when the segmentation color is changed in the options window
+    Parameters:
+    window : an instance of the app'''
     if window.focus == "segmentation":
         ow = window.options_window
         filename, slice_number = get_filename_slice_number(window)
@@ -560,6 +572,9 @@ def segmentation_color_changed(window : Ui_MainWindow):
         window.appOptions.profiles[profilename][0] = previous_color
 
 def remove_profile(window : Ui_MainWindow):
+    '''Removes the current profile
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     if ow.combob_Profiles.currentText():
         profilename = ow.combob_Profiles.currentText()
@@ -575,6 +590,9 @@ def remove_profile(window : Ui_MainWindow):
         dump(window.appOptions,"./options.joblib",compress= True)
 
 def profile_changed(window : Ui_MainWindow):
+    '''Updates the default options on profile change
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     if ow.combob_Profiles.currentText():
         window.appOptions.default_profile = ow.combob_Profiles.currentText()
@@ -605,6 +623,9 @@ def profile_changed(window : Ui_MainWindow):
 
 
 def update_profile(window : Ui_MainWindow):
+    '''Updates the current profile with the chosen options
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     if ow.combob_Profiles.currentText():
         profilename = ow.combob_Profiles.currentText()
@@ -613,6 +634,9 @@ def update_profile(window : Ui_MainWindow):
         show_error_message("Please choose a profile to update.")
 
 def save_profile(window : Ui_MainWindow, profilename):
+    '''Saves the profile in the options.joblib file
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     window.appOptions.profiles[profilename] = [ow.combob_SegmentationColors.currentText(),\
                                             ow.combob_Colormap.currentText(),\
@@ -639,6 +663,9 @@ def save_profile(window : Ui_MainWindow, profilename):
     dump(window.appOptions,"./options.joblib",compress= True)
 
 def create_new_profile(window : Ui_MainWindow):
+    '''Creates a new profile with the chosen options
+    Parameters:
+    window : an instance of the app'''
     ow = window.options_window
     profilename = choose_profile_name()
     if profilename != "":
@@ -651,6 +678,7 @@ def create_new_profile(window : Ui_MainWindow):
             window.appOptions.default_profile = profilename
 
 def choose_profile_name():
+    '''Calls a QDialog to input the profile name'''
     dialog = QDialog()
     dialog.setWindowTitle("Choose profile name")
     icon = QIcon()
@@ -675,6 +703,9 @@ def choose_profile_name():
         return ""
 
 def colormap_changed(window : Ui_MainWindow):
+    '''Changes the colormap in the density tool and updates the display
+    Parameters:
+    window : an instance of the app'''
     index = window.options_window.combob_Colormap.currentIndex()
     window.combob_cmap.setCurrentIndex(index)
     if window.focus == "density":
@@ -687,7 +718,7 @@ def colormap_changed(window : Ui_MainWindow):
             display_secondary_image(2,window,window.appMod.density_taget_centroid_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
 
 def show_version():
-    """Displays a QDialog window with information about the software version"""
+    '''Displays a QDialog window with information about the software version'''
     dialog = QDialog()
     dialog.setWindowTitle("Version information")
     icon = QIcon()
@@ -753,10 +784,10 @@ def input_blobs_radius(widget1, widget2, value):
     value: a value above which the inputs must be'''
     if widget1.text() !="min" and widget1.text() !="max":
         if input_integer_over_value(widget1,value,False):
-            if widget1.objectName() == "le_BlobsDetectionMinimumRadius":
+            if widget1.objectName() == "le_BlobsDetectionMinimumRadius" or widget1.objectName() == "le_SegmentationBlobsMinRadius":
                 if widget2.text() == "max" or int(widget2.text()) < int(widget1.text()):
                     widget2.setText(widget1.text())
-            elif widget1.objectName() == "le_BlobsDetectionMaximumRadius":
+            elif widget1.objectName() == "le_BlobsDetectionMaximumRadius" or widget1.objectName() == "le_SegmentationBlobsMaxRadius":
                 if widget2.text() == "min" or int(widget1.text()) < int(widget2.text()):
                     widget2.setText(widget1.text())
         else:
@@ -841,9 +872,9 @@ def change_threshold_combobox(combobox, lineedit):
 
 
 def slider_value_changed(window : Ui_MainWindow):
-    """Triggers the change of image display when the slider value changes
+    '''Triggers the change of image display when the slider value changes
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     filename, slice_number = get_filename_slice_number(window)
     window.lb_SliceNumber.setText(f"{slice_number+1} / {len(window.appMod.stacks[filename])}")
     if window.appMod.included_images[filename][slice_number]:
@@ -854,9 +885,9 @@ def slider_value_changed(window : Ui_MainWindow):
     display_original_image(window,filename,slice_number,focus=window.focus)
 
 def checkbox_state_changed(window : Ui_MainWindow):
-    """Updates the checkbox determining if the image will be included in the analysis and updates the image display
+    '''Updates the checkbox determining if the image will be included in the analysis and updates the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     filename, slice_number = get_filename_slice_number(window)
     if window.cb_IncludeImage.isChecked():
         window.appMod.included_images[filename][slice_number] = True
@@ -866,6 +897,9 @@ def checkbox_state_changed(window : Ui_MainWindow):
     display_original_image(window,filename,slice_number)
 
 def call_histogram_window(window : Ui_MainWindow):
+    '''Shows the histogram window
+    Parameters:
+    window : an instance of the app'''
     if window.combob_FileName.currentText() and window.cb_IncludeImage.isChecked():
             draw_histograms(window)
             window.histogram_window.show()
@@ -874,6 +908,10 @@ def call_histogram_window(window : Ui_MainWindow):
         show_error_message("Please choose an image to show its histogram.")
 
 def scale_checked(window : Ui_MainWindow,message=True):
+    '''Verifies if the required options are met to draw a scale on the images
+    Parameters:
+    window : an instance of the app
+    message: if True, extra error messages will be display (only upon scale QCombobox checking)'''
     if window.cb_Scale.isChecked():
         if (window.le_PixelSize.text() == "" and window.options_window.le_StackInfoPixelSize.text() == "") or window.options_window.le_ScaleNumberPixels.text() == "":
             if message == True:
@@ -895,9 +933,9 @@ def scale_checked(window : Ui_MainWindow,message=True):
             display_original_image(window,filename,slice_number,focus=window.focus)
 
 def combobox_changed(window : Ui_MainWindow):
-    """Updates the image display on the first image of the new stack when the image file changes
+    '''Updates the image display on the first image of the new stack when the image file changes
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     filename = window.combob_FileName.currentText()
     update_image_slider_range(window,filename)
     set_current_image_options(window,filename,0)
@@ -909,10 +947,10 @@ def combobox_changed(window : Ui_MainWindow):
     restore_images_original_size(window)
 
 def highlight_groupbox(window : Ui_MainWindow, option):
-    """Highlight the tools being used
+    '''Highlight the tools being used
     Parameters:
     window : an instance of the app
-    option: a string with the name of the tool to be highlighted"""
+    option: a string with the name of the tool to be highlighted'''
     window.focus = option
     for child in window.frame.findChildren(QGroupBox):
         child.setStyleSheet("")
@@ -940,11 +978,11 @@ def highlight_groupbox(window : Ui_MainWindow, option):
         hide_text_layout_content(window,2)
 
 def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
-    """Displays the chosen parameters for the processing of the current image
+    '''Displays the chosen parameters for the processing of the current image
     Parameters:
     window : an instance of the app
     filename: name of the image file
-    slice_number : index of the image in the file"""
+    slice_number : index of the image in the file'''
     appMod = window.appMod
     if appMod.corrected_images[filename][slice_number] is not None:
         window.le_RollingBallRadius.setText(str(appMod.rolling_ball_param[filename][slice_number]))
@@ -1017,12 +1055,12 @@ def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
         window.le_PixelSize.clear()
 
 def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus = None, title = None):
-    """Displays the secondary images resulting from the processing of the original image
+    '''Displays the secondary images resulting from the processing of the original image
     Parameters:
     window : an instance of the app
     image : the image to be displayed
     focus : the tools being used
-    title : the title of the image"""
+    title : the title of the image'''
     window.setCursor(QCursor(Qt.WaitCursor))
     appMod=window.appMod
     if (image is None and focus is None) or not window.cb_IncludeImage.isChecked():
@@ -1109,8 +1147,8 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
                 y_begin = 40
             text = f"{int(scale_length*pixel_size)} {unit}"
             canvas.axes.plot([x_begin, x_begin + scale_length], [y_begin,y_begin], linewidth=3, color=color)
-            canvas.axes.text(x_begin+50, y_begin-20,text,color=color,va='center', ha='center')
-        canvas.fig.tight_layout()
+            canvas.axes.text(int(x_begin+scale_length/2), y_begin-20,text,color=color,va='center', ha='center')
+        # canvas.fig.tight_layout()
         if frame == 1:
             layout = window.layout_Image1
         else:
@@ -1214,12 +1252,12 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
     window.setCursor(QCursor(Qt.ArrowCursor))
 
 def clear_results(window : Ui_MainWindow,filename,slice_number,results):
-    """Clears the chosen parameters and results
+    '''Clears the chosen parameters and results
     Parameters:
     window : an instance of the app
     filename: name of the image file
     slice_number : index of the image in the file
-    results : a string composed of the results to clear (r:rolling-ball,t:threshold,b:blobs,l:labeling,c:contours,d:density)"""
+    results : a string composed of the results to clear (r:rolling-ball,t:threshold,b:blobs,l:labeling,c:contours,d:density)'''
     appMod=window.appMod
     if "r" in results:
         appMod.corrected_images[filename][slice_number] = None
@@ -1284,10 +1322,10 @@ def input_rolling_ball_radius(window :Ui_MainWindow):
         window.le_RollingBallRadius.clear() 
  
 def rolling_ball_to_image(window : Ui_MainWindow,slice_number = None):
-    """Applies the rolling ball algorithm to the displayed image
+    '''Applies the rolling ball algorithm to the displayed image
     Parameters:
     window : an instance of the app
-    slice_number : the number of the slice in the stack"""
+    slice_number : the number of the slice in the stack'''
     appMod=window.appMod
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"illumination")
@@ -1325,10 +1363,10 @@ def rolling_ball_to_image(window : Ui_MainWindow,slice_number = None):
      
 
 def rolling_ball_to_stack(window : Ui_MainWindow,display=True):
-    """Applies the rolling ball algorithm to all the checked images in the stack
+    '''Applies the rolling ball algorithm to all the checked images in the stack
     Parameters:
     window : an instance of the app
-    display: if True, the images will be displayed"""
+    display: if True, the images will be displayed'''
     if window.combob_FileName.currentText():
         filename, original_slice_number = get_filename_slice_number(window)
         if window.le_RollingBallRadius.text() == "" or (window.le_RollingBallRadius.text().isdigit() and int(window.le_RollingBallRadius.text()) > 0):
@@ -1345,9 +1383,9 @@ def rolling_ball_to_stack(window : Ui_MainWindow,display=True):
     
 
 def view_illumination(window : Ui_MainWindow):
-    """Highlights the tool 'illumination' and updates the image display
+    '''Highlights the tool 'illumination' and updates the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"illumination")
         filename, slice_number = get_filename_slice_number(window)
@@ -1358,11 +1396,11 @@ def view_illumination(window : Ui_MainWindow):
       
 
 def input_threshold_one(window : Ui_MainWindow, slice_number=None):
-    """Triggers several actions when the first threshold is set
+    '''Triggers several actions when the first threshold is set
     Parameters:
     window : an instance of the app
     appMod : an instance of the class AppModel containing the app variables
-    slice_number : the index of the image in the stack"""
+    slice_number : the index of the image in the stack'''
     appMod=window.appMod
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"segmentation")
@@ -1429,9 +1467,9 @@ def input_threshold_one(window : Ui_MainWindow, slice_number=None):
         show_error_message("Please choose an image to process.")
 
 def input_threshold_two(window : Ui_MainWindow):
-    """Triggers several actions when the second threshold is set
+    '''Triggers several actions when the second threshold is set
      Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     appMod=window.appMod
     if window.combob_FileName.currentText() and window.cb_IncludeImage.isChecked():
         highlight_groupbox(window,"segmentation")
@@ -1491,9 +1529,9 @@ def input_threshold_two(window : Ui_MainWindow):
         window.le_ThresholdTwo.blockSignals(False)
 
 def threshold_option_changed(window : Ui_MainWindow):
-    """Triggers several action when the combobox for threshold option is activated
+    '''Triggers several action when the combobox for threshold option is activated
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     highlight_groupbox(window,"segmentation")
     if window.combob_Threshold.currentText() == "One threshold":
         window.le_ThresholdTwo.blockSignals(True)
@@ -1508,16 +1546,16 @@ def threshold_option_changed(window : Ui_MainWindow):
             input_threshold_two(window)
 
 def combobox_blobs_changed(window : Ui_MainWindow):
-    """Highlights the box 'segmentation' when the combobox for blobs detection is activated
+    '''Highlights the box 'segmentation' when the combobox for blobs detection is activated
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     highlight_groupbox(window,"segmentation")
      
 
 def set_blobs_minimum_radius(window : Ui_MainWindow):
-    """Triggers several actions when a value for minimum radius of blob detection is set
+    '''Triggers several actions when a value for minimum radius of blob detection is set
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText() and window.cb_IncludeImage.isChecked():
         highlight_groupbox(window,"segmentation")
         try:
@@ -1538,9 +1576,9 @@ def set_blobs_minimum_radius(window : Ui_MainWindow):
         window.le_BlobsDetectionMinimumRadius.blockSignals(False)
 
 def set_blobs_maximum_radius(window : Ui_MainWindow):
-    """Triggers several actions when a value for maximum radius of blob detection is set
+    '''Triggers several actions when a value for maximum radius of blob detection is set
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText() and window.cb_IncludeImage.isChecked():
         highlight_groupbox(window,"segmentation")
         try:
@@ -1562,10 +1600,10 @@ def set_blobs_maximum_radius(window : Ui_MainWindow):
 
 
 def segmentation_to_image(window : Ui_MainWindow, slice_number=None):
-    """Applies the segmentation with the chosen options to an image
+    '''Applies the segmentation with the chosen options to an image
     Parameters:
     window: an instance of the app
-    slice_number: the index of the image in the stack"""
+    slice_number: the index of the image in the stack'''
     appMod=window.appMod
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"segmentation")
@@ -1609,10 +1647,10 @@ def segmentation_to_image(window : Ui_MainWindow, slice_number=None):
         show_error_message("Please choose an image to process.")
 
 def segmentation_to_stack(window : Ui_MainWindow, display=True):
-    """Applies the segmentation with the chosen options to all the images in the stack
+    '''Applies the segmentation with the chosen options to all the images in the stack
      Parameters:
     window : an instance of the app
-    display: if True, the images will be displayed"""
+    display: if True, the images will be displayed'''
     if window.combob_FileName.currentText():
         filename, original_slice_number = get_filename_slice_number(window)
         for i in range(len(window.appMod.stacks[filename])):
@@ -1625,9 +1663,9 @@ def segmentation_to_stack(window : Ui_MainWindow, display=True):
         show_error_message("Please choose an image to process.")
 
 def view_segmentation(window : Ui_MainWindow):
-    """Highlights the tool 'segmentation' and updates the image display
+    '''Highlights the tool 'segmentation' and updates the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"segmentation")
         filename, slice_number = get_filename_slice_number(window)
@@ -1729,10 +1767,10 @@ def apply_labeling_to_image(window :Ui_MainWindow, slice_number = None):
 
 
 def apply_labeling_to_stack(window :Ui_MainWindow, display=True):
-    """Applies the labeling with the chosen options to all the images in the stack
+    '''Applies the labeling with the chosen options to all the images in the stack
      Parameters:
     window : an instance of the app
-    display: if True, the images will be displayed"""
+    display: if True, the images will be displayed'''
     if window.combob_FileName.currentText():
         filename, original_slice_number = get_filename_slice_number(window)
         if window.le_SieveSize.text() == "" or (window.le_SieveSize.text().isdigit() and int(window.le_SieveSize.text()) >= 0):
@@ -1748,9 +1786,9 @@ def apply_labeling_to_stack(window :Ui_MainWindow, display=True):
         show_error_message("Please choose an image to process.")
 
 def view_labeling(window :Ui_MainWindow):
-    """Highlights the tool 'labeling' and updates the image display
+    '''Highlights the tool 'labeling' and updates the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"labeling")
         filename, slice_number = get_filename_slice_number(window)
@@ -1760,9 +1798,9 @@ def view_labeling(window :Ui_MainWindow):
         show_error_message("Please choose an image to process.")
 
 def input_background_threshold(window :Ui_MainWindow):
-    """Controls that the value of the threshold is correct
+    '''Controls that the value of the threshold is correct
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"contours")
         if not window.le_BackgroundThreshold.text().isdigit() or int(window.le_BackgroundThreshold.text()) < 0:
@@ -1774,9 +1812,9 @@ def input_background_threshold(window :Ui_MainWindow):
         window.le_BackgroundThreshold.clear()
 
 def combobox_contours_changed(window :Ui_MainWindow):
-    """Triggers several actrions when the combox with the contouring option is activated
+    '''Triggers several actrions when the combox with the contouring option is activated
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     highlight_groupbox(window,"contours")
     if window.combob_FileName.currentText():
         filename, slice_number = get_filename_slice_number(window)
@@ -1802,10 +1840,10 @@ def determine_main_slice(appMod : AppModel, filename):
                 max_contours = sum_contours
 
 def apply_contours_to_image(window :Ui_MainWindow, slice_number=None):
-    """Applies the chosen contouring algorithm to the image
+    '''Applies the chosen contouring algorithm to the image
     Parameters:
     window : an instance of the app
-    slice_number: the index of the image in the stack"""
+    slice_number: the index of the image in the stack'''
     appMod=window.appMod
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"contours")
@@ -1857,10 +1895,10 @@ def apply_contours_to_image(window :Ui_MainWindow, slice_number=None):
         show_error_message("Please choose an image to process.")
 
 def apply_contours_to_stack(window :Ui_MainWindow, display = True):
-    """Applies the chosen contouring algorithm to the current stack of images
+    '''Applies the chosen contouring algorithm to the current stack of images
     Parameters:
     window : an instance of the app
-    display: if True, the images will be displayed"""
+    display: if True, the images will be displayed'''
     if window.combob_FileName.currentText():
         filename, original_slice_number = get_filename_slice_number(window)
         if window.le_BackgroundThreshold.text() != "":
@@ -1877,9 +1915,9 @@ def apply_contours_to_stack(window :Ui_MainWindow, display = True):
         show_error_message("Please choose an image to process.")
 
 def view_contours(window :Ui_MainWindow):
-    """Highlights the tool 'contours' and updates the image display
+    '''Highlights the tool 'contours' and updates the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"contours")
         filename, slice_number = get_filename_slice_number(window)
@@ -1990,10 +2028,10 @@ def input_kernel_size(window :Ui_MainWindow):
         window.le_DensityMapKernelSize.clear()
 
 def apply_density_to_image(window :Ui_MainWindow, slice_number=None):
-    """Applies the density algorithms to the image
+    '''Applies the density algorithms to the image
     Parameters:
     window : an instance of the app
-    slice_number: the index of the image in the stack"""
+    slice_number: the index of the image in the stack'''
     if window.combob_FileName.currentText():
         appMod=window.appMod
         highlight_groupbox(window,"density")
@@ -2053,10 +2091,10 @@ def apply_density_to_image(window :Ui_MainWindow, slice_number=None):
         show_error_message("Please choose an image to process.")
 
 def apply_density_to_stack(window :Ui_MainWindow, display = True):
-    """Applies the density algorithms to the current stack of images
+    '''Applies the density algorithms to the current stack of images
     Parameters:
     window : an instance of the app
-    display: if True, the images will be displayed"""
+    display: if True, the images will be displayed'''
     if window.combob_FileName.currentText():
         filename, original_slice_number = get_filename_slice_number(window)
         if window.le_DensityTargetLayers.text() != "" and window.le_DensityMapKernelSize.text() !="":
@@ -2072,10 +2110,10 @@ def apply_density_to_stack(window :Ui_MainWindow, display = True):
         show_error_message("Please choose an image to process.")
 
 def view_density(window :Ui_MainWindow):
-    """Highlights the tool 'density' and updates the image display
+    '''Highlights the tool 'density' and updates the image display
     Parameters:
     window : an instance of the app
-    appMod : an instance of the class AppModel containing the app variables"""
+    appMod : an instance of the class AppModel containing the app variables'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"density")
         filename, slice_number = get_filename_slice_number(window)
@@ -2116,9 +2154,9 @@ def input_z_thickness(window :Ui_MainWindow):
         window.le_ZThickness.clear()
 
 def input_inter_z(window :Ui_MainWindow):
-    """Controls the input of the space between slices
+    '''Controls the input of the space between slices
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"results")
         if window.le_InterZ.text() == "" or is_float(window.le_InterZ.text()):
@@ -2136,9 +2174,9 @@ def input_inter_z(window :Ui_MainWindow):
         window.le_InterZ.clear()
 
 def input_pixel_size(window :Ui_MainWindow):
-    """Controls the input of the pixel size
+    '''Controls the input of the pixel size
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         highlight_groupbox(window,"results")
         if window.le_PixelSize.text() == "" or is_float(window.le_PixelSize.text()):
@@ -2156,9 +2194,9 @@ def input_pixel_size(window :Ui_MainWindow):
         window.le_PixelSize.clear()
 
 def apply_infos_to_stacks(window :Ui_MainWindow):
-    """Applies the input data to all the stacks
+    '''Applies the input data to all the stacks
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if window.combob_FileName.currentText():
         appMod=window.appMod
         highlight_groupbox(window,"results")
@@ -2564,10 +2602,10 @@ def select_none(window :Ui_MainWindow):
             checkbox.setChecked(False)
 
 def select_folder(window :Ui_MainWindow,widget):
-    """Selects a folder and displays it in a widget
+    '''Selects a folder and displays it in a widget
     Parameters:
     window : an instance of the app
-    widget: the widget in which to display the chosen folder name"""
+    widget: the widget in which to display the chosen folder name'''
     options = QFileDialog.Options()
     options |= QFileDialog.DontUseNativeDialog
     dialog = QFileDialog(window, "Select Folder", options=options)
@@ -2576,18 +2614,18 @@ def select_folder(window :Ui_MainWindow,widget):
     widget.setText(folder_path)
 
 def return_to_images_screen(window :Ui_MainWindow):
-    """Goes back from the result display to the image display
+    '''Goes back from the result display to the image display
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     highlight_groupbox(window,None)
     filename, slice_number = get_filename_slice_number(window)
     display_original_image(window,filename,slice_number,focus=None)
 
 def check_file_name(window : Ui_MainWindow, widget):
-    """Checks that an input file name only contains allowed characters and displays the name in a widget
+    '''Checks that an input file name only contains allowed characters and displays the name in a widget
     Parameters:
     window : an instance of the app
-    widget: the widget in which to display the chosen folder name"""
+    widget: the widget in which to display the chosen folder name'''
     filename = widget.text()
     allowed_characters = re.compile(r'^[a-zA-Z0-9_\- µ]*$')
     if not allowed_characters.match(filename):
@@ -2601,20 +2639,20 @@ def check_file_name(window : Ui_MainWindow, widget):
             widget.setText(now_string+"_analysis")
 
 def check_checkboxes(groupbox):
-    """Checks if an any checkbox is checked in a widget
+    '''Checks if an any checkbox is checked in a widget
     Parameters:
     groupbox: the widget in which checking all the checkboxes
     Return:
-    True if any checkbox is checked"""
+    True if any checkbox is checked'''
     for widget in groupbox.findChildren(QCheckBox):
         if widget.isChecked():
             return True
     return False
 
 def show_save_message(message):
-    """Displays a QDialog window with a warning message
+    '''Displays a QDialog window with a warning message
     Parameters:
-    message : the message to display"""
+    message : the message to display'''
     dialog = QDialog()
     dialog.setWindowTitle("Save successful")
     icon = QIcon()
@@ -2634,9 +2672,9 @@ def show_save_message(message):
     dialog.exec()
 
 def save_results(window :Ui_MainWindow):
-    """Save the results in two csv files; a summary and a file with the details of each blob per slice
+    '''Save the results in two csv files; a summary and a file with the details of each blob per slice
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     if check_checkboxes(window.gb_ResultsChoice):
         try:
             appMod=window.appMod
@@ -2754,9 +2792,9 @@ def save_results(window :Ui_MainWindow):
         show_error_message("Please choose at least one result or image to save.")
     
 def open_save_analysis_window(window : Ui_MainWindow):
-    """Opens a window to choose the folder and the file name to save an analysis
+    '''Opens a window to choose the folder and the file name to save an analysis
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     window.save_analysis_window = SaveAnalysisWindow(window)
     window.save_analysis_window.pb_ChooseDestinationFolder.clicked.connect(lambda : select_folder(window.save_analysis_window,window.save_analysis_window.lb_DestinationFolder))
     window.save_analysis_window.lb_DestinationFolder.setText("./analysis/")
@@ -2781,21 +2819,22 @@ def save_analysis(window : SaveAnalysisWindow):
             folder+="/"
         appMod = window.main_window.appMod
         dump(appMod,folder+filename+"_analysis.joblib",compress= True)
-        show_save_message(f"The analysis has been successfully saved in {folder}.")
+        show_save_message(f"The analysis has been successfully saved in {folder}")
         window.close()
     except (AttributeError, FileNotFoundError, PermissionError, TypeError, IOError, KeyError) as e:
         show_error_message(f"An error occured during while saving the analysis:\n{e}")
     window.setCursor(QCursor(Qt.ArrowCursor))
 
 def load_analysis(window : Ui_MainWindow):
-    """Load an analysis from a joblib file
+    '''Load an analysis from a joblib file
     Parameters:
-    window : an instance of the app"""
+    window : an instance of the app'''
     filename, _ = QFileDialog.getOpenFileName(window,
         "Choose files",
         "./analysis/",
         "Analysis files (*.joblib)"
     )
+    window.setCursor(QCursor(Qt.WaitCursor))
     if filename:
         remove_all_images(window)
         window.appMod = load(filename)
@@ -2836,3 +2875,4 @@ def load_analysis(window : Ui_MainWindow):
             window.wi_Image2Canvas.hide()
             window.wi_OriginalImage.hide()
             window.frame_4.hide()
+        window.setCursor(QCursor(Qt.ArrowCursor))
