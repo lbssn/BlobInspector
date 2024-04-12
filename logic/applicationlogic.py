@@ -240,7 +240,7 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
         for i in range (3):
             image_rgb[:,:,i] = image
         if window.appOptions.default_profile is None:
-            color = [255,255,0]
+            color = return_colors_dictionnary()[window.options_window.combob_SegmentationColors.currentText()]
         else:
             color = return_colors_dictionnary()[window.appOptions.profiles[window.appOptions.default_profile][0]]
         image_rgb[coordinates[0], coordinates[1]] = color
@@ -573,10 +573,13 @@ def segmentation_color_changed(window : Ui_MainWindow):
         ow = window.options_window
         filename, slice_number = get_filename_slice_number(window)
         profilename = ow.combob_Profiles.currentText()
-        previous_color = window.appOptions.profiles[profilename][0]
-        window.appOptions.profiles[profilename][0] = ow.combob_SegmentationColors.currentText()
-        display_original_image(window,filename,slice_number,focus="segmentation")
-        window.appOptions.profiles[profilename][0] = previous_color
+        if window.appOptions.default_profile is not None:
+            previous_color = window.appOptions.profiles[profilename][0]
+            window.appOptions.profiles[profilename][0] = ow.combob_SegmentationColors.currentText()
+            display_original_image(window,filename,slice_number,focus="segmentation")
+            window.appOptions.profiles[profilename][0] = previous_color
+        else:
+            display_original_image(window,filename,slice_number,focus="segmentation")
 
 def remove_profile(window : Ui_MainWindow):
     '''Removes the current profile
@@ -590,7 +593,6 @@ def remove_profile(window : Ui_MainWindow):
         ow.combob_Profiles.removeItem(index)
         if ow.combob_Profiles.count() > 0:
             ow.combob_Profiles.setCurrentIndex(0)
-            profile_changed(window)
         else:
             window.appOptions.default_profile = None
             
