@@ -483,7 +483,7 @@ def calculate_centroids_sizes_image(dots,labels,image):
         label_coordinates = [dots[i] for i in range(len(labels)) if labels[i] == label]
         centroid = np.mean(label_coordinates, axis=0)
         size = len(label_coordinates)
-        centroid_size_image[int(centroid[0]),int(centroid[1])] = size
+        centroid_size_image[int(centroid[0]+0.5),int(centroid[1]+0.5)] = size
     return centroid_size_image
 
 def calculate_centroids(dots,labels):
