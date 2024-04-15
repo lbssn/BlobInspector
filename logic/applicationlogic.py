@@ -1213,11 +1213,11 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
             if frame == 2:
                 labels = appMod.labeling_labels[filename][slice_number]
                 if labels != []:
-                    count = np.max(labels) + 1
-                    mean, median = mean_median_size(labels)
+                    count = np.max(labels)
+                    mean, median = appMod.labeling_images_with_labels[filename][slice_number][1],appMod.labeling_images_with_labels[filename][slice_number][2]
                 else:
                     count,mean,median = 0,0,0
-                display_secondary_image(2,window,appMod.labeling_images_with_labels[filename][slice_number],title = f"Count: {count}, mean size: {mean}, median: {median}")
+                display_secondary_image(2,window,appMod.labeling_images_with_labels[filename][slice_number][0],title = f"Count: {count}, mean size: {mean}, median: {median}")
         elif focus == "contours" and appMod.contours_mask[filename][slice_number] is not None:
             if frame == 1:
                 if appMod.labeling_coordinates[filename][slice_number] is not None:
@@ -1729,7 +1729,7 @@ def apply_labeling_to_image(window :Ui_MainWindow, slice_number = None):
                 if appMod.included_images[filename][slice_number]:
                     if appMod.first_threshold[filename][slice_number]:
                         if appMod.blobs_thresholded_images[filename][slice_number] is not None:
-                                image = appMod.blobs_thresholded_images[filename][slice_number]
+                            image = appMod.blobs_thresholded_images[filename][slice_number]
                         else:
                             image = appMod.thresholded_images[filename][slice_number]
                         if int(window.le_SieveSize.text()) != appMod.labeling_sieve_size[filename][slice_number] or appMod.labeling_option[filename][slice_number] != window.combob_LabelingOption.currentText():
@@ -1752,15 +1752,21 @@ def apply_labeling_to_image(window :Ui_MainWindow, slice_number = None):
                             image_8_bits = image.astype(np.uint8) * 255
                             image_with_conserved_blobs = np.stack((image_8_bits,image_8_bits,image_8_bits),axis = -1)
                             image_with_labels = np.stack((image_8_bits,image_8_bits,image_8_bits),axis = -1)
+                            sizes=[]
                             if labels != []:
                                 unique_labels = set(labels)
-                                for i, label in enumerate(unique_labels):
+                                for label in unique_labels:
                                     random_color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
                                     cluster_points = np.array([point for point, l in zip(dots, labels) if l == label])
+                                    sizes.append(labels.count(label))
                                     for y,x in cluster_points:
                                         image_with_conserved_blobs[y,x] = [0,255,0]
                                         image_with_labels[y,x] = random_color
-                            appMod.labeling_images_with_labels[filename][slice_number] = image_with_labels
+                                mean_s, median_s, min_s, max_s = round(np.mean(sizes),2),round(np.median(sizes),2),round(np.min(sizes),2),round(np.max(sizes),2)
+                            else:
+                                mean_s, median_s, min_s, max_s= 0,0,0,0
+                            # mean_s, median_s, min_s, max_s, sizes = mean_median_min_max_size(labels)
+                            appMod.labeling_images_with_labels[filename][slice_number] = [image_with_labels,mean_s, median_s, min_s, max_s, sizes]
                             appMod.labeling_images_conserved_blobs[filename][slice_number] = image_with_conserved_blobs
                             if single_image == True:
                                 set_current_image_options(window,filename,slice_number)
@@ -2291,7 +2297,7 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
     count_results = [[relative_path,"Blobs count","Mean size"," Median size","Min size","Max size","Segmentation threshold(s)",\
                       "Blobs detection","Blobs min/max radius","Rolling ball radius","Watershed","Sieve size"]]
     total = 0
-    all_labels = []
+    all_sizes= []
     appMod=window.appMod
     for i in range(nb_slices):
         if appMod.included_images[filename][i]:
@@ -2300,17 +2306,17 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
                 if appMod.labeling_labels[filename][i] == []:
                     count = 0
                 else:
-                    count = np.max(appMod.labeling_labels[filename][i])+1
-                if all_labels == []:
-                    all_labels = appMod.labeling_labels[filename][i].copy()
+                    count = np.max(appMod.labeling_labels[filename][i])
+                if all_sizes== []:
+                    all_sizes = appMod.labeling_images_with_labels[filename][i][5].copy()
                 else:
-                    value = max(all_labels)+1
-                    all_labels.extend([x + value for x in appMod.labeling_labels[filename][i]])
+                    all_sizes.extend(appMod.labeling_images_with_labels[filename][i][5].copy())
                 total += count
                 if count == 0:
-                    median, SD, min_size, max_size = 0,0,0,0
+                    mean_s, median_s, min_size, max_size = 0,0,0,0
                 else:
-                    median, SD, min_size, max_size = mean_median_min_max_size(appMod.labeling_labels[filename][i])
+                    mean_s, median_s, min_size, max_size = appMod.labeling_images_with_labels[filename][i][1],appMod.labeling_images_with_labels[filename][i][2],\
+                                                            appMod.labeling_images_with_labels[filename][i][3],appMod.labeling_images_with_labels[filename][i][4]
                 if appMod.threshold_algo[filename][i] == window.combob_Threshold.itemText(0):
                     thresholds = str(appMod.first_threshold[filename][i])
                 else:
@@ -2331,9 +2337,12 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
                     ws = "no"
                 sieve_size = appMod.labeling_sieve_size[filename][i]
             else:
-                count,median,SD,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-"
-            count_results.append([slice,count,median,SD,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size])
-    tot_median, tot_SD, tot_min, tot_max = mean_median_min_max_size(all_labels)
+                count,mean_s,median_s,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-"
+            count_results.append([slice,count,mean_s,median_s,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size])
+    if len(all_sizes) == 0:
+        tot_median, tot_SD, tot_min, tot_max = 0,0,0,0
+    else:
+        tot_median, tot_SD, tot_min, tot_max = round(np.mean(all_sizes),2),round(np.median(all_sizes),2),round(np.min(all_sizes),2),round(np.max(all_sizes),2)
     count_results.append(["Total",total,tot_median,tot_SD,tot_min,tot_max,"-","-","-","-","-","-"])    
     appMod.results_count[filename] = count_results
 

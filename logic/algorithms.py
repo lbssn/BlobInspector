@@ -101,10 +101,10 @@ def watershed_custom(binary_image, dots):
     dots: list of the coordinates of the True pixels in the binary image
     Return:
     new_dots: list of the coordinates of the pixels labeled by the watershed
-    ws_list: list of the corresponding labels to the coordinates (0 is the value of the first label)'''
+    ws_list: list of the corresponding labels to the coordinates (1 is the value of the first label)'''
     distance = ndi.distance_transform_edt(binary_image)
     # labeled_image = measure.label(binary_image,connectivity=2)
-    max_coords = peak_local_max(distance, labels=binary_image, min_distance=3) # , labels = binary_image , footprint=np.ones((3, 3)) , min_distance=4
+    max_coords = peak_local_max(distance, labels=binary_image, min_distance=3, exclude_border=False) # , labels = binary_image , footprint=np.ones((3, 3)) , min_distance=4
     local_maxima = np.zeros(distance.shape, dtype=bool)
     local_maxima[tuple(max_coords.T)] = True
     markers, _ = ndi.label(local_maxima)
@@ -121,7 +121,9 @@ def labeling_custom(binary_image, dots):
     '''Labels a binary image
     Parameters:
     binary_image: the binary image to label
-    dots: list of the coordinates of the True pixels in the binary image'''
+    dots: list of the coordinates of the True pixels in the binary image
+    Returns:
+    labels: list of the corresponding labels to the coordinates (1 is the value of the first label)'''
     labeled_image = measure.label(binary_image,connectivity=2)
     labels = []
     for i in range(len(dots)):
@@ -144,11 +146,11 @@ def sieve_labels(dots,labels,sieve_size):
     sieve_size: all objects with a pixel size inferior or equal to this parameter will be removed
     Return:
     sieved_dots: the coordinates of the points after the sieve was applied
-    sieved_labels: the labels corresponding to each dot (the first label has the value 0)'''
+    sieved_labels: the labels corresponding to each dot (the first label has the value 1)'''
     sieved_dots = []
     sieved_labels = []
     unique_labels = set(labels)
-    latest_label = 0
+    latest_label = 1
     for label in unique_labels:
         label_coordinates = [dots[i] for i in range(len(labels)) if labels[i] == label]
         if len(label_coordinates) > sieve_size:
@@ -159,31 +161,31 @@ def sieve_labels(dots,labels,sieve_size):
 
 def mean_SD_size(labels):
     '''Calculates the mean size and the standard deviation of a list of labels
-    labels: the list of labels for the calculation'''
+    labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
         return 0,0
-    nb_labels = max(labels)+1
+    nb_labels = max(labels)
     sizes = []
-    sizes = [labels.count(i) for i in range(nb_labels)]
+    sizes = [labels.count(i) for i in range(1,nb_labels)]
     return round(np.mean(sizes),2),round(np.std(sizes),2)
 
 def mean_median_size(labels):
     '''Calculates the mean size and the median of a list of labels
-    labels: the list of labels for the calculation'''
+    labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
         return 0,0
-    nb_labels = max(labels)+1
-    sizes = [labels.count(i) for i in range(nb_labels)]
+    nb_labels = max(labels)
+    sizes = [labels.count(i) for i in range(1,nb_labels)]
     return round(np.mean(sizes),2),round(np.median(sizes),2)
 
 def mean_median_min_max_size(labels):
     '''Calculates the mean, the median, the minimum and the maximum size of a list of labels
-    labels: the list of labels for the calculation'''
+    labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
-        return 0,0
-    nb_labels = max(labels)+1
-    sizes = [labels.count(i) for i in range(nb_labels)]
-    return round(np.mean(sizes),2),round(np.median(sizes),2),round(np.min(sizes),2),round(np.max(sizes),2)
+        return 0,0,0,0,0
+    nb_labels = max(labels)
+    sizes = [labels.count(i) for i in range(1,nb_labels)]
+    return round(np.mean(sizes),2),round(np.median(sizes),2),round(np.min(sizes),2),round(np.max(sizes),2),sizes
 
 def return_contouring_algorithms():
     '''Returns the list of the contouring algorithms so that they can be added in the proper combobox'''
@@ -478,7 +480,7 @@ def calculate_centroids_sizes_image(dots,labels,image):
     Return:
     An image with the size of the blobs as value at the centroid coordinates'''
     unique_labels = np.unique(labels)
-    centroid_size_image = np.zeros_like(image, dtype=float)
+    centroid_size_image = np.zeros_like(image, dtype=np.uint16)
     for label in unique_labels:
         label_coordinates = [dots[i] for i in range(len(labels)) if labels[i] == label]
         centroid = np.mean(label_coordinates, axis=0)
