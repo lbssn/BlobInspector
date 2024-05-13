@@ -1106,6 +1106,8 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
             centroid_x=int(centroid_x)
             canvas.axes.plot([centroid_x, centroid_x],[int(max(0,centroid_y-15)), int(min(image.shape[0]-1,centroid_y+15))], color='red', linewidth=2)
             canvas.axes.plot([int(max(0,centroid_x-15)), int(min(image.shape[1]-1,centroid_x+15))],[centroid_y, centroid_y],  color='red', linewidth=2)
+            if np.sum(image == 0) == 0:
+                image[0,0]=0
             window.le_CentroidX.setText(str(centroid_x))
             window.le_CentroidY.setText(str(centroid_y))
             window.cb_MainSlice.stateChanged.disconnect()

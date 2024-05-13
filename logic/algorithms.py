@@ -1,9 +1,8 @@
 # This file is distributed under the terms of the GNU General Public License v3.0
 
-from skimage import exposure, color, restoration
+from skimage import exposure, color, restoration, measure
 from skimage.feature import blob_dog, blob_log, blob_doh, peak_local_max
 from skimage.segmentation import watershed
-from skimage import measure
 from scipy.ndimage import binary_dilation
 from scipy import ndimage as ndi
 import numpy as np
@@ -307,7 +306,10 @@ def calculate_contours_centroid(image):
     Return:
     A list with the y and x coordinates of the centroid'''
     coord = np.where(image)
-    return [np.mean(coord[0]),np.mean(coord[1])]
+    if coord[0].any():
+        return [np.mean(coord[0]),np.mean(coord[1])]
+    else:
+        return [image.shape[0]/2,image.shape[1]/2]
 
 def return_colormaps():
     '''Returns the list of the colormaps so that they can be added in the proper combobox'''
