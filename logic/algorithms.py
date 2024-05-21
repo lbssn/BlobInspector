@@ -450,7 +450,10 @@ def min_max_mean_median_density(d_map,mask_contour):
     '''Returns the minimal, maximal, mean and median of the density in a heatmap
     d_map: the heatmap with the densities
     mask_contour: a binary image with the contoured object'''
-    return round(np.min(d_map[mask_contour]),3),round(np.max(d_map[mask_contour]),3),round(np.mean(d_map[mask_contour]),3),round(np.median(d_map[mask_contour]),3)
+    if np.sum(mask_contour)>0:
+        return round(np.min(d_map[mask_contour]),3),round(np.max(d_map[mask_contour]),3),round(np.mean(d_map[mask_contour]),3),round(np.median(d_map[mask_contour]),3)
+    else:
+        return 0,0,0,0
 
 def is_float(string):
     '''Returns True if the string can be converted into a float'''

@@ -1164,7 +1164,7 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
             contoured_image = appMod.contours_mask[filename][slice_number]
             if frame == 1:
                 min_m,max_m,mean_m,median_m = min_max_mean_median_density(image,contoured_image)
-                window.lb_MapStats.setText(f"Heatmap\nmean={mean_m:.1f}/median={median_m:.1f}\nmin={min_m:.1f}/max={max_m:.1f}")
+                window.lb_MapStats.setText(f"Convoluted\nmean={mean_m:.1f}/median={median_m:.1f}\nmin={min_m:.1f}/max={max_m:.1f}")
                 show_text_layout_content(window,1)
             if frame == 2:
                 min_t,max_t,mean_t,median_t = min_max_mean_median_density(image,contoured_image)
