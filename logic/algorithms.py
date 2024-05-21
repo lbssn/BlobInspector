@@ -357,28 +357,31 @@ def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroi
     image_count: a heatmap with the count of blobs as pixel value
     image_size: a heatmap with the mean size of blobs as pixel value'''
     coordinates = np.where(mask_contour)
-    distances_to_centroid = np.sqrt((coordinates[1] - centroid_x)**2 + (coordinates[0] - centroid_y)**2)
-    max_distance = np.max(distances_to_centroid)
-    layer_thickness_list = np.linspace (0,max_distance,num=nb_layers+1)
-    image_percentage=np.zeros_like(mask_thresh, dtype=np.float32)
-    image_count=np.zeros_like(mask_thresh, dtype=np.float32)
-    image_size=np.zeros_like(mask_thresh, dtype=np.float32)
-    mask_centroids = centroid_size_image > 0
-    for i in range(nb_layers):
-        mask = (layer_thickness_list[i] < distances_to_centroid) & (distances_to_centroid <= layer_thickness_list[i+1])
-        th = np.sum(mask_thresh[coordinates[0][mask], coordinates[1][mask]])
-        cont = np.sum(mask_contour[coordinates[0][mask], coordinates[1][mask]])
-        centroids_sum = np.sum(mask_centroids[coordinates[0][mask], coordinates[1][mask]])
-        size_sum = np.sum(centroid_size_image[coordinates[0][mask], coordinates[1][mask]])
-        if cont != 0:
-            density = th / cont * 100
-        else:
-            density = 0
-        image_percentage[coordinates[0][mask], coordinates[1][mask]] = density
-        image_count[coordinates[0][mask], coordinates[1][mask]] = centroids_sum
-        if centroids_sum > 0:
-            image_size[coordinates[0][mask], coordinates[1][mask]] = size_sum / centroids_sum
-    return image_percentage, image_count, image_size
+    if len(coordinates[0])>0:
+        distances_to_centroid = np.sqrt((coordinates[1] - centroid_x)**2 + (coordinates[0] - centroid_y)**2)
+        max_distance = np.max(distances_to_centroid)
+        layer_thickness_list = np.linspace (0,max_distance,num=nb_layers+1)
+        image_percentage=np.zeros_like(mask_thresh, dtype=np.float32)
+        image_count=np.zeros_like(mask_thresh, dtype=np.float32)
+        image_size=np.zeros_like(mask_thresh, dtype=np.float32)
+        mask_centroids = centroid_size_image > 0
+        for i in range(nb_layers):
+            mask = (layer_thickness_list[i] < distances_to_centroid) & (distances_to_centroid <= layer_thickness_list[i+1])
+            th = np.sum(mask_thresh[coordinates[0][mask], coordinates[1][mask]])
+            cont = np.sum(mask_contour[coordinates[0][mask], coordinates[1][mask]])
+            centroids_sum = np.sum(mask_centroids[coordinates[0][mask], coordinates[1][mask]])
+            size_sum = np.sum(centroid_size_image[coordinates[0][mask], coordinates[1][mask]])
+            if cont != 0:
+                density = th / cont * 100
+            else:
+                density = 0
+            image_percentage[coordinates[0][mask], coordinates[1][mask]] = density
+            image_count[coordinates[0][mask], coordinates[1][mask]] = centroids_sum
+            if centroids_sum > 0:
+                image_size[coordinates[0][mask], coordinates[1][mask]] = size_sum / centroids_sum
+        return image_percentage, image_count, image_size
+    else:
+        return np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8)
 
 def density_map(mask_thresh, mask_contour, kernel_size):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour with a convolution

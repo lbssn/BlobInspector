@@ -135,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pb_DensityView.clicked.connect(lambda : view_density(self))
         self.combob_DensityDisplay.activated.connect(lambda : combobox_density_changed(self))
         self.combob_cmap.activated.connect(lambda : combobox_density_changed(self))
+        self.cb_SharedColorBar.stateChanged.connect(lambda : shared_colorbar_state_changed(self))
         # Results
         self.le_ZThickness.editingFinished.connect(lambda : input_z_thickness(self))
         self.le_InterZ.editingFinished.connect(lambda : input_inter_z(self))

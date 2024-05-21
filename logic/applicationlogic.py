@@ -134,6 +134,7 @@ def hide_text_layout_content(window : Ui_MainWindow, frame):
         window.lb_MapStats.hide()
         window.combob_DensityDisplay.hide()
         window.combob_cmap.hide()
+        window.cb_SharedColorBar.hide()
 
     else:
         window.lb_CentroidCoordinates.hide()
@@ -153,6 +154,7 @@ def show_text_layout_content(window : Ui_MainWindow, frame):
         window.lb_MapStats.show()
         window.combob_DensityDisplay.show()
         window.combob_cmap.show()
+        window.cb_SharedColorBar.show()
 
     else:
         window.lb_CentroidCoordinates.show()
@@ -1064,9 +1066,41 @@ def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
     else:
         window.le_PixelSize.clear()
 
+def get_colobar_vmin_vmax(window : Ui_MainWindow,frame):
+    ''' Determines the minimum and maximum values of density heatmaps when the shared colorbar is checked
+    window : an instance of the app
+    frame : the frame in which to display the image (either 1 or 2)
+    '''
+    vmins = []
+    vmaxs = []
+    image_type = None
+    if window.combob_DensityDisplay.currentText() == "Percentage":
+        if frame == 1:
+            image_type = window.appMod.density_map_heatmap
+        else:
+            image_type = window.appMod.density_target_heatmap
+    elif window.combob_DensityDisplay.currentText() == "Count":
+        if frame == 1:
+            image_type = window.appMod.density_map_centroid_heatmap
+        else:
+            image_type = window.appMod.density_target_centroid_heatmap
+    elif window.combob_DensityDisplay.currentText() == "Mean size":
+        if frame == 1:
+            image_type = window.appMod.density_map_size
+        else:
+            image_type = window.appMod.density_target_size
+    for images in image_type.values():
+        for image in images:
+            if image is not None:
+                vmins.append(np.min(image))
+                vmaxs.append(np.max(image))
+    return min(vmins),max(vmaxs)
+    
+
 def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus = None, title = None):
     '''Displays the secondary images resulting from the processing of the original image
     Parameters:
+    frame : the frame in which to display the image (either 1 or 2)
     window : an instance of the app
     image : the image to be displayed
     focus : the tools being used
@@ -1121,7 +1155,11 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
             show_text_layout_content(window,2)
         if focus == "density":
             filename,slice_number = get_filename_slice_number(window)
-            heatmap = canvas.axes.imshow(image, cmap=window.combob_cmap.currentText(), interpolation='nearest')
+            if window.cb_SharedColorBar.isChecked():
+                vmin,vmax = get_colobar_vmin_vmax(window,frame)
+                heatmap = canvas.axes.imshow(image, cmap=window.combob_cmap.currentText(), interpolation='nearest', vmin=vmin, vmax=vmax)
+            else:    
+                heatmap = canvas.axes.imshow(image, cmap=window.combob_cmap.currentText(), interpolation='nearest')
             plt.colorbar(heatmap)
             contoured_image = appMod.contours_mask[filename][slice_number]
             if frame == 1:
@@ -2168,6 +2206,14 @@ def combobox_density_changed(window :Ui_MainWindow):
     if window.combob_DensityDisplay.currentText() == "Mean size":
         display_secondary_image(1,window,window.appMod.density_map_size[filename][slice_number],focus="density",title="Convoluted density heatmap (Mean size)")
         display_secondary_image(2,window,window.appMod.density_target_size[filename][slice_number],focus = "density", title = "Target density heatmap (Mean size)")
+
+def shared_colorbar_state_changed(window :Ui_MainWindow):
+    ''' Changes the display of the density colobars when the checkbox is checked/unchecked
+    Parameters:
+    window : an instance of the app'''
+    display_secondary_image(1,window,focus="density")
+    display_secondary_image(2,window,focus="density")
+
 def input_z_thickness(window :Ui_MainWindow):
     '''Controls the input of the thickness of the slices
     Parameters:

@@ -780,6 +780,11 @@ class Ui_MainWindow(object):
 
         self.layout_Text1.addWidget(self.combob_cmap, 1, 1, 1, 1)
 
+        self.cb_SharedColorBar = QCheckBox(self.wi_Image1Text)
+        self.cb_SharedColorBar.setObjectName(u"cb_SharedColorBar")
+
+        self.layout_Text1.addWidget(self.cb_SharedColorBar, 1, 2, 1, 1)
+
         self.combob_DensityDisplay = QComboBox(self.wi_Image1Text)
         self.combob_DensityDisplay.addItem("")
         self.combob_DensityDisplay.addItem("")
@@ -788,7 +793,7 @@ class Ui_MainWindow(object):
         self.combob_DensityDisplay.setMinimumSize(QSize(100, 0))
         self.combob_DensityDisplay.setMaximumSize(QSize(200, 16777215))
 
-        self.layout_Text1.addWidget(self.combob_DensityDisplay, 0, 1, 1, 1)
+        self.layout_Text1.addWidget(self.combob_DensityDisplay, 0, 1, 1, 2)
 
 
         self.gridLayout_6.addWidget(self.wi_Image1Text, 0, 1, 1, 1)
@@ -1131,7 +1136,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.sw_Data.setCurrentIndex(1)
+        self.sw_Data.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(2)
 
 
@@ -1378,6 +1383,10 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.combob_cmap.setToolTip(QCoreApplication.translate("MainWindow", u"Choose display color map.", None))
 #endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.cb_SharedColorBar.setToolTip(QCoreApplication.translate("MainWindow", u"If checked, the colobars will have the same scale for all processed images.", None))
+#endif // QT_CONFIG(tooltip)
+        self.cb_SharedColorBar.setText(QCoreApplication.translate("MainWindow", u"Shared cb", None))
         self.combob_DensityDisplay.setItemText(0, QCoreApplication.translate("MainWindow", u"Percentage", None))
         self.combob_DensityDisplay.setItemText(1, QCoreApplication.translate("MainWindow", u"Count", None))
         self.combob_DensityDisplay.setItemText(2, QCoreApplication.translate("MainWindow", u"Mean size", None))
