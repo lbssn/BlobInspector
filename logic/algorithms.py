@@ -1,4 +1,21 @@
-# This file is distributed under the terms of the GNU General Public License v3.0
+# This file is part of the Blob Inspector project
+# 
+# Blob Inspector project is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Blob Inspector project is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Laurent Busson
+# Version: 0.9
+# Date: 2024-05-28
 
 from skimage import exposure, color, restoration, measure
 from skimage.feature import blob_dog, blob_log, blob_doh, peak_local_max
@@ -299,6 +316,21 @@ def contour_shrinking_box(image, threshold):
         endx -=1
         endy -=1
     return ~outerbox
+
+def remove_objects(contour_mask, min_size):
+    ''' Removes the objects containing less than min_size pixels
+    Parameters:
+    contour_mask: the mask obtained after the use of the contour tool
+    min_size: an integer
+    Returns:
+    labeled_image: a mask without the objects containing less than min_size pixels'''
+    labeled_image, num_labels = ndi.label(contour_mask, structure=np.ones((3,3)))
+    for i in range(1,num_labels+1):
+        if np.sum(labeled_image == i) < min_size:
+            labeled_image[labeled_image == i] = 0
+        else:
+            labeled_image[labeled_image == i] = 1
+    return labeled_image > 0
 
 def calculate_contours_centroid(image):
     '''Calculates the centroid coordinates of a contoured object

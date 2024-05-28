@@ -1,6 +1,24 @@
 # -*- coding: utf-8 -*-
 
-# This file is distributed under the terms of the GNU General Public License v3.0
+# This file is part of the Blob Inspector project
+# 
+# Blob Inspector project is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Blob Inspector project is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Laurent Busson
+# Version: 0.9
+# Date: 2024-05-28
+
 
 ################################################################################
 ## Form generated from reading UI file 'app.ui'
@@ -131,7 +149,7 @@ class Ui_MainWindow(object):
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.pb_RollingBallRadiusToStack = QPushButton(self.gb_Illumination)
         self.pb_RollingBallRadiusToStack.setObjectName(u"pb_RollingBallRadiusToStack")
-        self.pb_RollingBallRadiusToStack.setMaximumSize(QSize(100, 16777215))
+        self.pb_RollingBallRadiusToStack.setMaximumSize(QSize(120, 16777215))
         self.pb_RollingBallRadiusToStack.setBaseSize(QSize(50, 0))
         font2 = QFont()
         font2.setPointSize(10)
@@ -158,7 +176,7 @@ class Ui_MainWindow(object):
 
         self.pb_RollingBallRadiusView = QPushButton(self.gb_Illumination)
         self.pb_RollingBallRadiusView.setObjectName(u"pb_RollingBallRadiusView")
-        self.pb_RollingBallRadiusView.setMaximumSize(QSize(100, 16777215))
+        self.pb_RollingBallRadiusView.setMaximumSize(QSize(120, 16777215))
         self.pb_RollingBallRadiusView.setBaseSize(QSize(50, 0))
         self.pb_RollingBallRadiusView.setFont(font2)
 
@@ -174,7 +192,7 @@ class Ui_MainWindow(object):
 
         self.pb_RollingBallRadiusToImage = QPushButton(self.gb_Illumination)
         self.pb_RollingBallRadiusToImage.setObjectName(u"pb_RollingBallRadiusToImage")
-        self.pb_RollingBallRadiusToImage.setMaximumSize(QSize(100, 16777215))
+        self.pb_RollingBallRadiusToImage.setMaximumSize(QSize(120, 16777215))
         self.pb_RollingBallRadiusToImage.setBaseSize(QSize(50, 0))
         self.pb_RollingBallRadiusToImage.setFont(font2)
 
@@ -204,7 +222,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.pb_SegmentationToImage = QPushButton(self.gb_Segmentation)
         self.pb_SegmentationToImage.setObjectName(u"pb_SegmentationToImage")
-        self.pb_SegmentationToImage.setMaximumSize(QSize(100, 16777215))
+        self.pb_SegmentationToImage.setMaximumSize(QSize(120, 16777215))
         self.pb_SegmentationToImage.setBaseSize(QSize(50, 0))
         font5 = QFont()
         font5.setPointSize(10)
@@ -244,7 +262,7 @@ class Ui_MainWindow(object):
 
         self.pb_SegmentationToStack = QPushButton(self.gb_Segmentation)
         self.pb_SegmentationToStack.setObjectName(u"pb_SegmentationToStack")
-        self.pb_SegmentationToStack.setMaximumSize(QSize(100, 16777215))
+        self.pb_SegmentationToStack.setMaximumSize(QSize(120, 16777215))
         self.pb_SegmentationToStack.setBaseSize(QSize(50, 0))
         self.pb_SegmentationToStack.setFont(font5)
 
@@ -265,7 +283,7 @@ class Ui_MainWindow(object):
 
         self.pb_SegmentationView = QPushButton(self.gb_Segmentation)
         self.pb_SegmentationView.setObjectName(u"pb_SegmentationView")
-        self.pb_SegmentationView.setMaximumSize(QSize(100, 16777215))
+        self.pb_SegmentationView.setMaximumSize(QSize(120, 16777215))
         self.pb_SegmentationView.setBaseSize(QSize(50, 0))
         self.pb_SegmentationView.setFont(font5)
 
@@ -309,14 +327,6 @@ class Ui_MainWindow(object):
         self.gb_Labeling.setAlignment(Qt.AlignCenter)
         self.gridLayout_2 = QGridLayout(self.gb_Labeling)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.pb_LabelingToImage = QPushButton(self.gb_Labeling)
-        self.pb_LabelingToImage.setObjectName(u"pb_LabelingToImage")
-        self.pb_LabelingToImage.setMaximumSize(QSize(100, 16777215))
-        self.pb_LabelingToImage.setBaseSize(QSize(50, 0))
-        self.pb_LabelingToImage.setFont(font2)
-
-        self.gridLayout_2.addWidget(self.pb_LabelingToImage, 2, 0, 1, 1)
-
         self.lb_SieveSize = QLabel(self.gb_Labeling)
         self.lb_SieveSize.setObjectName(u"lb_SieveSize")
         self.lb_SieveSize.setFont(font3)
@@ -333,13 +343,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.le_SieveSize, 1, 1, 1, 2)
 
-        self.pb_LabelingToStack = QPushButton(self.gb_Labeling)
-        self.pb_LabelingToStack.setObjectName(u"pb_LabelingToStack")
-        self.pb_LabelingToStack.setMaximumSize(QSize(100, 16777215))
-        self.pb_LabelingToStack.setBaseSize(QSize(50, 0))
-        self.pb_LabelingToStack.setFont(font2)
+        self.pb_LabelingToImage = QPushButton(self.gb_Labeling)
+        self.pb_LabelingToImage.setObjectName(u"pb_LabelingToImage")
+        self.pb_LabelingToImage.setMaximumSize(QSize(120, 16777215))
+        self.pb_LabelingToImage.setBaseSize(QSize(50, 0))
+        self.pb_LabelingToImage.setFont(font2)
 
-        self.gridLayout_2.addWidget(self.pb_LabelingToStack, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.pb_LabelingToImage, 2, 0, 1, 1)
+
+        self.pb_LabelingView = QPushButton(self.gb_Labeling)
+        self.pb_LabelingView.setObjectName(u"pb_LabelingView")
+        self.pb_LabelingView.setMaximumSize(QSize(120, 16777215))
+        self.pb_LabelingView.setBaseSize(QSize(50, 0))
+        self.pb_LabelingView.setFont(font2)
+
+        self.gridLayout_2.addWidget(self.pb_LabelingView, 2, 2, 1, 1)
 
         self.combob_LabelingOption = QComboBox(self.gb_Labeling)
         self.combob_LabelingOption.setObjectName(u"combob_LabelingOption")
@@ -347,13 +365,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.combob_LabelingOption, 0, 0, 1, 3)
 
-        self.pb_LabelingView = QPushButton(self.gb_Labeling)
-        self.pb_LabelingView.setObjectName(u"pb_LabelingView")
-        self.pb_LabelingView.setMaximumSize(QSize(100, 16777215))
-        self.pb_LabelingView.setBaseSize(QSize(50, 0))
-        self.pb_LabelingView.setFont(font2)
+        self.pb_LabelingToStack = QPushButton(self.gb_Labeling)
+        self.pb_LabelingToStack.setObjectName(u"pb_LabelingToStack")
+        self.pb_LabelingToStack.setMaximumSize(QSize(120, 16777215))
+        self.pb_LabelingToStack.setBaseSize(QSize(50, 0))
+        self.pb_LabelingToStack.setFont(font2)
 
-        self.gridLayout_2.addWidget(self.pb_LabelingView, 2, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.pb_LabelingToStack, 2, 1, 1, 1)
 
 
         self.horizontalLayout_3.addWidget(self.gb_Labeling)
@@ -369,51 +387,85 @@ class Ui_MainWindow(object):
         self.gb_Contours.setAlignment(Qt.AlignCenter)
         self.gridLayout_3 = QGridLayout(self.gb_Contours)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.pb_ContoursToStack = QPushButton(self.gb_Contours)
-        self.pb_ContoursToStack.setObjectName(u"pb_ContoursToStack")
-        self.pb_ContoursToStack.setMaximumSize(QSize(100, 16777215))
-        self.pb_ContoursToStack.setBaseSize(QSize(50, 0))
-        self.pb_ContoursToStack.setFont(font2)
+        self.combob_Contours = QComboBox(self.gb_Contours)
+        self.combob_Contours.setObjectName(u"combob_Contours")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.combob_Contours.sizePolicy().hasHeightForWidth())
+        self.combob_Contours.setSizePolicy(sizePolicy5)
+        self.combob_Contours.setMinimumSize(QSize(40, 0))
+        self.combob_Contours.setFont(font3)
 
-        self.gridLayout_3.addWidget(self.pb_ContoursToStack, 4, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.combob_Contours, 1, 0, 1, 8)
 
-        self.pb_ContoursToImage = QPushButton(self.gb_Contours)
-        self.pb_ContoursToImage.setObjectName(u"pb_ContoursToImage")
-        self.pb_ContoursToImage.setMaximumSize(QSize(100, 16777215))
-        self.pb_ContoursToImage.setBaseSize(QSize(50, 0))
-        self.pb_ContoursToImage.setFont(font2)
+        self.pb_ContoursView = QPushButton(self.gb_Contours)
+        self.pb_ContoursView.setObjectName(u"pb_ContoursView")
+        self.pb_ContoursView.setMaximumSize(QSize(120, 16777215))
+        self.pb_ContoursView.setBaseSize(QSize(50, 0))
+        self.pb_ContoursView.setFont(font2)
 
-        self.gridLayout_3.addWidget(self.pb_ContoursToImage, 4, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.pb_ContoursView, 4, 5, 1, 3)
 
         self.lb_BackgroundThreshold = QLabel(self.gb_Contours)
         self.lb_BackgroundThreshold.setObjectName(u"lb_BackgroundThreshold")
+        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.lb_BackgroundThreshold.sizePolicy().hasHeightForWidth())
+        self.lb_BackgroundThreshold.setSizePolicy(sizePolicy6)
+        self.lb_BackgroundThreshold.setMinimumSize(QSize(0, 0))
         self.lb_BackgroundThreshold.setFont(font3)
         self.lb_BackgroundThreshold.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout_3.addWidget(self.lb_BackgroundThreshold, 2, 0, 1, 2)
 
-        self.pb_ContoursView = QPushButton(self.gb_Contours)
-        self.pb_ContoursView.setObjectName(u"pb_ContoursView")
-        self.pb_ContoursView.setMaximumSize(QSize(100, 16777215))
-        self.pb_ContoursView.setBaseSize(QSize(50, 0))
-        self.pb_ContoursView.setFont(font2)
+        self.pb_ContoursToStack = QPushButton(self.gb_Contours)
+        self.pb_ContoursToStack.setObjectName(u"pb_ContoursToStack")
+        self.pb_ContoursToStack.setMaximumSize(QSize(120, 16777215))
+        self.pb_ContoursToStack.setBaseSize(QSize(50, 0))
+        self.pb_ContoursToStack.setFont(font2)
 
-        self.gridLayout_3.addWidget(self.pb_ContoursView, 4, 2, 1, 1)
-
-        self.combob_Contours = QComboBox(self.gb_Contours)
-        self.combob_Contours.setObjectName(u"combob_Contours")
-        self.combob_Contours.setFont(font3)
-
-        self.gridLayout_3.addWidget(self.combob_Contours, 1, 0, 1, 3)
+        self.gridLayout_3.addWidget(self.pb_ContoursToStack, 4, 2, 1, 3)
 
         self.le_BackgroundThreshold = QLineEdit(self.gb_Contours)
         self.le_BackgroundThreshold.setObjectName(u"le_BackgroundThreshold")
         sizePolicy2.setHeightForWidth(self.le_BackgroundThreshold.sizePolicy().hasHeightForWidth())
         self.le_BackgroundThreshold.setSizePolicy(sizePolicy2)
-        self.le_BackgroundThreshold.setMaximumSize(QSize(35, 16777215))
+        self.le_BackgroundThreshold.setMinimumSize(QSize(40, 0))
+        self.le_BackgroundThreshold.setMaximumSize(QSize(40, 16777215))
         self.le_BackgroundThreshold.setFont(font3)
 
         self.gridLayout_3.addWidget(self.le_BackgroundThreshold, 2, 2, 1, 1)
+
+        self.pb_ContoursToImage = QPushButton(self.gb_Contours)
+        self.pb_ContoursToImage.setObjectName(u"pb_ContoursToImage")
+        self.pb_ContoursToImage.setMaximumSize(QSize(120, 16777215))
+        self.pb_ContoursToImage.setBaseSize(QSize(50, 0))
+        self.pb_ContoursToImage.setFont(font2)
+
+        self.gridLayout_3.addWidget(self.pb_ContoursToImage, 4, 0, 1, 2)
+
+        self.le_ContoursMinSize = QLineEdit(self.gb_Contours)
+        self.le_ContoursMinSize.setObjectName(u"le_ContoursMinSize")
+        sizePolicy2.setHeightForWidth(self.le_ContoursMinSize.sizePolicy().hasHeightForWidth())
+        self.le_ContoursMinSize.setSizePolicy(sizePolicy2)
+        self.le_ContoursMinSize.setMinimumSize(QSize(40, 0))
+        self.le_ContoursMinSize.setMaximumSize(QSize(40, 16777215))
+        self.le_ContoursMinSize.setFont(font3)
+
+        self.gridLayout_3.addWidget(self.le_ContoursMinSize, 2, 6, 1, 1)
+
+        self.la_ContoursMinSize = QLabel(self.gb_Contours)
+        self.la_ContoursMinSize.setObjectName(u"la_ContoursMinSize")
+        sizePolicy6.setHeightForWidth(self.la_ContoursMinSize.sizePolicy().hasHeightForWidth())
+        self.la_ContoursMinSize.setSizePolicy(sizePolicy6)
+        self.la_ContoursMinSize.setMinimumSize(QSize(0, 0))
+        self.la_ContoursMinSize.setFont(font3)
+        self.la_ContoursMinSize.setLayoutDirection(Qt.LeftToRight)
+        self.la_ContoursMinSize.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_3.addWidget(self.la_ContoursMinSize, 2, 4, 1, 2)
 
 
         self.horizontalLayout_3.addWidget(self.gb_Contours)
@@ -429,21 +481,20 @@ class Ui_MainWindow(object):
         self.gb_Density.setAlignment(Qt.AlignCenter)
         self.gridLayout_4 = QGridLayout(self.gb_Density)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.pb_DensityToImage = QPushButton(self.gb_Density)
-        self.pb_DensityToImage.setObjectName(u"pb_DensityToImage")
-        self.pb_DensityToImage.setMaximumSize(QSize(100, 16777215))
-        self.pb_DensityToImage.setBaseSize(QSize(50, 0))
-        self.pb_DensityToImage.setFont(font2)
-
-        self.gridLayout_4.addWidget(self.pb_DensityToImage, 4, 0, 1, 1)
-
         self.pb_DensityToStack = QPushButton(self.gb_Density)
         self.pb_DensityToStack.setObjectName(u"pb_DensityToStack")
-        self.pb_DensityToStack.setMaximumSize(QSize(100, 16777215))
+        self.pb_DensityToStack.setMaximumSize(QSize(120, 16777215))
         self.pb_DensityToStack.setBaseSize(QSize(50, 0))
         self.pb_DensityToStack.setFont(font2)
 
         self.gridLayout_4.addWidget(self.pb_DensityToStack, 4, 1, 1, 1)
+
+        self.lb_Kernel = QLabel(self.gb_Density)
+        self.lb_Kernel.setObjectName(u"lb_Kernel")
+        self.lb_Kernel.setFont(font3)
+        self.lb_Kernel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_4.addWidget(self.lb_Kernel, 0, 0, 1, 2)
 
         self.lb_Layers = QLabel(self.gb_Density)
         self.lb_Layers.setObjectName(u"lb_Layers")
@@ -452,9 +503,17 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.lb_Layers, 2, 0, 1, 2)
 
+        self.pb_DensityToImage = QPushButton(self.gb_Density)
+        self.pb_DensityToImage.setObjectName(u"pb_DensityToImage")
+        self.pb_DensityToImage.setMaximumSize(QSize(120, 16777215))
+        self.pb_DensityToImage.setBaseSize(QSize(50, 0))
+        self.pb_DensityToImage.setFont(font2)
+
+        self.gridLayout_4.addWidget(self.pb_DensityToImage, 4, 0, 1, 1)
+
         self.pb_DensityView = QPushButton(self.gb_Density)
         self.pb_DensityView.setObjectName(u"pb_DensityView")
-        self.pb_DensityView.setMaximumSize(QSize(100, 16777215))
+        self.pb_DensityView.setMaximumSize(QSize(120, 16777215))
         self.pb_DensityView.setBaseSize(QSize(50, 0))
         self.pb_DensityView.setFont(font2)
 
@@ -479,13 +538,6 @@ class Ui_MainWindow(object):
         self.le_DensityMapKernelSize.setFont(font3)
 
         self.gridLayout_4.addWidget(self.le_DensityMapKernelSize, 0, 2, 1, 1)
-
-        self.lb_Kernel = QLabel(self.gb_Density)
-        self.lb_Kernel.setObjectName(u"lb_Kernel")
-        self.lb_Kernel.setFont(font3)
-        self.lb_Kernel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_4.addWidget(self.lb_Kernel, 0, 0, 1, 2)
 
 
         self.horizontalLayout_3.addWidget(self.gb_Density)
@@ -557,9 +609,6 @@ class Ui_MainWindow(object):
 
         self.pb_ResultsView = QPushButton(self.gb_Results)
         self.pb_ResultsView.setObjectName(u"pb_ResultsView")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.pb_ResultsView.sizePolicy().hasHeightForWidth())
         self.pb_ResultsView.setSizePolicy(sizePolicy5)
         self.pb_ResultsView.setFont(font2)
@@ -586,11 +635,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.frame_2 = QFrame(self.page)
         self.frame_2.setObjectName(u"frame_2")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
-        self.frame_2.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
+        self.frame_2.setSizePolicy(sizePolicy7)
         self.frame_2.setMinimumSize(QSize(1262, 90))
         self.frame_2.setMaximumSize(QSize(16777215, 90))
         self.frame_2.setBaseSize(QSize(0, 0))
@@ -601,8 +650,8 @@ class Ui_MainWindow(object):
         self.wi_OriginalText = QWidget(self.frame_2)
         self.wi_OriginalText.setObjectName(u"wi_OriginalText")
         self.wi_OriginalText.setEnabled(True)
-        sizePolicy6.setHeightForWidth(self.wi_OriginalText.sizePolicy().hasHeightForWidth())
-        self.wi_OriginalText.setSizePolicy(sizePolicy6)
+        sizePolicy7.setHeightForWidth(self.wi_OriginalText.sizePolicy().hasHeightForWidth())
+        self.wi_OriginalText.setSizePolicy(sizePolicy7)
         self.wi_OriginalText.setMinimumSize(QSize(400, 70))
         self.wi_OriginalText.setMaximumSize(QSize(16777215, 70))
         self.wi_OriginalText.setBaseSize(QSize(0, 0))
@@ -715,11 +764,11 @@ class Ui_MainWindow(object):
 
         self.pb_CentroidAuto = QPushButton(self.wi_Image2Text)
         self.pb_CentroidAuto.setObjectName(u"pb_CentroidAuto")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.pb_CentroidAuto.sizePolicy().hasHeightForWidth())
-        self.pb_CentroidAuto.setSizePolicy(sizePolicy7)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.pb_CentroidAuto.sizePolicy().hasHeightForWidth())
+        self.pb_CentroidAuto.setSizePolicy(sizePolicy8)
         self.pb_CentroidAuto.setMaximumSize(QSize(70, 16777215))
         self.pb_CentroidAuto.setBaseSize(QSize(63, 0))
         font8 = QFont()
@@ -759,12 +808,12 @@ class Ui_MainWindow(object):
         self.wi_Image1Text.setBaseSize(QSize(0, 0))
         self.layout_Text1 = QGridLayout(self.wi_Image1Text)
         self.layout_Text1.setObjectName(u"layout_Text1")
-        self.lb_TargetStats = QLabel(self.wi_Image1Text)
-        self.lb_TargetStats.setObjectName(u"lb_TargetStats")
-        self.lb_TargetStats.setFont(font8)
-        self.lb_TargetStats.setAlignment(Qt.AlignCenter)
+        self.combob_cmap = QComboBox(self.wi_Image1Text)
+        self.combob_cmap.setObjectName(u"combob_cmap")
+        self.combob_cmap.setMinimumSize(QSize(100, 0))
+        self.combob_cmap.setMaximumSize(QSize(200, 16777215))
 
-        self.layout_Text1.addWidget(self.lb_TargetStats, 0, 4, 2, 1)
+        self.layout_Text1.addWidget(self.combob_cmap, 1, 1, 1, 1)
 
         self.lb_MapStats = QLabel(self.wi_Image1Text)
         self.lb_MapStats.setObjectName(u"lb_MapStats")
@@ -773,12 +822,12 @@ class Ui_MainWindow(object):
 
         self.layout_Text1.addWidget(self.lb_MapStats, 0, 0, 2, 1)
 
-        self.combob_cmap = QComboBox(self.wi_Image1Text)
-        self.combob_cmap.setObjectName(u"combob_cmap")
-        self.combob_cmap.setMinimumSize(QSize(100, 0))
-        self.combob_cmap.setMaximumSize(QSize(200, 16777215))
+        self.lb_TargetStats = QLabel(self.wi_Image1Text)
+        self.lb_TargetStats.setObjectName(u"lb_TargetStats")
+        self.lb_TargetStats.setFont(font8)
+        self.lb_TargetStats.setAlignment(Qt.AlignCenter)
 
-        self.layout_Text1.addWidget(self.combob_cmap, 1, 1, 1, 1)
+        self.layout_Text1.addWidget(self.lb_TargetStats, 0, 4, 2, 1)
 
         self.cb_SharedColorBar = QCheckBox(self.wi_Image1Text)
         self.cb_SharedColorBar.setObjectName(u"cb_SharedColorBar")
@@ -853,7 +902,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 88))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 88, 88))
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.tw_Count = QTableWidget(self.scrollAreaWidgetContents)
@@ -875,7 +924,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 98, 88))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 88, 88))
         self.verticalLayout_5 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.tw_Density = QTableWidget(self.scrollAreaWidgetContents_2)
@@ -897,7 +946,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 1220, 267))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 88, 88))
         self.verticalLayout_6 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.tw_Distance = QTableWidget(self.scrollAreaWidgetContents_3)
@@ -1009,11 +1058,11 @@ class Ui_MainWindow(object):
 
         self.lb_ResultsDestinationFolder = QLabel(self.frame_4)
         self.lb_ResultsDestinationFolder.setObjectName(u"lb_ResultsDestinationFolder")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(0)
-        sizePolicy8.setHeightForWidth(self.lb_ResultsDestinationFolder.sizePolicy().hasHeightForWidth())
-        self.lb_ResultsDestinationFolder.setSizePolicy(sizePolicy8)
+        sizePolicy9 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy9.setHorizontalStretch(0)
+        sizePolicy9.setVerticalStretch(0)
+        sizePolicy9.setHeightForWidth(self.lb_ResultsDestinationFolder.sizePolicy().hasHeightForWidth())
+        self.lb_ResultsDestinationFolder.setSizePolicy(sizePolicy9)
         self.lb_ResultsDestinationFolder.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_10.addWidget(self.lb_ResultsDestinationFolder, 1, 1, 1, 3)
@@ -1076,11 +1125,9 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.pb_LabelingToImage, self.pb_LabelingToStack)
         QWidget.setTabOrder(self.pb_LabelingToStack, self.pb_LabelingView)
         QWidget.setTabOrder(self.pb_LabelingView, self.combob_Contours)
-        QWidget.setTabOrder(self.combob_Contours, self.le_BackgroundThreshold)
-        QWidget.setTabOrder(self.le_BackgroundThreshold, self.pb_ContoursToImage)
+        QWidget.setTabOrder(self.combob_Contours, self.pb_ContoursToImage)
         QWidget.setTabOrder(self.pb_ContoursToImage, self.pb_ContoursToStack)
-        QWidget.setTabOrder(self.pb_ContoursToStack, self.pb_ContoursView)
-        QWidget.setTabOrder(self.pb_ContoursView, self.le_DensityMapKernelSize)
+        QWidget.setTabOrder(self.pb_ContoursToStack, self.le_DensityMapKernelSize)
         QWidget.setTabOrder(self.le_DensityMapKernelSize, self.le_DensityTargetLayers)
         QWidget.setTabOrder(self.le_DensityTargetLayers, self.pb_DensityToImage)
         QWidget.setTabOrder(self.pb_DensityToImage, self.pb_DensityToStack)
@@ -1230,10 +1277,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.gb_Labeling.setTitle(QCoreApplication.translate("MainWindow", u"LABELING", None))
 #if QT_CONFIG(tooltip)
-        self.pb_LabelingToImage.setToolTip("")
-#endif // QT_CONFIG(tooltip)
-        self.pb_LabelingToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
-#if QT_CONFIG(tooltip)
         self.lb_SieveSize.setToolTip(QCoreApplication.translate("MainWindow", u"Input the size of the sieve in pixels. Objects with a size strictly above the sieve size will be kept.", None))
 #endif // QT_CONFIG(tooltip)
         self.lb_SieveSize.setText(QCoreApplication.translate("MainWindow", u"Sieve size", None))
@@ -1241,40 +1284,55 @@ class Ui_MainWindow(object):
         self.le_SieveSize.setToolTip(QCoreApplication.translate("MainWindow", u"Input the size of the sieve in pixels. Objects with a size strictly above the sieve size will be kept.", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
+        self.pb_LabelingToImage.setToolTip("")
+#endif // QT_CONFIG(tooltip)
+        self.pb_LabelingToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
+        self.pb_LabelingView.setText(QCoreApplication.translate("MainWindow", u"View", None))
+#if QT_CONFIG(tooltip)
+        self.combob_LabelingOption.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the labeling option.", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
         self.pb_LabelingToStack.setToolTip("")
 #endif // QT_CONFIG(tooltip)
         self.pb_LabelingToStack.setText(QCoreApplication.translate("MainWindow", u"Apply to stack", None))
 #if QT_CONFIG(tooltip)
-        self.combob_LabelingOption.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the labeling option.", None))
-#endif // QT_CONFIG(tooltip)
-        self.pb_LabelingView.setText(QCoreApplication.translate("MainWindow", u"View", None))
-#if QT_CONFIG(tooltip)
         self.gb_Contours.setToolTip(QCoreApplication.translate("MainWindow", u"Determine the contour of the object containing the blobs. ", None))
 #endif // QT_CONFIG(tooltip)
         self.gb_Contours.setTitle(QCoreApplication.translate("MainWindow", u"SHAPE CONTOURS", None))
-        self.pb_ContoursToStack.setText(QCoreApplication.translate("MainWindow", u"Apply to stack", None))
-        self.pb_ContoursToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
-#if QT_CONFIG(tooltip)
-        self.lb_BackgroundThreshold.setToolTip(QCoreApplication.translate("MainWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
-#endif // QT_CONFIG(tooltip)
-        self.lb_BackgroundThreshold.setText(QCoreApplication.translate("MainWindow", u"Background threshold", None))
-        self.pb_ContoursView.setText(QCoreApplication.translate("MainWindow", u"View", None))
 #if QT_CONFIG(tooltip)
         self.combob_Contours.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the algorithm to contour the object containing the blobs.", None))
 #endif // QT_CONFIG(tooltip)
+        self.pb_ContoursView.setText(QCoreApplication.translate("MainWindow", u"View", None))
+#if QT_CONFIG(tooltip)
+        self.lb_BackgroundThreshold.setToolTip(QCoreApplication.translate("MainWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
+#endif // QT_CONFIG(tooltip)
+        self.lb_BackgroundThreshold.setText(QCoreApplication.translate("MainWindow", u"Threshold", None))
+        self.pb_ContoursToStack.setText(QCoreApplication.translate("MainWindow", u"Apply to stack", None))
 #if QT_CONFIG(tooltip)
         self.le_BackgroundThreshold.setToolTip(QCoreApplication.translate("MainWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
 #endif // QT_CONFIG(tooltip)
+        self.pb_ContoursToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
+#if QT_CONFIG(tooltip)
+        self.le_ContoursMinSize.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the minimum size in pixels of the contoured objects.", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.la_ContoursMinSize.setToolTip(QCoreApplication.translate("MainWindow", u"Choose the minimum size in pixels of the contoured objects.", None))
+#endif // QT_CONFIG(tooltip)
+        self.la_ContoursMinSize.setText(QCoreApplication.translate("MainWindow", u"Min size", None))
 #if QT_CONFIG(tooltip)
         self.gb_Density.setToolTip(QCoreApplication.translate("MainWindow", u"Calculate the density of blobs in the contoured object.", None))
 #endif // QT_CONFIG(tooltip)
         self.gb_Density.setTitle(QCoreApplication.translate("MainWindow", u"DENSITY", None))
-        self.pb_DensityToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
         self.pb_DensityToStack.setText(QCoreApplication.translate("MainWindow", u"Apply to stack", None))
+#if QT_CONFIG(tooltip)
+        self.lb_Kernel.setToolTip(QCoreApplication.translate("MainWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
+#endif // QT_CONFIG(tooltip)
+        self.lb_Kernel.setText(QCoreApplication.translate("MainWindow", u"Heatmap kernel size", None))
 #if QT_CONFIG(tooltip)
         self.lb_Layers.setToolTip(QCoreApplication.translate("MainWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
 #endif // QT_CONFIG(tooltip)
         self.lb_Layers.setText(QCoreApplication.translate("MainWindow", u"Target layers", None))
+        self.pb_DensityToImage.setText(QCoreApplication.translate("MainWindow", u"Apply to image", None))
         self.pb_DensityView.setText(QCoreApplication.translate("MainWindow", u"View", None))
 #if QT_CONFIG(tooltip)
         self.le_DensityTargetLayers.setToolTip(QCoreApplication.translate("MainWindow", u"Input the number of concentric regions (layers) around the centroid of the contoured object.", None))
@@ -1284,10 +1342,6 @@ class Ui_MainWindow(object):
         self.le_DensityMapKernelSize.setToolTip(QCoreApplication.translate("MainWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
 #endif // QT_CONFIG(tooltip)
         self.le_DensityMapKernelSize.setText("")
-#if QT_CONFIG(tooltip)
-        self.lb_Kernel.setToolTip(QCoreApplication.translate("MainWindow", u"Input the kernel size in pixels. Choose an odd number.", None))
-#endif // QT_CONFIG(tooltip)
-        self.lb_Kernel.setText(QCoreApplication.translate("MainWindow", u"Heatmap kernel size", None))
 #if QT_CONFIG(tooltip)
         self.gb_Results.setToolTip(QCoreApplication.translate("MainWindow", u"Display the results. The option will be available if all the selected images in the stack have been processed.", None))
 #endif // QT_CONFIG(tooltip)
@@ -1373,16 +1427,16 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.cb_MainSlice.setText(QCoreApplication.translate("MainWindow", u"Main Slice", None))
 #if QT_CONFIG(tooltip)
-        self.lb_TargetStats.setToolTip(QCoreApplication.translate("MainWindow", u"Displays target stats: mean / median / min / max.", None))
+        self.combob_cmap.setToolTip(QCoreApplication.translate("MainWindow", u"Choose display color map.", None))
 #endif // QT_CONFIG(tooltip)
-        self.lb_TargetStats.setText(QCoreApplication.translate("MainWindow", u"Target stats", None))
 #if QT_CONFIG(tooltip)
         self.lb_MapStats.setToolTip(QCoreApplication.translate("MainWindow", u"Displays heatmap stats: mean / median / min / max.", None))
 #endif // QT_CONFIG(tooltip)
         self.lb_MapStats.setText(QCoreApplication.translate("MainWindow", u"Map stats", None))
 #if QT_CONFIG(tooltip)
-        self.combob_cmap.setToolTip(QCoreApplication.translate("MainWindow", u"Choose display color map.", None))
+        self.lb_TargetStats.setToolTip(QCoreApplication.translate("MainWindow", u"Displays target stats: mean / median / min / max.", None))
 #endif // QT_CONFIG(tooltip)
+        self.lb_TargetStats.setText(QCoreApplication.translate("MainWindow", u"Target stats", None))
 #if QT_CONFIG(tooltip)
         self.cb_SharedColorBar.setToolTip(QCoreApplication.translate("MainWindow", u"If checked, the colobars will have the same scale for all processed images.", None))
 #endif // QT_CONFIG(tooltip)

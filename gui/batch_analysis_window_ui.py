@@ -1,6 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# This file is distributed under the terms of the GNU General Public License v3.0
+# This file is part of the Blob Inspector project
+# 
+# Blob Inspector project is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Blob Inspector project is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Laurent Busson
+# Version: 0.9
+# Date: 2024-05-28
 
 ################################################################################
 ## Form generated from reading UI file 'batch_analysis_window.ui'
@@ -26,7 +43,7 @@ class Ui_BatchAnalysisWindow(object):
     def setupUi(self, BatchAnalysisWindow):
         if not BatchAnalysisWindow.objectName():
             BatchAnalysisWindow.setObjectName(u"BatchAnalysisWindow")
-        BatchAnalysisWindow.resize(710, 410)
+        BatchAnalysisWindow.resize(713, 410)
         BatchAnalysisWindow.setFocusPolicy(Qt.NoFocus)
         icon = QIcon()
         icon.addFile(u":/Icons/blob-161097_640.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -219,12 +236,11 @@ class Ui_BatchAnalysisWindow(object):
         self.gb_Density.setAlignment(Qt.AlignCenter)
         self.gridLayout_5 = QGridLayout(self.gb_Density)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.lb_BackgroundThreshold = QLabel(self.gb_Density)
-        self.lb_BackgroundThreshold.setObjectName(u"lb_BackgroundThreshold")
-        self.lb_BackgroundThreshold.setFont(font2)
-        self.lb_BackgroundThreshold.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.lb_ContoursMinSize = QLabel(self.gb_Density)
+        self.lb_ContoursMinSize.setObjectName(u"lb_ContoursMinSize")
+        self.lb_ContoursMinSize.setFont(font2)
 
-        self.gridLayout_5.addWidget(self.lb_BackgroundThreshold, 1, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.lb_ContoursMinSize, 1, 2, 1, 1)
 
         self.le_BackgroundThreshold = QLineEdit(self.gb_Density)
         self.le_BackgroundThreshold.setObjectName(u"le_BackgroundThreshold")
@@ -234,20 +250,31 @@ class Ui_BatchAnalysisWindow(object):
         sizePolicy2.setHeightForWidth(self.le_BackgroundThreshold.sizePolicy().hasHeightForWidth())
         self.le_BackgroundThreshold.setSizePolicy(sizePolicy2)
         self.le_BackgroundThreshold.setMinimumSize(QSize(40, 0))
-        self.le_BackgroundThreshold.setMaximumSize(QSize(35, 16777215))
+        self.le_BackgroundThreshold.setMaximumSize(QSize(40, 16777215))
         self.le_BackgroundThreshold.setFont(font2)
 
         self.gridLayout_5.addWidget(self.le_BackgroundThreshold, 1, 1, 1, 1)
 
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.lb_BackgroundThreshold = QLabel(self.gb_Density)
+        self.lb_BackgroundThreshold.setObjectName(u"lb_BackgroundThreshold")
+        self.lb_BackgroundThreshold.setFont(font2)
+        self.lb_BackgroundThreshold.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_5.addItem(self.horizontalSpacer_6, 1, 2, 1, 1)
+        self.gridLayout_5.addWidget(self.lb_BackgroundThreshold, 1, 0, 1, 1)
+
+        self.le_ContoursMinSize = QLineEdit(self.gb_Density)
+        self.le_ContoursMinSize.setObjectName(u"le_ContoursMinSize")
+        self.le_ContoursMinSize.setMinimumSize(QSize(40, 0))
+        self.le_ContoursMinSize.setMaximumSize(QSize(40, 16777215))
+        self.le_ContoursMinSize.setFont(font2)
+
+        self.gridLayout_5.addWidget(self.le_ContoursMinSize, 1, 3, 1, 1)
 
         self.combob_Contours = QComboBox(self.gb_Density)
         self.combob_Contours.setObjectName(u"combob_Contours")
         self.combob_Contours.setFont(font2)
 
-        self.gridLayout_5.addWidget(self.combob_Contours, 0, 0, 1, 3)
+        self.gridLayout_5.addWidget(self.combob_Contours, 0, 0, 1, 4)
 
 
         self.gridLayout_6.addWidget(self.gb_Density, 1, 3, 1, 3)
@@ -467,11 +494,18 @@ class Ui_BatchAnalysisWindow(object):
 "thickness", None))
         self.gb_Density.setTitle(QCoreApplication.translate("BatchAnalysisWindow", u"Contours", None))
 #if QT_CONFIG(tooltip)
+        self.lb_ContoursMinSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Choose the minimum size in pixels of the contoured objects.", None))
+#endif // QT_CONFIG(tooltip)
+        self.lb_ContoursMinSize.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Min size", None))
+#if QT_CONFIG(tooltip)
+        self.le_BackgroundThreshold.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
         self.lb_BackgroundThreshold.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
 #endif // QT_CONFIG(tooltip)
         self.lb_BackgroundThreshold.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Background threshold", None))
 #if QT_CONFIG(tooltip)
-        self.le_BackgroundThreshold.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Input the minimum value of the background. Pixels with a value strictly over the threshold will be considered part of the object depending on the algorithm.", None))
+        self.le_ContoursMinSize.setToolTip(QCoreApplication.translate("BatchAnalysisWindow", u"Choose the minimum size in pixels of the contoured objects.", None))
 #endif // QT_CONFIG(tooltip)
         self.pb_StartAnalysis.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Start analysis", None))
         self.pb_Cancel.setText(QCoreApplication.translate("BatchAnalysisWindow", u"Cancel", None))

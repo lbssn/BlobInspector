@@ -1,4 +1,21 @@
-# This file is distributed under the terms of the GNU General Public License v3.0
+# This file is part of the Blob Inspector project
+# 
+# Blob Inspector project is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Blob Inspector project is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Laurent Busson
+# Version: 0.9
+# Date: 2024-05-28
 
 import sys
 import os
@@ -127,6 +144,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.le_CentroidY.editingFinished.connect(lambda : edit_centroid_y(self))
         self.pb_CentroidAuto.clicked.connect(lambda : set_centroid_auto(self))
         self.cb_MainSlice.stateChanged.connect(lambda : change_main_slice(self))
+        self.le_ContoursMinSize.editingFinished.connect(lambda: input_integer_over_value(self.le_ContoursMinSize,0,False))
         # Density
         self.le_DensityTargetLayers.editingFinished.connect(lambda : input_target_layers(self))
         self.le_DensityMapKernelSize.editingFinished.connect(lambda : input_kernel_size(self))

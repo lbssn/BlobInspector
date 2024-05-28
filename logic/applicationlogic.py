@@ -1,4 +1,21 @@
-# This file is distributed under the terms of the GNU General Public License v3.0
+# This file is part of the Blob Inspector project
+# 
+# Blob Inspector project is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Blob Inspector project is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Laurent Busson
+# Version: 0.9
+# Date: 2024-05-28
 
 from skimage import io, draw
 import numpy as np
@@ -414,6 +431,7 @@ def open_batch_analysis_window(window : Ui_MainWindow):
     bw.le_PixelSize.editingFinished.connect(lambda : input_float(bw.le_PixelSize))
     bw.le_SieveSize.editingFinished.connect(lambda : input_integer_over_value(bw.le_SieveSize,0,False))
     bw.le_BackgroundThreshold.editingFinished.connect(lambda : input_integer_over_value(bw.le_BackgroundThreshold,0,False))
+    bw.le_ContoursMinSize.editingFinished.connect(lambda : input_integer_over_value(bw.le_ContoursMinSize,0,False))
     bw.le_DensityMapKernelSize.editingFinished.connect(lambda : input_integer_over_value(bw.le_DensityMapKernelSize,3,True))
     bw.combob_BlobsDetection.addItems(return_blobs_algorithms())
     bw.combob_LabelingOption.addItems(return_labeling_algorithms())
@@ -450,6 +468,7 @@ def input_default_options(window : Ui_MainWindow):
         bw.le_ZThickness.setText(options[19])
         bw.le_InterZ.setText(options[20])
         bw.le_PixelSize.setText(options[21])
+        bw.le_ContoursMinSize.setText(options[22])
     else:
         show_error_message("Please select a profile in the Options.")
     
@@ -494,6 +513,7 @@ def start_batch_analysis(window : Ui_MainWindow):
                 window.combob_FileName.setCurrentIndex(index)
                 window.combob_Contours.setCurrentIndex(bw.combob_Contours.currentIndex())
                 window.le_BackgroundThreshold.setText(bw.le_BackgroundThreshold.text())
+                window.le_ContoursMinSize.setText(bw.le_ContoursMinSize.text())
                 apply_contours_to_stack(window,False)
                 compute_distance = False
                 for i in range(len(window.appMod.labeling_labels[filename])):
@@ -552,6 +572,7 @@ def initialise_options_window(window : Ui_MainWindow):
     ow.le_SegmentationBlobsMaxRadius.editingFinished.connect(lambda : input_blobs_radius(ow.le_SegmentationBlobsMaxRadius,ow.le_SegmentationBlobsMinRadius,1))
     ow.le_LabelingSieveSize.editingFinished.connect(lambda : input_integer_over_value(ow.le_LabelingSieveSize,0,False))
     ow.le_ContoursBackground.editingFinished.connect(lambda : input_integer_over_value(ow.le_ContoursBackground,0,False))
+    ow.le_ContoursMinSize.editingFinished.connect(lambda : input_integer_over_value(ow.le_ContoursMinSize,0,False))
     ow.le_DensityKernelSize.editingFinished.connect(lambda : input_integer_over_value(ow.le_DensityKernelSize,3,True))
     ow.le_StackInfoSliceThickness.editingFinished.connect(lambda : input_float(ow.le_StackInfoSliceThickness))
     ow.le_StackInfoIntersliceSpace.editingFinished.connect(lambda : input_float(ow.le_StackInfoIntersliceSpace))
@@ -630,6 +651,7 @@ def profile_changed(window : Ui_MainWindow):
         ow.le_StackInfoSliceThickness.setText(window.appOptions.profiles[profilename][19])
         ow.le_StackInfoIntersliceSpace.setText(window.appOptions.profiles[profilename][20])
         ow.le_StackInfoPixelSize.setText(window.appOptions.profiles[profilename][21])
+        ow.le_ContoursMinSize.setText(window.appOptions.profiles[profilename][22])
         dump(window.appOptions,"./options.joblib",compress= True)
         scale_checked(window,False)
 
@@ -671,7 +693,8 @@ def save_profile(window : Ui_MainWindow, profilename):
                                             ow.le_DensityLayers.text(),\
                                             ow.le_StackInfoSliceThickness.text(),\
                                             ow.le_StackInfoIntersliceSpace.text(),\
-                                            ow.le_StackInfoPixelSize.text()]
+                                            ow.le_StackInfoPixelSize.text(),\
+                                            ow.le_ContoursMinSize.text()]
     dump(window.appOptions,"./options.joblib",compress= True)
 
 def create_new_profile(window : Ui_MainWindow):
@@ -1038,7 +1061,8 @@ def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
     else:
         window.le_SieveSize.clear()
     if appMod.contours_background[filename][slice_number] is not None:
-        window.le_BackgroundThreshold.setText(str(appMod.contours_background[filename][slice_number]))
+        window.le_BackgroundThreshold.setText(str(appMod.contours_background[filename][slice_number][0]))
+        window.le_ContoursMinSize.setText(appMod.contours_background[filename][slice_number][1])
         contouring_algo = return_contouring_algorithms()
         contouring_algo_index = contouring_algo.index(appMod.contours_algo[filename][slice_number])
         window.combob_Contours.setCurrentIndex(contouring_algo_index)
@@ -1938,11 +1962,13 @@ def apply_contours_to_image(window :Ui_MainWindow, slice_number=None):
                         contour_mask = contour_shrinking_box(image_to_contour,threshold_value)
                     else:
                         contour_mask = image_to_contour > threshold_value
+                    if window.le_ContoursMinSize.text() not in ["","0"]:
+                        contour_mask = remove_objects(contour_mask,int(window.le_ContoursMinSize.text()))
                     window.setCursor(QCursor(Qt.ArrowCursor))
                     contour_centroid_y_x = calculate_contours_centroid(contour_mask)
                     appMod.contours_centroids[filename][slice_number] = contour_centroid_y_x
                     appMod.contours_algo[filename][slice_number] = window.combob_Contours.currentText()
-                    appMod.contours_background[filename][slice_number] = threshold_value
+                    appMod.contours_background[filename][slice_number] = [threshold_value,window.le_ContoursMinSize.text()]
                     appMod.contours_mask[filename][slice_number] = contour_mask
                     if single_image == True:
                         determine_main_slice(appMod,filename)
@@ -2424,7 +2450,7 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                         "Heatmap count mean","Heatmap count median","Heatmap count min","Heatmap count max",\
                         "Target size mean","Target size median","Target size min","Target size max",\
                         "Heatmap size mean","Heatmap size median","Heatmap size min","Heatmap size max",\
-                            "Contours algorithm","Contours threshold","Target layers","Kernel size"]]
+                            "Contours algorithm","Contours threshold","Contours min size","Target layers","Kernel size"]]
     all_densities_targets_percentage = []
     all_densities_maps_percentage = []
     all_densities_targets_count = []
@@ -2469,7 +2495,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 min_t_size,max_t_size,mean_t_size,median_t_size= min_max_mean_median_density(d_target_size,mask_contour)
                 min_m_size,max_m_size,mean_m_size,median_m_size = min_max_mean_median_density(d_map_size,mask_contour)
                 contours_algo = appMod.contours_algo[filename][i]
-                contours_threshold = appMod.contours_background[filename][i]
+                contours_threshold = appMod.contours_background[filename][i][0]
+                contours_min_size =int(appMod.contours_background[filename][i][1])
                 layers = appMod.density_target_layers[filename][i]
                 kernel_size = appMod.density_map_kernel_size[filename][i]
                 density_results.append([slice,mean_t,blobs_area,area,median_t,min_t,max_t,median_m,min_m,max_m,\
@@ -2477,10 +2504,10 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                                         mean_m_count,round(median_m_count),round(min_m_count),round(max_m_count),\
                                         mean_t_size,round(median_t_size),round(min_t_size),round(max_t_size),\
                                         mean_m_size,round(median_m_size),round(min_m_size),round(max_m_size),\
-                                        contours_algo,contours_threshold,layers,kernel_size])
+                                        contours_algo,contours_threshold,contours_min_size,layers,kernel_size])
             else:
                 density_results.append([slice,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-",\
-                                        "-","-","-","-","-","-","-","-"])
+                                        "-","-","-","-","-","-","-","-","-"])
     if len(all_densities_targets_percentage) >0:
         min_tot_t,max_tot_t,mean_tot_t,median_tot_t = round(min(all_densities_targets_percentage),3),round(max(all_densities_targets_percentage),3),\
             round(np.mean(all_densities_targets_percentage),3),round(np.median(all_densities_targets_percentage),3)
@@ -2513,7 +2540,7 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
 
     density_results.append(["Total",mean_tot_t,total_blobs_area,total_area,median_tot_t,min_tot_t,max_tot_t,median_tot_m,min_tot_m,max_tot_m,\
                             mean_tot_t_count,median_tot_t_count,min_tot_t_count,max_tot_t_count,mean_tot_m_count,median_tot_m_count,min_tot_m_count,max_tot_m_count,\
-                                mean_tot_t_size,median_tot_t_size,min_tot_t_size,max_tot_t_size,mean_tot_m_size,median_tot_m_size,min_tot_m_size,max_tot_m_size,"-","-","-","-"])    
+                                mean_tot_t_size,median_tot_t_size,min_tot_t_size,max_tot_t_size,mean_tot_m_size,median_tot_m_size,min_tot_m_size,max_tot_m_size,"-","-","-","-","-"])    
     appMod.results_density[filename] = density_results
 
 def input_density_results(window : Ui_MainWindow, filename):
@@ -2674,6 +2701,7 @@ def view_results_page(window :Ui_MainWindow):
             if density == True:
                 if appMod.results_density[filename] is None:
                     compute_density_results(window,filename,nb_slices)
+                    print("density done")
                 input_density_results(window,filename)
             if distance == True:
                 if appMod.results_distance[filename] is None:
