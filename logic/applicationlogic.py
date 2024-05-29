@@ -2834,11 +2834,11 @@ def save_results(window :Ui_MainWindow):
                 density_results = np.array(appMod.results_density[filename], dtype=str)
                 columns_to_add = set()
                 if window.cb_ResultsDensityPercentage.isChecked():
-                    columns_to_add.update([1,2,3,4,5,6,7,8,9,26,27,28,29])
+                    columns_to_add.update([1,2,3,4,5,6,7,8,9,26,27,28,29,30])
                 if window.cb_ResultsDensityCount.isChecked():
-                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,26,27,28,29])
+                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,26,27,28,29,30])
                 if window.cb_ResultsDensitySize.isChecked():
-                    columns_to_add.update([1,2,3,18,19,20,21,22,23,24,25,26,27,28,29])
+                    columns_to_add.update([1,2,3,18,19,20,21,22,23,24,25,26,27,28,29,30])
                 columns_to_add = list(columns_to_add)
                 if table_first_row == True:
                     results = np.concatenate((results,density_results[:,columns_to_add]),axis=1)
