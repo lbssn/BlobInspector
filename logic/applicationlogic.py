@@ -2411,7 +2411,7 @@ def compute_count_results(window : Ui_MainWindow,filename,nb_slices):
                     ws = "no"
                 sieve_size = appMod.labeling_sieve_size[filename][i]
             else:
-                count,mean_s,median_s,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-"
+                count,mean_s,median_s,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size = "-","-","-","-","-","-","-","-","-","-","-"
             count_results.append([slice,count,mean_s,median_s,min_size,max_size,thresholds,blobs_algo,blobs_radius,rbr,ws,sieve_size])
     if len(all_sizes) == 0:
         tot_median, tot_SD, tot_min, tot_max = 0,0,0,0
