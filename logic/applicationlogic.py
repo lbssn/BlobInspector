@@ -2496,7 +2496,10 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 min_m_size,max_m_size,mean_m_size,median_m_size = min_max_mean_median_density(d_map_size,mask_contour)
                 contours_algo = appMod.contours_algo[filename][i]
                 contours_threshold = appMod.contours_background[filename][i][0]
-                contours_min_size =int(appMod.contours_background[filename][i][1])
+                if appMod.contours_background[filename][i][1] != "":
+                    contours_min_size =int(appMod.contours_background[filename][i][1])
+                else:
+                    contours_min_size = 0
                 layers = appMod.density_target_layers[filename][i]
                 kernel_size = appMod.density_map_kernel_size[filename][i]
                 density_results.append([slice,mean_t,blobs_area,area,median_t,min_t,max_t,median_m,min_m,max_m,\
@@ -2701,7 +2704,6 @@ def view_results_page(window :Ui_MainWindow):
             if density == True:
                 if appMod.results_density[filename] is None:
                     compute_density_results(window,filename,nb_slices)
-                    print("density done")
                 input_density_results(window,filename)
             if distance == True:
                 if appMod.results_distance[filename] is None:
@@ -2874,7 +2876,10 @@ def save_results(window :Ui_MainWindow):
                         length = len(centroidsAndSizes)
                         if appMod.results_density[filename] is not None or appMod.results_distance[filename] is not None:
                             centroid_y , centroid_x = appMod.contours_centroids[filename][i]
-                            DTOC = np.sqrt((centroidsAndSizes[:, 0] - centroid_y) ** 2 + (centroidsAndSizes[:, 1] - centroid_x) ** 2)
+                            if length > 0:
+                                DTOC = np.sqrt((centroidsAndSizes[:, 0] - centroid_y) ** 2 + (centroidsAndSizes[:, 1] - centroid_x) ** 2)
+                            else:
+                                DTOC = None
                             if appMod.stack_infos[filename][1] is not None and appMod.stack_infos[filename][2] is not None:
                                 if appMod.stack_infos[filename][0] is None:
                                     slice_thickness = 0
@@ -2886,14 +2891,20 @@ def save_results(window :Ui_MainWindow):
                                 main_slice_z_coordinate = round((main_slice * ((slice_thickness+interslice_space) / pixel_size)),1)
                                 z_coordinate = round((i * ((slice_thickness+interslice_space) / pixel_size)),1)
                                 z_difference_square = (z_coordinate - main_slice_z_coordinate)**2
-                                DTCOS = np.sqrt((centroidsAndSizes[:,0]-main_slice_y_coordinate)**2 + (centroidsAndSizes[:,1]-main_slice_x_coordinate)**2 + z_difference_square)
+                                if length > 0:
+                                    DTCOS = np.sqrt((centroidsAndSizes[:,0]-main_slice_y_coordinate)**2 + (centroidsAndSizes[:,1]-main_slice_x_coordinate)**2 + z_difference_square)
+                                else:
+                                    DTCOS = None
                             else:
                                 z_coordinate = f"z{i+1}"
                                 DTCOS = None
                         else:
                             DTOC = None
                             DTCOS = None
-                        centroidsAndSizes[:,[0,1]]=centroidsAndSizes[:,[1,0]]
+                        if length >0:
+                            centroidsAndSizes[:,[0,1]]=centroidsAndSizes[:,[1,0]]
+                        else:
+                            centroidsAndSizes = np.array(["-","-","-"])
                         header = [f"x slice {i+1}",f"y slice {i+1}",f"size slice {i+1}"]
                         if DTOC is not None:
                             DTOC = np.array(DTOC)[:, np.newaxis]
@@ -2907,7 +2918,8 @@ def save_results(window :Ui_MainWindow):
                             centroidsAndSizes = np.insert(centroidsAndSizes,2,z_coordinate_array,axis=1)
                             header.insert(2,f"z slice {i+1}")
                             header.append(f"DTCOS{main_slice+1} slice {i+1}")
-                        centroidsAndSizes = np.round(centroidsAndSizes,decimals=1)
+                        if length > 0:
+                            centroidsAndSizes = np.round(centroidsAndSizes,decimals=1)
                         header = np.array([header])
                         centroidsAndSizes = np.vstack((header,centroidsAndSizes))
                         if len(results) == 0:
