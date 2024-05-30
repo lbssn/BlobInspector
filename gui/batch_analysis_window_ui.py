@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+# along with Blob Inspector project. If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Laurent Busson
 # Version: 0.9
@@ -426,12 +426,15 @@ class Ui_BatchAnalysisWindow(object):
         QWidget.setTabOrder(self.combob_LabelingOption, self.le_SieveSize)
         QWidget.setTabOrder(self.le_SieveSize, self.combob_Contours)
         QWidget.setTabOrder(self.combob_Contours, self.le_BackgroundThreshold)
-        QWidget.setTabOrder(self.le_BackgroundThreshold, self.le_DensityMapKernelSize)
+        QWidget.setTabOrder(self.le_BackgroundThreshold, self.le_ContoursMinSize)
+        QWidget.setTabOrder(self.le_ContoursMinSize, self.le_DensityMapKernelSize)
         QWidget.setTabOrder(self.le_DensityMapKernelSize, self.le_DensityTargetLayers)
         QWidget.setTabOrder(self.le_DensityTargetLayers, self.le_ZThickness)
         QWidget.setTabOrder(self.le_ZThickness, self.le_InterZ)
         QWidget.setTabOrder(self.le_InterZ, self.le_PixelSize)
         QWidget.setTabOrder(self.le_PixelSize, self.pb_StartAnalysis)
+        QWidget.setTabOrder(self.pb_StartAnalysis, self.pb_Cancel)
+        QWidget.setTabOrder(self.pb_Cancel, self.pb_DefaultOptions)
 
         self.retranslateUi(BatchAnalysisWindow)
 

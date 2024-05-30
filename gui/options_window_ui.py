@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+# along with Blob Inspector project. If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Laurent Busson
 # Version: 0.9
@@ -420,7 +420,8 @@ class Ui_OptionsWindow(object):
         QWidget.setTabOrder(self.combob_Labeling, self.le_LabelingSieveSize)
         QWidget.setTabOrder(self.le_LabelingSieveSize, self.combob_Contours)
         QWidget.setTabOrder(self.combob_Contours, self.le_ContoursBackground)
-        QWidget.setTabOrder(self.le_ContoursBackground, self.le_DensityKernelSize)
+        QWidget.setTabOrder(self.le_ContoursBackground, self.le_ContoursMinSize)
+        QWidget.setTabOrder(self.le_ContoursMinSize, self.le_DensityKernelSize)
         QWidget.setTabOrder(self.le_DensityKernelSize, self.le_DensityLayers)
         QWidget.setTabOrder(self.le_DensityLayers, self.le_StackInfoSliceThickness)
         QWidget.setTabOrder(self.le_StackInfoSliceThickness, self.le_StackInfoIntersliceSpace)

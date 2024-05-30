@@ -13,12 +13,11 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with MyProject. If not, see <http://www.gnu.org/licenses/>.
+# along with Blob Inspector project. If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Laurent Busson
 # Version: 0.9
 # Date: 2024-05-28
-
 
 ################################################################################
 ## Form generated from reading UI file 'app.ui'
@@ -902,7 +901,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 88, 88))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 98, 88))
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.tw_Count = QTableWidget(self.scrollAreaWidgetContents)
@@ -924,7 +923,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 88, 88))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 98, 88))
         self.verticalLayout_5 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.tw_Density = QTableWidget(self.scrollAreaWidgetContents_2)
@@ -946,7 +945,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 88, 88))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 98, 88))
         self.verticalLayout_6 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.tw_Distance = QTableWidget(self.scrollAreaWidgetContents_3)
@@ -1125,9 +1124,12 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.pb_LabelingToImage, self.pb_LabelingToStack)
         QWidget.setTabOrder(self.pb_LabelingToStack, self.pb_LabelingView)
         QWidget.setTabOrder(self.pb_LabelingView, self.combob_Contours)
-        QWidget.setTabOrder(self.combob_Contours, self.pb_ContoursToImage)
+        QWidget.setTabOrder(self.combob_Contours, self.le_BackgroundThreshold)
+        QWidget.setTabOrder(self.le_BackgroundThreshold, self.le_ContoursMinSize)
+        QWidget.setTabOrder(self.le_ContoursMinSize, self.pb_ContoursToImage)
         QWidget.setTabOrder(self.pb_ContoursToImage, self.pb_ContoursToStack)
-        QWidget.setTabOrder(self.pb_ContoursToStack, self.le_DensityMapKernelSize)
+        QWidget.setTabOrder(self.pb_ContoursToStack, self.pb_ContoursView)
+        QWidget.setTabOrder(self.pb_ContoursView, self.le_DensityMapKernelSize)
         QWidget.setTabOrder(self.le_DensityMapKernelSize, self.le_DensityTargetLayers)
         QWidget.setTabOrder(self.le_DensityTargetLayers, self.pb_DensityToImage)
         QWidget.setTabOrder(self.pb_DensityToImage, self.pb_DensityToStack)
@@ -1141,8 +1143,11 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.combob_FileName, self.hs_SliceNumber)
         QWidget.setTabOrder(self.hs_SliceNumber, self.cb_IncludeImage)
         QWidget.setTabOrder(self.cb_IncludeImage, self.pb_Histogram)
-        QWidget.setTabOrder(self.pb_Histogram, self.combob_cmap)
-        QWidget.setTabOrder(self.combob_cmap, self.le_CentroidX)
+        QWidget.setTabOrder(self.pb_Histogram, self.cb_Scale)
+        QWidget.setTabOrder(self.cb_Scale, self.combob_DensityDisplay)
+        QWidget.setTabOrder(self.combob_DensityDisplay, self.combob_cmap)
+        QWidget.setTabOrder(self.combob_cmap, self.cb_SharedColorBar)
+        QWidget.setTabOrder(self.cb_SharedColorBar, self.le_CentroidX)
         QWidget.setTabOrder(self.le_CentroidX, self.le_CentroidY)
         QWidget.setTabOrder(self.le_CentroidY, self.pb_CentroidAuto)
         QWidget.setTabOrder(self.pb_CentroidAuto, self.cb_MainSlice)
@@ -1163,6 +1168,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.tw_Distance, self.tw_Density)
         QWidget.setTabOrder(self.tw_Density, self.scrollArea_3)
         QWidget.setTabOrder(self.scrollArea_3, self.tw_Count)
+        QWidget.setTabOrder(self.tw_Count, self.cb_ResultsDensitySize)
+        QWidget.setTabOrder(self.cb_ResultsDensitySize, self.pb_ResultsBack)
 
         self.menubar.addAction(self.menu_File.menuAction())
         self.menubar.addAction(self.menu_Process.menuAction())
