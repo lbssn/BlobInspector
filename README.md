@@ -14,9 +14,9 @@ Results can be saved in CSV files.
 
 ## About
 
-Blob Inspector was authored by Laurent Busson as the final project for a Master's degree in Bioinformatics at the University of Bordeaux under the supervision of Marie Beurton-Aymar (LaBRI) and Lucie Brisson (BRIC).
+Blob Inspector was authored by Laurent Busson as the final project for a Master's degree in Bioinformatics at the University of Bordeaux in collaboration with BRIC (BoRdeaux Institute of onCology) Team 1, UMR1312, INSERM, Univ. Bordeaux and LaBRI (Laboratoire Bordelais de Recherche en Informatique).
 It was developed in Python with the librairies PySide6, scikit-image, numpy, matplotlib and SciPy.
-It is released under GNU GPL license.
+Blob Inspector is released under GNU GPL license.
 
 ## Installation
 
@@ -64,10 +64,10 @@ The Blob Inspector interface is designed for ease of use. Tooltips are provided 
     - About:
         - Version: provides informations about the software.
 
+2. Tools
 
 The available tools are located in a ribbon at the top of the screen, intended to be used from left to right. Some tools are optional. When options are selected for a tool, you can apply the processing to the current image or stack of images. Changing options for a tool afterward may cancel the processing of the image with subsequent tools. Tool results are displayed in the right two-thirds of the application. You can navigate between tools by clicking the "View" buttons, which displays the processed image if the specific tool was used. The tools are as follows:
 
-2. Tools
     - Illumination correction (optional):
     The rolling ball algorithm has been chosen. To use it, choose a rolling ball radius in pixels. The display will show the calculated background on the right and the corrected image, resulting from the subtaction of the background to the original image, in the center of the screen. This corrected image will be used for further processing. You can cancel this tool by clearing the rolling ball radius parameter and applying the modification to the image or stack.
     - Segmentation:
@@ -78,17 +78,17 @@ The available tools are located in a ribbon at the top of the screen, intended t
     This tool performs semantic segmentation of thresholded objects. If the "No separation" option is chosen, each individual object consists of connected pixels in 8 directions. If "Watershed" is selected, the watershed algorithm is applied to attempt to separate connected objects. The "Sieve size" field requires an integer value; objects with a size in pixels equal to or smaller than this value will be discarded. Choosing a value of 0 will retain all objects.
 
     - Shape contours (mandatory):
-    This tool determines the contours of shapes containing blobs. Several algorithms are available. The maximum threshold value must be input (all pixels equal to or less than this value will be considered background, depending on the chosen algorithm). The "Min size" field can be left empty or filled with an integer to specify the minimum size of the contoured shapes in pixels. Contoured shapes smaller than this value will be discarded. On the contoured shape, the computed centroid is indicated with a red cross. You can manually change the coordinates or reset them with the "Auto" button. The slice with the highest pixel count in the contoured shape will be considered the main slice of the stack. Distances from the centroids of all blobs to the centroid of the main slice will be computed if the required information is input (slice thickness, interslice space, and pixel size). You can change the main slice by clicking the "Main Slice" checkbox above the desired image.
+    This tool determines the contours of shapes containing blobs. Several algorithms are available. The maximum threshold value must be input (all pixels equal to or less than this value will be considered background, depending on the chosen algorithm). The "Min size" field can be left empty or filled with an integer to specify the minimum size of the contoured shapes in pixels. Contoured shapes smaller than this value will be discarded which is useful for eliminating some aberrant pixels outside the main shape. On the contoured shape, the computed centroid is indicated with a red cross. You can manually change its coordinates or reset them with the "Auto" button. The slice with the highest pixel count in the contoured shape will be considered the main slice of the stack. Distances from the centroids of all blobs to the centroid of the main slice will be computed if the required information is input (slice thickness, interslice space, and pixel size). You can change the main slice by clicking the "Main Slice" checkbox above the desired image.
 
     - Density (optional):
-    This tool computes the density of blobs within the contoured shape. To do so, you must choose a kernel size for performing convolution. The kernel must be an odd integer, at least 3, and less than the image dimensions. Additionally, you need to select the number of layers to compute density in concentric regions within the contoured shape. Density can be displayed in three ways, selectable from a dropdown menu above the center image:
+    This tool computes the density of blobs within the contoured shape. To do so, you must choose a kernel size for performing convolution. The kernel must be an odd integer, at least 3, and less than the image dimensions. Additionally, you need to select the number of layers to compute density in concentric regions within the contoured shape. The layers are established by dividing the distance between the centroid and the furthest point within the contoured shape. If there are aberrant pixels outside the main contoured shape, the division may be affected.  Density can be displayed in three ways, selectable from a dropdown menu above the center image:
         - Percentage: Number of blob pixels divided by the number of contoured shape pixels per area (kernel for the convoluted heatmap and concentric region for the target heatmap)
         - Count: Number of blob centroids per area
         - Mean size: Mean size of blobs in pixels per area
-    The colormap can be chosen from a dropdown menu above the center image. If the "Shared cb" checkbox (for colorbar) is selected, the colorbar will have the same scale for all processed images.
+    The colormap can be chosen from a dropdown menu above the center image. If the "Shared cb" checkbox (cb for colorbar) is selected, the colorbars will have the same scale for all processed images.
 
     - Results:
     In this section you can input stack informations in order to compute distances between blobs and contoured shape centroids. Blob Inspector was designed to detect blobs in confocal microscope images.
     To compute distances between stack slices, input the slice thickness (if left empty, a value of 0 will be automatically chosen) and the interslice space. In any case, the pixel size must be input to compute distances. All three values must be in the same unit (e.g., µm).
-    To view the results, click the "View" button in the "Results" section. All results (sizes, distances) are in pixels. You can navigate through the results by clicking on the desired tab. In the lower part of the screen, you can check or uncheck the results you want to keep. You can change the folder and the name of the file to save. Clicking the "Save results" button generates two CSV files: one with a summary of the results and the other with the coordinates, sizes, and distances of the blobs. Results are saved for the current stack. To save results from another stack, click the "Back" button in the lower-left corner of the page and go to the desired stack.
+    To view the results, click the "View" button in the "Results" section. All results (sizes, distances) are in pixels. You can navigate through the results by clicking on the desired tab. In the lower part of the screen, you can check or uncheck the results you want to keep. You can change the folder and the name of the file to save. Clicking the "Save results" button generates two CSV files: one with a summary of the results and the other with the coordinates, sizes, and distances of the blobs for each slice. Results are saved for the current stack. To save results from another stack, click the "Back" button in the lower-left corner of the page and go to the desired stack.
 

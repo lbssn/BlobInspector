@@ -107,7 +107,8 @@ def remove_current_image(window : Ui_MainWindow):
         del appMod.stack_infos[filename]
         index = window.combob_FileName.findText(filename)
         window.combob_FileName.removeItem(index)
-        display_original_image(window,window.combob_FileName.itemText(0),0)
+        window.combob_FileName.setCurrentIndex(0)
+        combobox_changed(window)
 
 def show_error_message(message):
     '''Displays a QDialog window with a warning message
@@ -761,8 +762,9 @@ def show_version():
     dialog.setWindowIcon(icon)
     dialog.setModal(True)
     label = QLabel("Blob inspector v0.9 (March 2024)\n\
-                   Blob Inspector was developped by Laurent Busson as a final project for a Master's degree in Bioinformatics at the University of Bordeaux\n\
-                   under the supervision of Marie Beurton-Aymar (LaBRI) and Lucie Brisson (BRIC).\n\
+                   Blob Inspector was developped by Laurent Busson as a final project for a Master's degree in Bioinformatics at the University of Bordeaux.\n\
+                   This project was made in collaboration with BRIC (BoRdeaux Institute of onCology) Team 1, UMR1312, INSERM, Univ. Bordeaux\n\
+                   and LaBRI (Laboratoire Bordelais de Recherche en Informatique) - Universite Bordeaux.\n\
                    Blob Inspector is under GNU GPL license.")
     label.setAlignment(Qt.AlignCenter)
     button_ok = QPushButton("OK")
