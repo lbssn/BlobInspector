@@ -218,10 +218,10 @@ def draw_histograms(window : Ui_MainWindow):
     empty_layout(layout)
     filename,slice_number = get_filename_slice_number(window)
     image = appMod.stacks[filename][slice_number]
-    layout.addWidget(get_histogram(window,appMod,image,"8-bits normalised original histogram"))
+    layout.addWidget(get_histogram(window,appMod,image,"8-bits original histogram"))
     if appMod.corrected_images[filename][slice_number] is not None:
         image = appMod.corrected_images[filename][slice_number]
-        layout.addWidget(get_histogram(window,appMod,image,"Corrected 8-bits normalised histogram"))
+        layout.addWidget(get_histogram(window,appMod,image,"Corrected 8-bits histogram"))
         window.histogram_window.wi_Histogram.adjustSize()
 
 def display_original_image(window : Ui_MainWindow, filename, slice_number,focus = None):
@@ -229,7 +229,8 @@ def display_original_image(window : Ui_MainWindow, filename, slice_number,focus 
     Parameters:
     window : an instance of the app
     filename : name of the image file
-    slice_number : number of the slice in the image file'''
+    slice_number : number of the slice in the image file
+    focus : string with the name of the presently highlighted tool'''
     window.setCursor(QCursor(Qt.WaitCursor))
     appMod=window.appMod
     window.sw_Data.setCurrentIndex(0)
@@ -671,7 +672,8 @@ def update_profile(window : Ui_MainWindow):
 def save_profile(window : Ui_MainWindow, profilename):
     '''Saves the profile in the options.joblib file
     Parameters:
-    window : an instance of the app'''
+    window : an instance of the app
+    profilename : string with the name of the profile to save'''
     ow = window.options_window
     window.appOptions.profiles[profilename] = [ow.combob_SegmentationColors.currentText(),\
                                             ow.combob_Colormap.currentText(),\
@@ -714,7 +716,9 @@ def create_new_profile(window : Ui_MainWindow):
             window.appOptions.default_profile = profilename
 
 def choose_profile_name():
-    '''Calls a QDialog to input the profile name'''
+    '''Calls a QDialog to input the profile name
+    Returns:
+    The input name for the profile'''
     dialog = QDialog()
     dialog.setWindowTitle("Choose profile name")
     icon = QIcon()
@@ -907,7 +911,6 @@ def change_threshold_combobox(combobox, lineedit):
     else:
         lineedit.setEnabled(True)
 
-
 def slider_value_changed(window : Ui_MainWindow):
     '''Triggers the change of image display when the slider value changes
     Parameters:
@@ -1095,8 +1098,7 @@ def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
 def get_colobar_vmin_vmax(window : Ui_MainWindow,frame):
     ''' Determines the minimum and maximum values of density heatmaps when the shared colorbar is checked
     window : an instance of the app
-    frame : the frame in which to display the image (either 1 or 2)
-    '''
+    frame : the frame in which to display the image (either 1 or 2)    '''
     vmins = []
     vmaxs = []
     image_type = None
@@ -1122,7 +1124,6 @@ def get_colobar_vmin_vmax(window : Ui_MainWindow,frame):
                 vmaxs.append(np.max(image))
     return min(vmins),max(vmaxs)
     
-
 def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus = None, title = None):
     '''Displays the secondary images resulting from the processing of the original image
     Parameters:
@@ -1445,7 +1446,6 @@ def rolling_ball_to_image(window : Ui_MainWindow,slice_number = None):
     else:
         show_error_message("Please choose an image to process.")
      
-
 def rolling_ball_to_stack(window : Ui_MainWindow,display=True):
     '''Applies the rolling ball algorithm to all the checked images in the stack
     Parameters:
@@ -1465,7 +1465,6 @@ def rolling_ball_to_stack(window : Ui_MainWindow,display=True):
     else:
         show_error_message("Please choose an image to process.") 
     
-
 def view_illumination(window : Ui_MainWindow):
     '''Highlights the tool 'illumination' and updates the image display
     Parameters:
@@ -1478,7 +1477,6 @@ def view_illumination(window : Ui_MainWindow):
     else:
         show_error_message("Please choose an image to process.")
       
-
 def input_threshold_one(window : Ui_MainWindow, slice_number=None):
     '''Triggers several actions when the first threshold is set
     Parameters:
@@ -1635,7 +1633,6 @@ def combobox_blobs_changed(window : Ui_MainWindow):
     window : an instance of the app'''
     highlight_groupbox(window,"segmentation")
      
-
 def set_blobs_minimum_radius(window : Ui_MainWindow):
     '''Triggers several actions when a value for minimum radius of blob detection is set
     Parameters:
@@ -1681,7 +1678,6 @@ def set_blobs_maximum_radius(window : Ui_MainWindow):
         window.le_BlobsDetectionMaximumRadius.blockSignals(True)
         window.le_BlobsDetectionMaximumRadius.setText("max")
         window.le_BlobsDetectionMaximumRadius.blockSignals(False)
-
 
 def segmentation_to_image(window : Ui_MainWindow, slice_number=None):
     '''Applies the segmentation with the chosen options to an image
@@ -1772,7 +1768,6 @@ def input_sieve_size(window :Ui_MainWindow):
         show_error_message("Please choose an image to process.")
         window.le_SieveSize.clear()
 
-
 def apply_labeling_to_image(window :Ui_MainWindow, slice_number = None):
     '''Applies the labeling options to the current image
     Parameters:
@@ -1854,7 +1849,6 @@ def apply_labeling_to_image(window :Ui_MainWindow, slice_number = None):
                 show_error_message("Please choose an image to process.")
     else:
         show_error_message("Please choose an image to process.")
-
 
 def apply_labeling_to_stack(window :Ui_MainWindow, display=True):
     '''Applies the labeling with the chosen options to all the images in the stack
@@ -2356,7 +2350,8 @@ def enable_density_results(window :Ui_MainWindow):
 def enable_distance_results(window :Ui_MainWindow,filename):
     '''Enables the checkboxes for distance results
     Parameters:
-    window : an instance of the app'''
+    window : an instance of the app
+    filename: the name of the file'''
     window.cb_ResultsDistanceOwnCentroid.setEnabled(True)
     window.cb_ResultsDistanceOwnCentroid.setChecked(True)
     if window.appMod.stack_infos[filename][1] is not None and window.appMod.stack_infos[filename][2] is not None:

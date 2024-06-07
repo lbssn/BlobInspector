@@ -20,8 +20,7 @@
 import sys
 import os
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt, QEvent, Signal
-from PySide6.QtGui import QResizeEvent
+from PySide6.QtCore import Qt, QEvent
 from joblib import load
 
 from gui.app_ui import Ui_MainWindow

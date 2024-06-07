@@ -26,11 +26,11 @@ import numpy as np
 from math import sqrt, ceil
 
 def convert_to_8_bits(image):
-    ''' Normalise and convert image to 8 bits
+    '''Convert image to 8 bits
     Parameters:
     image: image as a numpy array
     Returns:
-    Image converted to 8-bits and normalised'''
+    Image converted to 8-bits'''
     if image.shape[-1] == 4:
         output = color.rgba2rgb(image)
         image = color.rgb2gray(output)
@@ -139,7 +139,7 @@ def labeling_custom(binary_image, dots):
     binary_image: the binary image to label
     dots: list of the coordinates of the True pixels in the binary image
     Returns:
-    labels: list of the corresponding labels to the coordinates (1 is the value of the first label)'''
+    labels: list of the corresponding labels to the coordinates (the value of the first label is 1)'''
     labeled_image = measure.label(binary_image,connectivity=2)
     labels = []
     for i in range(len(dots)):
@@ -297,15 +297,11 @@ def contour_shrinking_box(image, threshold):
     endy -=1
     while endx-beginx>1 and endy-beginy>1:
         innerbox = np.zeros_like(image, dtype=bool)
-        # innerbox[beginy:endy,beginx] = image[beginy:endy,beginx]<= threshold
-        # innerbox[beginy:endy,endx-1] = image[beginy:endy,endx-1]<= threshold
-        # innerbox[beginy,beginx:endx] = image[beginy,beginx:endx]<= threshold
-        # innerbox[endy-1,beginx:endx] = image[endy-1,beginx:endx]<= threshold
         innerbox[0:beginy,0:width] = image[0:beginy,0:width]<= threshold
         innerbox[0:height,endx:width] = image[0:height,endx:width]<= threshold
         innerbox[endy:height,0:width] = image[endy:height,0:width]<= threshold
         innerbox[0:height,0:beginx] = image[0:height,0:beginx] <= threshold
-        outerbox_dil = binary_dilation(outerbox, structure=np.ones((3, 3))) # ,iterations=3
+        outerbox_dil = binary_dilation(outerbox, structure=np.ones((3, 3)))
         mask = outerbox_dil & innerbox
         if mask.any():
             outerbox = outerbox | mask
@@ -335,7 +331,7 @@ def remove_objects(contour_mask, min_size):
 def calculate_contours_centroid(image):
     '''Calculates the centroid coordinates of a contoured object
     image: the binary image with the contoured object
-    Return:
+    Returns:
     A list with the y and x coordinates of the centroid'''
     coord = np.where(image)
     if coord[0].any():
