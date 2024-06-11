@@ -115,7 +115,7 @@ def watershed_custom(binary_image, dots):
     Parameters:
     binary_image: the binary image to label
     dots: list of the coordinates of the True pixels in the binary image
-    Return:
+    Returns:
     new_dots: list of the coordinates of the pixels labeled by the watershed
     ws_list: list of the corresponding labels to the coordinates (1 is the value of the first label)'''
     distance = ndi.distance_transform_edt(binary_image)
@@ -177,6 +177,7 @@ def sieve_labels(dots,labels,sieve_size):
 
 def mean_SD_size(labels):
     '''Calculates the mean size and the standard deviation of a list of labels
+    Parameters:
     labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
         return 0,0
@@ -187,6 +188,7 @@ def mean_SD_size(labels):
 
 def mean_median_size(labels):
     '''Calculates the mean size and the median of a list of labels
+    Parameters:
     labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
         return 0,0
@@ -196,6 +198,7 @@ def mean_median_size(labels):
 
 def mean_median_min_max_size(labels):
     '''Calculates the mean, the median, the minimum and the maximum size of a list of labels
+    Parameters:
     labels: the list of labels for the calculation (starting at 1)'''
     if len(labels) == 0:
         return 0,0,0,0,0
@@ -208,7 +211,8 @@ def return_contouring_algorithms():
     return ["Scan","Spreading 4-connect","Spreading 8-connect","Shrinking box","Threshold"]
 
 def contour_scan(image,threshold):
-    '''Contours an object in an image 
+    '''Contours an object in an image
+    Parameters: 
     image: the image with the object to contour
     threshold: pixel with a value inferior or equal to this parameter will be considered as background if selected by the algorithm
     Returns:
@@ -241,10 +245,11 @@ def contour_scan(image,threshold):
     return mask
 
 def contour_spreading_4(image, threshold):
-    '''Contours an object in an image 
+    '''Contours an object in an image
+    Parameters: 
     image: the image with the object to contour
     threshold: pixel with a value inferior or equal to this parameter will be considered as background if selected by the algorithm
-    Return:
+    Returns:
     mask: a binary image with the contoured object'''
     mask = np.ones_like(image, dtype=bool)
     stack = [(i, j) for i in range(image.shape[0]) for j in range(image.shape[1])
@@ -259,10 +264,11 @@ def contour_spreading_4(image, threshold):
     return mask
 
 def contour_spreading_8(image, threshold):
-    '''Contours an object in an image 
+    '''Contours an object in an image
+    Parameters: 
     image: the image with the object to contour
     threshold: pixel with a value inferior or equal to this parameter will be considered as background if selected by the algorithm
-    Return:
+    Returns:
     mask: a binary image with the contoured object'''
     mask = np.ones_like(image, dtype=bool)
     stack = [(i, j) for i in range(image.shape[0]) for j in range(image.shape[1])
@@ -277,10 +283,11 @@ def contour_spreading_8(image, threshold):
     return mask
 
 def contour_shrinking_box(image, threshold):
-    '''Contours an object in an image 
+    '''Contours an object in an image
+    Parameters: 
     image: the image with the object to contour
     threshold: pixel with a value inferior or equal to this parameter will be considered as background if selected by the algorithm
-    Return:
+    Returns:
     mask: a binary image with the contoured object'''
     mask = np.zeros_like(image, dtype=bool)
     beginx,beginy = 0,0
@@ -330,6 +337,7 @@ def remove_objects(contour_mask, min_size):
 
 def calculate_contours_centroid(image):
     '''Calculates the centroid coordinates of a contoured object
+    Parameters:
     image: the binary image with the contoured object
     Returns:
     A list with the y and x coordinates of the centroid'''
@@ -349,12 +357,13 @@ def return_colors_dictionnary():
 
 def get_target(mask_thresh, mask_contour, nb_layers, centroid_y, centroid_x):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour in concentric regions
+    Parameters:
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
     nb_layers: number of concentric regions
     centroid_y: y coordinates of the contoured object in mask_contour
     centroid_x: x coordinates of the contoured object in mask_contour
-    Return:
+    Returns:
     image: a heatmap with the percentage as pixel value'''
     coordinates = np.where(mask_contour)
     distances_to_centroid = np.sqrt((coordinates[1] - centroid_x)**2 + (coordinates[0] - centroid_y)**2)
@@ -374,13 +383,14 @@ def get_target(mask_thresh, mask_contour, nb_layers, centroid_y, centroid_x):
 
 def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroid_y, centroid_x):
     '''Calculates the percentage of pixels and their count in mask_thresh compared to mask_contour in concentric regions
+    Parameters:
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
     centroid_size_image: an image with the size of the blobs as value at the centroid coordinates'
     nb_layers: number of concentric regions
     centroid_y: y coordinates of the contoured object in mask_contour
     centroid_x: x coordinates of the contoured object in mask_contour
-    Return:
+    Returns:
     image_percentage: a heatmap with the percentage as pixel value
     image_count: a heatmap with the count of blobs as pixel value
     image_size: a heatmap with the mean size of blobs as pixel value'''
@@ -413,10 +423,11 @@ def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroi
 
 def density_map(mask_thresh, mask_contour, kernel_size):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour with a convolution
+    Parameters:
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
     kernel_size: the size of the kernel in pixels (preferably an odd number)
-    Return:
+    Returns:
     density_map: a heatmap with the percentage as pixel value'''
     half_kernel = int((kernel_size-1)/2)
     height,width = mask_thresh.shape
@@ -436,11 +447,12 @@ def density_map(mask_thresh, mask_contour, kernel_size):
 
 def density_maps(mask_thresh, mask_contour, centroid_size_image, kernel_size):
     '''Calculates the percentage of pixels and the count of blobs in mask_thresh compared to mask_contour with a convolution
+    Parameters:
     mask_thresh: a binary image with the primary objects
     mask_contour: a binary image with the contoured object containing the primary objects
     centroid_size_image: an image with the size of the blobs as value at the centroid coordinates'
     kernel_size: the size of the kernel in pixels (preferably an odd number)
-    Return:
+    Returns:
     density_map_percentage: a heatmap with the percentage as pixel value
     density_map_count: a heatmap with the count of blobs as pixel value
     density_map_size: a heatmap with the mean size of blobs as pixel value'''
@@ -470,12 +482,14 @@ def density_maps(mask_thresh, mask_contour, centroid_size_image, kernel_size):
 
 def min_max_mean_SD_density(d_map,mask_contour):
     '''Returns the minimal, maximal, mean and the standard deviation of the density in a heatmap
+    Parameters:
     d_map: the heatmap with the densities
     mask_contour: a binary image with the contoured object'''
     return round(np.min(d_map[mask_contour]),3),round(np.max(d_map[mask_contour]),3),round(np.mean(d_map[mask_contour]),3),round(np.std(d_map[mask_contour]),3)
 
 def min_max_mean_median_density(d_map,mask_contour):
     '''Returns the minimal, maximal, mean and median of the density in a heatmap
+    Parameters:
     d_map: the heatmap with the densities
     mask_contour: a binary image with the contoured object'''
     if np.sum(mask_contour)>0:
@@ -496,7 +510,7 @@ def calculate_centroids_sizes(dots,labels):
     Parameters:
     dots: list of the coordinates of the True pixels in the binary image
     labels: list of the labels for each coordinate in dots (the first label has the value 0)
-    Return:
+    Returns:
     A numpy array with the y and x coordinates and the size of the objects'''
     unique_labels = np.unique(labels)
     centroidsAndSizes = []
@@ -513,7 +527,7 @@ def calculate_centroids_sizes_image(dots,labels,image):
     dots: list of the coordinates of the True pixels in the binary image
     labels: list of the labels for each coordinate in dots (the first label has the value 0)
     image: an image of the same size as the desired returned image 
-    Return:
+    Returns:
     An image with the size of the blobs as value at the centroid coordinates'''
     unique_labels = np.unique(labels)
     centroid_size_image = np.zeros_like(image, dtype=np.uint16)
@@ -546,7 +560,7 @@ def calculate_blobs_centroids_and_DTOC(dots,labels,centroid_x,centroid_y):
     labels: list of the labels for each coordinate in dots (the first label has the value 0)
     centroid_x: the x coordinate of the centroid
     centroid_y: the y coordinate of the centroid
-    Return:
+    Returns:
     A numpy array with the y and x coordinates of the labeled objects and a list with their distance to the centroid in pixels'''
     if labels == []:
         return [],[]
@@ -585,7 +599,7 @@ def dots_to_binary(mask_thresh,dots):
     Parameters:
     mask_thresh: the image with the expected shape
     dots: a list of the [y,x] coordinates
-    Return:
+    Returns:
     mask: a binary image'''
     mask = np.zeros_like(mask_thresh,dtype=bool)
     for coord in dots:

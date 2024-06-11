@@ -42,6 +42,7 @@ import resources.resources_rc
 
 def resize_main_window(window : Ui_MainWindow):
     '''Resizes the images when the main window is resized
+    Parameters:
     window : an instance of the app'''
     if window.combob_FileName.currentText():
         filename, slice_number = get_filename_slice_number(window)
@@ -49,6 +50,7 @@ def resize_main_window(window : Ui_MainWindow):
 
 def remove_all_images(window : Ui_MainWindow):
     '''Removes all the loaded images
+    Parameters:
     window : an instance of the app'''
     window.combob_FileName.clear()
     window.appMod = AppModel()
@@ -64,6 +66,7 @@ def remove_all_images(window : Ui_MainWindow):
 
 def remove_current_image(window : Ui_MainWindow):
     '''Removes the current image from the comobox
+    Parameters:
     window : an instance of the app'''
     appMod=window.appMod
     if len(appMod.stacks.keys()) == 1:
@@ -134,6 +137,7 @@ def show_error_message(message):
 
 def empty_layout(layout):
     '''Removes all the items in a layout
+    Parameters:
     layout: the name of the layout to empty'''
     while layout.count():
         item = layout.takeAt(0)
@@ -145,6 +149,7 @@ def empty_layout(layout):
 
 def hide_text_layout_content(window : Ui_MainWindow, frame):
     '''Hides the chosen content of the QWidgets when displaying secondary images
+    Parameters:
     window : an instance of the app
     frame: the number of the frame to hide'''
     if frame == 1:
@@ -165,6 +170,7 @@ def hide_text_layout_content(window : Ui_MainWindow, frame):
 
 def show_text_layout_content(window : Ui_MainWindow, frame):
     '''Shows the chosen content of the QWidgets whendisplaying secondary images
+    Parameters:
     window : an instance of the app
     frame: the number of the frame to show'''
     if frame == 1:
@@ -187,7 +193,7 @@ def get_filename_slice_number(window : Ui_MainWindow):
     '''Gets the file name and the slice number of the currently displayed image
     Parameters:
     window : an instance of the app
-    Return:
+    Returns:
     filename: the absolute path to the name
     slice_number: the index of the slice in the stack'''
     filename = window.combob_FileName.currentText()
@@ -200,7 +206,7 @@ def get_histogram(window : Ui_MainWindow, appMod : AppModel,image,title):
     window : an instance of the app
     image: an image whose histogram will be created
     title: a string indicating the title to display on the histogram
-    Return:
+    Returns:
     canvas_hist: an instance of the class MplCanvasHistogram'''
     canvas_hist = MplCanvasHistogram(window,8,4,100)
     canvas_hist.axes.hist(image.ravel(),bins=256)
@@ -903,6 +909,7 @@ def input_thresholds(window, widget1, widget2, min_value, max_value, original_te
 
 def change_threshold_combobox(combobox, lineedit):
     '''Changes the display of a QLineEdit depending on the text in a QCombobox
+    Parameters:
     combobox: the QCombobox
     lineedit: the QLineEdit'''
     if combobox.currentText() == "One threshold":
@@ -1097,8 +1104,12 @@ def set_current_image_options(window : Ui_MainWindow,filename,slice_number):
 
 def get_colobar_vmin_vmax(window : Ui_MainWindow,frame):
     ''' Determines the minimum and maximum values of density heatmaps when the shared colorbar is checked
+    Parameters:
     window : an instance of the app
-    frame : the frame in which to display the image (either 1 or 2)    '''
+    frame : the frame in which to display the image (either 1 or 2)
+    Returns:
+    vmin : minimum value in the heatmap
+    vmax : maximum value in the heatmap'''
     vmins = []
     vmaxs = []
     image_type = None
@@ -1130,7 +1141,7 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
     frame : the frame in which to display the image (either 1 or 2)
     window : an instance of the app
     image : the image to be displayed
-    focus : the tools being used
+    focus : the tool being used
     title : the title of the image'''
     window.setCursor(QCursor(Qt.WaitCursor))
     appMod=window.appMod
@@ -1910,6 +1921,7 @@ def combobox_contours_changed(window :Ui_MainWindow):
 
 def determine_main_slice(appMod : AppModel, filename):
     '''Determines the slice with the largest contour in a stack
+    Parameters:
     appMod: an instance of the class AppModel
     filename: the name of the file with the stack of images'''
     max_contours = 0
@@ -2816,6 +2828,7 @@ def save_results(window :Ui_MainWindow):
     Parameters:
     window : an instance of the app'''
     if check_checkboxes(window.gb_ResultsChoice):
+        window.setCursor(QCursor(Qt.WaitCursor))
         try:
             appMod=window.appMod
             filename = window.combob_FileName.currentText()
@@ -2940,6 +2953,7 @@ def save_results(window :Ui_MainWindow):
                 show_save_message(f"The file has been successfully saved in {folder}")                  
         except (ValueError, TypeError, PermissionError, IndexError) as e:
             show_error_message(f"An error occured while saving the results:\n{e}")
+        window.setCursor(QCursor(Qt.ArrowCursor))
     else:
         show_error_message("Please choose at least one result or image to save.")
     
