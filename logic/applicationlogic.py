@@ -63,6 +63,7 @@ def remove_all_images(window : Ui_MainWindow):
     window.wi_Image2Canvas.hide()
     window.wi_OriginalImage.hide()
     window.frame_4.hide()
+    window.histogram_window.close()
 
 def remove_current_image(window : Ui_MainWindow):
     '''Removes the current image from the comobox
