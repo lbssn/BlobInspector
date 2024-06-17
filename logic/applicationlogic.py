@@ -209,7 +209,7 @@ def get_histogram(window : Ui_MainWindow, appMod : AppModel,image,title):
     Returns:
     canvas_hist: an instance of the class MplCanvasHistogram'''
     canvas_hist = MplCanvasHistogram(window,8,4,100)
-    canvas_hist.axes.hist(image.ravel(),bins=256)
+    canvas_hist.axes.hist(image.ravel(),bins=256, range=(0,255), log=True)
     canvas_hist.axes.tick_params(axis='x', labelsize=8)
     canvas_hist.axes.tick_params(axis='y', labelsize=8)
     canvas_hist.axes.set_title(title, fontsize=10)
