@@ -55,6 +55,8 @@ class AppModel(object):
         self.density_map_heatmap = {}
         self.density_target_centroid_heatmap = {}
         self.density_map_centroid_heatmap = {}
+        self.density_target_count_per_10k_pixels_heatmap = {}
+        self.density_map_count_per_10k_pixels_heatmap = {}
         self.density_target_size = {}
         self.density_map_size = {}
         

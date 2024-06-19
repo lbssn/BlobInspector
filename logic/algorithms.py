@@ -393,6 +393,7 @@ def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroi
     Returns:
     image_percentage: a heatmap with the percentage as pixel value
     image_count: a heatmap with the count of blobs as pixel value
+    image_count_per_10k_pixels: a heatmap with the count of blobs per 10k pixels as pixel value
     image_size: a heatmap with the mean size of blobs as pixel value'''
     coordinates = np.where(mask_contour)
     if len(coordinates[0])>0:
@@ -402,6 +403,7 @@ def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroi
         image_percentage=np.zeros_like(mask_thresh, dtype=np.float32)
         image_count=np.zeros_like(mask_thresh, dtype=np.float32)
         image_size=np.zeros_like(mask_thresh, dtype=np.float32)
+        image_count_per_10k_pixels=np.zeros_like(mask_thresh, dtype=np.float32)
         mask_centroids = centroid_size_image > 0
         for i in range(nb_layers):
             mask = (layer_thickness_list[i] < distances_to_centroid) & (distances_to_centroid <= layer_thickness_list[i+1])
@@ -411,15 +413,16 @@ def get_targets(mask_thresh, mask_contour,centroid_size_image,nb_layers, centroi
             size_sum = np.sum(centroid_size_image[coordinates[0][mask], coordinates[1][mask]])
             if cont != 0:
                 density = th / cont * 100
+                image_count_per_10k_pixels[coordinates[0][mask], coordinates[1][mask]] = (centroids_sum / cont) * 10000
             else:
                 density = 0
             image_percentage[coordinates[0][mask], coordinates[1][mask]] = density
             image_count[coordinates[0][mask], coordinates[1][mask]] = centroids_sum
             if centroids_sum > 0:
                 image_size[coordinates[0][mask], coordinates[1][mask]] = size_sum / centroids_sum
-        return image_percentage, image_count, image_size
+        return image_percentage, image_count, image_count_per_10k_pixels, image_size
     else:
-        return np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8)
+        return np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8),np.zeros_like(mask_contour,dtype=np.uint8)
 
 def density_map(mask_thresh, mask_contour, kernel_size):
     '''Calculates the percentage of pixels in mask_thresh compared to mask_contour with a convolution
@@ -455,11 +458,13 @@ def density_maps(mask_thresh, mask_contour, centroid_size_image, kernel_size):
     Returns:
     density_map_percentage: a heatmap with the percentage as pixel value
     density_map_count: a heatmap with the count of blobs as pixel value
+    density_map_count_per_10k_pixels: a heatmap with the count of blobs per 10k pixels as pixel value
     density_map_size: a heatmap with the mean size of blobs as pixel value'''
     half_kernel = int((kernel_size-1)/2)
     height,width = mask_thresh.shape
     density_map_percentage = np.zeros_like(mask_thresh,dtype=np.float32)
     density_map_count = np.zeros_like(mask_thresh,dtype=np.float32)
+    density_map_count_per_10k_pixels = np.zeros_like(mask_thresh,dtype=np.float32)
     density_map_size = np.zeros_like(mask_thresh,dtype=np.float32)
     mask_centroids = centroid_size_image > 0
     for y in range(height):
@@ -475,10 +480,11 @@ def density_maps(mask_thresh, mask_contour, centroid_size_image, kernel_size):
                 size_count=np.sum(centroid_size_image[ymin:ymax,xmin:xmax])
                 if cont>0:
                     density_map_percentage[y,x]=th/cont*100
+                    density_map_count_per_10k_pixels[y,x] = (centroids_count / cont) * 10000
                 density_map_count[y,x] = centroids_count
                 if centroids_count > 0:
                     density_map_size[y,x] = size_count / centroids_count
-    return density_map_percentage, density_map_count, density_map_size
+    return density_map_percentage, density_map_count, density_map_count_per_10k_pixels, density_map_size
 
 def min_max_mean_SD_density(d_map,mask_contour):
     '''Returns the minimal, maximal, mean and the standard deviation of the density in a heatmap

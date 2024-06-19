@@ -103,6 +103,10 @@ def remove_current_image(window : Ui_MainWindow):
         del appMod.density_centroid_size[filename]
         del appMod.density_target_heatmap[filename]
         del appMod.density_map_heatmap[filename]
+        del appMod.density_target_centroid_heatmap[filename]
+        del appMod.density_map_centroid_heatmap[filename]
+        del appMod.density_target_count_per_10k_pixels_heatmap[filename]
+        del appMod.density_map_count_per_10k_pixels_heatmap[filename]
         del appMod.density_target_size[filename]
         del appMod.density_map_size[filename]
         del appMod.results_count[filename]
@@ -397,6 +401,8 @@ def load_files(window : Ui_MainWindow):
         window.appMod.density_map_heatmap[filename] = [None]*length
         window.appMod.density_target_centroid_heatmap [filename] = [None]*length
         window.appMod.density_map_centroid_heatmap[filename] = [None]*length
+        window.appMod.density_target_count_per_10k_pixels_heatmap[filename] = [None]*length
+        window.appMod.density_map_count_per_10k_pixels_heatmap[filename] = [None]*length
         window.appMod.density_target_size[filename] = [None]*length
         window.appMod.density_map_size[filename] = [None]*length
         window.appMod.results_count[filename] = None
@@ -1126,6 +1132,11 @@ def get_colobar_vmin_vmax(window : Ui_MainWindow,frame):
             image_type = window.appMod.density_map_centroid_heatmap
         else:
             image_type = window.appMod.density_target_centroid_heatmap
+    elif window.combob_DensityDisplay.currentText() == "Count per 10k pixels":
+        if frame == 1:
+            image_type = window.appMod.density_map_count_per_10k_pixels_heatmap
+        else:
+            image_type = window.appMod.density_target_count_per_10k_pixels_heatmap
     elif window.combob_DensityDisplay.currentText() == "Mean size":
         if frame == 1:
             image_type = window.appMod.density_map_size
@@ -1320,12 +1331,17 @@ def display_secondary_image(frame, window : Ui_MainWindow, image = None, focus =
                     display_secondary_image(1,window,appMod.density_map_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (percentage)")
                 if frame == 2:
                     display_secondary_image(2,window,appMod.density_target_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (percentage)")
-            if window.combob_DensityDisplay.currentText() == "Count":
+            elif window.combob_DensityDisplay.currentText() == "Count":
                 if frame == 1:
                     display_secondary_image(1,window,appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
                 if frame == 2:
-                    display_secondary_image(2,window,appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
-            if window.combob_DensityDisplay.currentText() == "Mean size":
+                    display_secondary_image(2,window,appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
+            elif window.combob_DensityDisplay.currentText() == "Count per 10k pixels":
+                if frame == 1:
+                    display_secondary_image(1,window,appMod.density_map_count_per_10k_pixels_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count per 10k pixels)")
+                if frame == 2:
+                    display_secondary_image(2,window,appMod.density_target_count_per_10k_pixels_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count per 10k pixels)")       
+            elif window.combob_DensityDisplay.currentText() == "Mean size":
                 if frame == 1:
                     display_secondary_image(1,window,appMod.density_map_size[filename][slice_number],focus="density",title="Convoluted density heatmap (Size)")
                 if frame == 2:
@@ -1402,6 +1418,8 @@ def clear_results(window : Ui_MainWindow,filename,slice_number,results):
         appMod.density_map_heatmap[filename][slice_number] = None
         appMod.density_target_centroid_heatmap [filename][slice_number] = None
         appMod.density_map_centroid_heatmap[filename][slice_number] = None
+        appMod.density_target_count_per_10k_pixels_heatmap[filename][slice_number] = None
+        appMod.density_map_count_per_10k_pixels_heatmap[filename][slice_number] = None
         appMod.density_target_size[filename][slice_number] = None
         appMod.density_map_size[filename][slice_number] = None
         appMod.results_density[filename] = None
@@ -2160,16 +2178,18 @@ def apply_density_to_image(window :Ui_MainWindow, slice_number=None):
                                 layers = appMod.density_target_layers[filename][slice_number]
                                 centroid_y = appMod.contours_centroids[filename][slice_number][0]
                                 centroid_x = appMod.contours_centroids[filename][slice_number][1]
-                                target_map, target_count, target_size = get_targets(thresholded_image,contoured_image,centroid_size_image,layers,centroid_y,centroid_x)
+                                target_map, target_count, target_count_per_10k_pixels, target_size = get_targets(thresholded_image,contoured_image,centroid_size_image,layers,centroid_y,centroid_x)
                                 appMod.density_target_heatmap[filename][slice_number] = target_map
-                                appMod.density_target_centroid_heatmap [filename][slice_number] = target_count
+                                appMod.density_target_centroid_heatmap[filename][slice_number] = target_count
+                                appMod.density_target_count_per_10k_pixels_heatmap[filename][slice_number] = target_count_per_10k_pixels
                                 appMod.density_target_size[filename][slice_number] = target_size
                                 appMod.results_density[filename] = None  
                             if appMod.density_map_kernel_size[filename][slice_number] != int(window.le_DensityMapKernelSize.text()) or appMod.density_map_heatmap[filename][slice_number] is None:
                                 appMod.density_map_kernel_size[filename][slice_number] = int(window.le_DensityMapKernelSize.text())
-                                d_map_percentage, d_map_count, d_map_size = density_maps(thresholded_image,contoured_image,centroid_size_image,appMod.density_map_kernel_size[filename][slice_number])
+                                d_map_percentage, d_map_count, d_map_count_per_10k_pixels, d_map_size = density_maps(thresholded_image,contoured_image,centroid_size_image,appMod.density_map_kernel_size[filename][slice_number])
                                 appMod.density_map_heatmap[filename][slice_number] = d_map_percentage
                                 appMod.density_map_centroid_heatmap[filename][slice_number] = d_map_count
+                                appMod.density_map_count_per_10k_pixels_heatmap[filename][slice_number] = d_map_count_per_10k_pixels
                                 appMod.density_map_size[filename][slice_number] = d_map_size
                                 appMod.results_density[filename] = None
                             if single_image == True:
@@ -2237,10 +2257,13 @@ def combobox_density_changed(window :Ui_MainWindow):
     if window.combob_DensityDisplay.currentText() == "Percentage":
         display_secondary_image(1,window,window.appMod.density_map_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (percentage)")
         display_secondary_image(2,window,window.appMod.density_target_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (percentage)")
-    if window.combob_DensityDisplay.currentText() == "Count":
+    elif window.combob_DensityDisplay.currentText() == "Count":
         display_secondary_image(1,window,window.appMod.density_map_centroid_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count)")
-        display_secondary_image(2,window,window.appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")      
-    if window.combob_DensityDisplay.currentText() == "Mean size":
+        display_secondary_image(2,window,window.appMod.density_target_centroid_heatmap [filename][slice_number],focus = "density", title = "Target density heatmap (Count)")
+    elif window.combob_DensityDisplay.currentText() == "Count per 10k pixels":  
+        display_secondary_image(1,window,window.appMod.density_map_count_per_10k_pixels_heatmap[filename][slice_number],focus="density",title="Convoluted density heatmap (Count per 10k pixels)")
+        display_secondary_image(2,window,window.appMod.density_target_count_per_10k_pixels_heatmap[filename][slice_number],focus = "density", title = "Target density heatmap (Count per 10k pixels)")
+    elif window.combob_DensityDisplay.currentText() == "Mean size":
         display_secondary_image(1,window,window.appMod.density_map_size[filename][slice_number],focus="density",title="Convoluted density heatmap (Mean size)")
         display_secondary_image(2,window,window.appMod.density_target_size[filename][slice_number],focus = "density", title = "Target density heatmap (Mean size)")
 
