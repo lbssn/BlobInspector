@@ -132,10 +132,11 @@ elements, offering guidance on their usage and selection.
     Additionally, you need to select the number of layers to compute density in concentric regions within the
     contoured shape. The layers are established by dividing the distance between the centroid and the furthest
     point within the contoured shape. If there are aberrant pixels outside the main contoured shape, the division
-    may be affected.  Density can be displayed in three ways, selectable from a dropdown menu above the center image:
+    may be affected.  Density can be displayed in four ways, selectable from a dropdown menu above the center image:
         - Percentage: Number of blob pixels divided by the number of contoured shape pixels per area (kernel for
         the convoluted heatmap and concentric region for the target heatmap)
         - Count: Number of blob centroids per area
+        - Count per 10k pixels: Number of blobs centroids per area normalized to 10000 pixels
         - Mean size: Mean size of blobs in pixels per area
     The colormap can be chosen from a dropdown menu above the center image. If the "Shared cb" checkbox (cb for
     colorbar) is selected, the colorbars will have the same scale for all processed images.
@@ -144,7 +145,7 @@ elements, offering guidance on their usage and selection.
     shape centroids. Blob Inspector was designed to detect blobs in confocal microscope images.
     To compute distances between stack slices, input the slice thickness (if left empty, a value of 0 will be
     automatically chosen) and the interslice space. In any case, the pixel size must be input to compute distances.
-     All three values must be in the same unit (e.g., µm).
+    All three values must be in the same unit (e.g., µm).
     To view the results, click the "View" button in the "Results" section. All results (sizes, distances) are in
     pixels. You can navigate through the results by clicking on the desired tab. In the lower part of the screen,
     you can check or uncheck the results you want to keep. You can change the folder and the name of the file to

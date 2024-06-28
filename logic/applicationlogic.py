@@ -2483,6 +2483,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                         "Heatmap % median","Heatmap % min","Heatmap % max",\
                         "Target count mean","Target count median","Target count min","Target count max",\
                         "Heatmap count mean","Heatmap count median","Heatmap count min","Heatmap count max",\
+                        "Target count per 10k pixels mean","Target count per 10k pixels median","Target count per 10k pixels min","Target count per 10k pixels max",\
+                        "Heatmap count per 10k pixels mean","Heatmap count per 10k pixels median","Heatmap count per 10k pixels min","Heatmap count per 10k pixels max",\
                         "Target size mean","Target size median","Target size min","Target size max",\
                         "Heatmap size mean","Heatmap size median","Heatmap size min","Heatmap size max",\
                             "Contours algorithm","Contours threshold","Contours min size","Target layers","Kernel size"]]
@@ -2490,6 +2492,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
     all_densities_maps_percentage = []
     all_densities_targets_count = []
     all_densities_maps_count = []
+    all_densities_targets_count_per_10k = []
+    all_densities_maps_count_per_10k = []
     all_densities_targets_size = []
     all_densities_maps_size = []
     total_blobs_area = 0
@@ -2500,8 +2504,10 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
             if appMod.density_target_heatmap[filename][i] is not None:
                 d_target = appMod.density_target_heatmap[filename][i]
                 d_map = appMod.density_map_heatmap[filename][i]
-                d_target_count = appMod.density_target_centroid_heatmap [filename][i]
+                d_target_count = appMod.density_target_centroid_heatmap[filename][i]
                 d_map_count = appMod.density_map_centroid_heatmap[filename][i]
+                d_target_count_per_10k = appMod.density_target_count_per_10k_pixels_heatmap[filename][i]
+                d_map_count_per_10k = appMod.density_map_count_per_10k_pixels_heatmap[filename][i]
                 d_target_size = appMod.density_target_size[filename][i]
                 d_map_size = appMod.density_map_size[filename][i]
                 mask_contour = appMod.contours_mask[filename][i]
@@ -2510,6 +2516,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                     all_densities_maps_percentage = d_map[mask_contour].tolist()
                     all_densities_targets_count = d_target_count[mask_contour].tolist()
                     all_densities_maps_count = d_map_count[mask_contour].tolist()
+                    all_densities_targets_count_per_10k = d_target_count_per_10k[mask_contour].tolist()
+                    all_densities_maps_count_per_10k = d_map_count_per_10k[mask_contour].tolist()
                     all_densities_targets_size = d_target_size[mask_contour].tolist()
                     all_densities_maps_size = d_map_size[mask_contour].tolist()
                 else:
@@ -2517,6 +2525,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                     all_densities_maps_percentage.extend(d_map[mask_contour].tolist())
                     all_densities_targets_count.extend(d_target_count[mask_contour].tolist())
                     all_densities_maps_count.extend(d_map_count[mask_contour].tolist())
+                    all_densities_targets_count_per_10k.extend(d_target_count_per_10k[mask_contour].tolist())
+                    all_densities_maps_count_per_10k.extend(d_map_count_per_10k[mask_contour].tolist())
                     all_densities_targets_size.extend(d_target_size[mask_contour].tolist())
                     all_densities_maps_size.extend(d_map_size[mask_contour].tolist())
                 area = np.sum(mask_contour)
@@ -2527,6 +2537,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 min_m,max_m,_,median_m = min_max_mean_median_density(d_map,mask_contour)
                 min_t_count,max_t_count,mean_t_count,median_t_count= min_max_mean_median_density(d_target_count,mask_contour)
                 min_m_count,max_m_count,mean_m_count,median_m_count = min_max_mean_median_density(d_map_count,mask_contour)
+                min_t_count_per_10k,max_t_count_per_10k,mean_t_count_per_10k,median_t_count_per_10k= min_max_mean_median_density(d_target_count_per_10k,mask_contour)
+                min_m_count_per_10k,max_m_count_per_10k,mean_m_count_per_10k,median_m_count_per_10k = min_max_mean_median_density(d_map_count_per_10k,mask_contour)
                 min_t_size,max_t_size,mean_t_size,median_t_size= min_max_mean_median_density(d_target_size,mask_contour)
                 min_m_size,max_m_size,mean_m_size,median_m_size = min_max_mean_median_density(d_map_size,mask_contour)
                 contours_algo = appMod.contours_algo[filename][i]
@@ -2540,12 +2552,14 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
                 density_results.append([slice,mean_t,blobs_area,area,median_t,min_t,max_t,median_m,min_m,max_m,\
                                         mean_t_count,round(median_t_count),round(min_t_count),round(max_t_count),\
                                         mean_m_count,round(median_m_count),round(min_m_count),round(max_m_count),\
+                                        mean_t_count_per_10k,round(median_t_count_per_10k,3),round(min_t_count_per_10k,3),round(max_t_count_per_10k,3),\
+                                        mean_m_count_per_10k,round(median_m_count_per_10k,3),round(min_m_count_per_10k,3),round(max_m_count_per_10k,3),\
                                         mean_t_size,round(median_t_size),round(min_t_size),round(max_t_size),\
                                         mean_m_size,round(median_m_size),round(min_m_size),round(max_m_size),\
                                         contours_algo,contours_threshold,contours_min_size,layers,kernel_size])
             else:
                 density_results.append([slice,"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-",\
-                                        "-","-","-","-","-","-","-","-","-"])
+                                        "-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"])
     if len(all_densities_targets_percentage) >0:
         min_tot_t,max_tot_t,mean_tot_t,median_tot_t = round(min(all_densities_targets_percentage),3),round(max(all_densities_targets_percentage),3),\
             round(np.mean(all_densities_targets_percentage),3),round(np.median(all_densities_targets_percentage),3)
@@ -2565,6 +2579,16 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
             round(np.mean(all_densities_maps_count),3),round(np.median(all_densities_maps_count))
     else:
         min_tot_m_count,max_tot_m_count,mean_tot_m_count,median_tot_m_count = "-","-","-","-"
+    if len(all_densities_targets_count_per_10k) >0:
+        min_tot_t_count_per_10k,max_tot_t_count_per_10k,mean_tot_t_count_per_10k,median_tot_t_count_per_10k = round(min(all_densities_targets_count_per_10k)),round(max(all_densities_targets_count_per_10k)),\
+            round(np.mean(all_densities_targets_count_per_10k),3),round(np.median(all_densities_targets_count_per_10k))
+    else:
+        min_tot_t_count_per_10k,max_tot_t_count_per_10k,mean_tot_t_count_per_10k,median_tot_t_count_per_10k = "-","-","-","-"
+    if len(all_densities_maps_count_per_10k) >0:
+        min_tot_m_count_per_10k,max_tot_m_count_per_10k,mean_tot_m_count_per_10k,median_tot_m_count_per_10k = round(min(all_densities_maps_count_per_10k)),round(max(all_densities_maps_count_per_10k)),\
+            round(np.mean(all_densities_maps_count_per_10k),3),round(np.median(all_densities_maps_count_per_10k))
+    else:
+        min_tot_m_count_per_10k,max_tot_m_count_per_10k,mean_tot_m_count_per_10k,median_tot_m_count_per_10k = "-","-","-","-"
     if len(all_densities_targets_size) >0:
         min_tot_t_size,max_tot_t_size,mean_tot_t_size,median_tot_t_size = round(min(all_densities_targets_size)),round(max(all_densities_targets_size)),\
             round(np.mean(all_densities_targets_size),3),round(np.median(all_densities_targets_size))
@@ -2578,7 +2602,8 @@ def compute_density_results(window : Ui_MainWindow,filename,nb_slices):
 
     density_results.append(["Total",mean_tot_t,total_blobs_area,total_area,median_tot_t,min_tot_t,max_tot_t,median_tot_m,min_tot_m,max_tot_m,\
                             mean_tot_t_count,median_tot_t_count,min_tot_t_count,max_tot_t_count,mean_tot_m_count,median_tot_m_count,min_tot_m_count,max_tot_m_count,\
-                                mean_tot_t_size,median_tot_t_size,min_tot_t_size,max_tot_t_size,mean_tot_m_size,median_tot_m_size,min_tot_m_size,max_tot_m_size,"-","-","-","-","-"])    
+                            mean_tot_t_count_per_10k,median_tot_t_count_per_10k,min_tot_t_count_per_10k,max_tot_t_count_per_10k,mean_tot_m_count_per_10k,median_tot_m_count_per_10k,min_tot_m_count_per_10k,max_tot_m_count_per_10k,\
+                            mean_tot_t_size,median_tot_t_size,min_tot_t_size,max_tot_t_size,mean_tot_m_size,median_tot_m_size,min_tot_m_size,max_tot_m_size,"-","-","-","-","-"])    
     appMod.results_density[filename] = density_results
 
 def input_density_results(window : Ui_MainWindow, filename):
@@ -2874,9 +2899,9 @@ def save_results(window :Ui_MainWindow):
                 if window.cb_ResultsDensityPercentage.isChecked():
                     columns_to_add.update([1,2,3,4,5,6,7,8,9,26,27,28,29,30])
                 if window.cb_ResultsDensityCount.isChecked():
-                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,26,27,28,29,30])
+                    columns_to_add.update([1,2,3,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,34,35,36,37,38])
                 if window.cb_ResultsDensitySize.isChecked():
-                    columns_to_add.update([1,2,3,18,19,20,21,22,23,24,25,26,27,28,29,30])
+                    columns_to_add.update([1,2,3,26,27,28,29,30,31,32,33,34,35,36,37,38])
                 columns_to_add = list(columns_to_add)
                 if table_first_row == True:
                     results = np.concatenate((results,density_results[:,columns_to_add]),axis=1)
