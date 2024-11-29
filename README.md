@@ -112,12 +112,12 @@ elements, offering guidance on their usage and selection.
         common pixels between the thresholded image and the blob detection algorithm on the thresholded image.
         As blob detection algorithms return a list of centroid coordinates and radii, the resulting image may
         display some cropped objects compared to the thresholded image.
+    ![Segmentation](/resources/images/GUI_segmentation.png)
         - Labeling (mandatory): This tool performs semantic segmentation of thresholded objects. If the
         "No separation" option is chosen, each individual object consists of connected pixels in 8 directions.
         If "Watershed" is selected, the watershed algorithm is applied to attempt to separate connected objects.
         The "Sieve size" field requires an integer value; objects with a size in pixels equal to or smaller than
         this value will be discarded. Choosing a value of 0 will retain all objects.
-    ![Segmentation](/resources/images/GUI_segmentation.png)
     ![Labeling](/resources/images/GUI_labeling.png)
     - Shape contours (mandatory):
     This tool determines the contours of shapes containing blobs. Several algorithms are available. The maximum
