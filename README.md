@@ -3,6 +3,8 @@
 Blob Inspector is a software designed to analyze blobs in biological images. It provides several common tools
 for computing metrics related to the blobs, such as coordinates, size, density, and distances.
 
+![Interface preview](/resources/images/app_image.png)
+
 ## Tools
 
 The software offers the following tools:
@@ -95,6 +97,7 @@ elements, offering guidance on their usage and selection.
     the background to the original image, in the center of the screen. This corrected image will be used for
     further processing. You can cancel this tool by clearing the rolling ball radius parameter and applying
     the modification to the image or stack.
+    ![Illumination](/resources/images/GUI_illumination.png)
     - Segmentation:
         - Thresholding (mandatory): Choose one or two thresholds (hysteresis thresholding). Input a value
         between 0 and 255. The first threshold must be higher than the second. If you input a value between
@@ -109,12 +112,13 @@ elements, offering guidance on their usage and selection.
         common pixels between the thresholded image and the blob detection algorithm on the thresholded image.
         As blob detection algorithms return a list of centroid coordinates and radii, the resulting image may
         display some cropped objects compared to the thresholded image.
-        - Labeling (mandatory):
-    This tool performs semantic segmentation of thresholded objects. If the "No separation" option is chosen,
-    each individual object consists of connected pixels in 8 directions. If "Watershed" is selected, the
-    watershed algorithm is applied to attempt to separate connected objects. The "Sieve size" field requires
-    an integer value; objects with a size in pixels equal to or smaller than this value will be discarded.
-    Choosing a value of 0 will retain all objects.
+        - Labeling (mandatory): This tool performs semantic segmentation of thresholded objects. If the
+        "No separation" option is chosen, each individual object consists of connected pixels in 8 directions.
+        If "Watershed" is selected, the watershed algorithm is applied to attempt to separate connected objects.
+        The "Sieve size" field requires an integer value; objects with a size in pixels equal to or smaller than
+        this value will be discarded. Choosing a value of 0 will retain all objects.
+    ![Segmentation](/resources/images/GUI_segmentation.png)
+    ![Labeling](/resources/images/GUI_labeling.png)
     - Shape contours (mandatory):
     This tool determines the contours of shapes containing blobs. Several algorithms are available. The maximum
     threshold value must be input (all pixels equal to or less than this value will be considered background,
@@ -126,6 +130,7 @@ elements, offering guidance on their usage and selection.
     the main slice of the stack. Distances from the centroids of all blobs to the centroid of the main slice will
     be computed if the required information is input (slice thickness, interslice space, and pixel size). You can
     change the main slice by clicking the "Main Slice" checkbox above the desired image.
+    ![Contours](/resources/images/GUI_contours.png)
     - Density (optional):
     This tool computes the density of blobs within the contoured shape. To do so, you must choose a kernel size
     for performing convolution. The kernel must be an odd integer, at least 3, and less than the image dimensions.
@@ -140,6 +145,7 @@ elements, offering guidance on their usage and selection.
         - Mean size: Mean size of blobs in pixels per area
     The colormap can be chosen from a dropdown menu above the center image. If the "Shared cb" checkbox (cb for
     colorbar) is selected, the colorbars will have the same scale for all processed images.
+    ![Density](/resources/images/GUI_density.png)
     - Results:
     In this section you can input stack informations in order to compute distances between blobs and contoured
     shape centroids. Blob Inspector was designed to detect blobs in confocal microscope images.
@@ -153,4 +159,5 @@ elements, offering guidance on their usage and selection.
     other with the coordinates, sizes, and distances of the blobs for each slice. Results are saved for the current
     stack. To save results from another stack, click the "Back" button in the lower-left corner of the page and go
     to the desired stack.
+    ![Results](/resources/images/GUI_results.png)
 
